@@ -1,0 +1,151 @@
+<div class="space-y-6">
+  <!-- Header Section -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-3xl font-black text-slate-900 capitalize">
+        <!-- Changes title based on sidebar selection: All, STUDENT, or TUTOR -->
+        {{ currentRole === 'all' ? 'User' : currentRole.toLowerCase() }} Management
+      </h2>
+      <p class="text-slate-500">
+        Viewing {{ users.length }} {{ currentRole === 'all' ? 'registered members' : currentRole.toLowerCase() + 's' }}
+      </p>
+    </div>
+    
+    <div class="flex gap-3">
+        <!-- Back button if filtered -->
+        
+        <button (click)="openAddModal()" 
+                class="bg-[#0066FF] text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/20">
+          + Add {{ currentRole === 'all' ? 'User' : (currentRole === 'STUDENT' ? 'Student' : 'Tutor') }}
+        </button>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-500">
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-slate-50/50 text-slate-400 text-[10px] uppercase font-black tracking-widest">
+        <tr>
+          <th class="px-8 py-5">Identities</th>
+          <th class="px-8 py-5">Role</th>
+          <th class="px-8 py-5">Contact Info</th>
+          <th class="px-8 py-5">Status</th>
+          <th class="px-8 py-5 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-sm">
+        <tr *ngFor="let user of users" class="border-b border-slate-50 hover:bg-slate-50/50 transition-all group">
+          <td class="px-8 py-5">
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-900">{{user.name}} {{user.lastName}}</span>
+              <span class="text-xs text-slate-400">{{user.email}}</span>
+            </div>
+          </td>
+          
+          <td class="px-8 py-5">
+            <span [ngClass]="{
+              'bg-blue-50 text-[#0066FF]': user.role === 'STUDENT',
+              'bg-purple-50 text-purple-600': user.role === 'TUTOR',
+              'bg-slate-100 text-slate-600': user.role === 'ADMIN'
+            }" class="px-3 py-1 rounded-full text-[10px] font-black uppercase border border-transparent">
+              {{user.role}}
+            </span>
+          </td>
+
+          <td class="px-8 py-5 text-slate-600 font-medium">
+            {{user.prefix}} {{user.phone}}
+          </td>
+
+          <td class="px-8 py-5">
+            <span class="flex items-center gap-2 font-bold" 
+                  [class.text-green-500]="user.active" 
+                  [class.text-red-400]="!user.active">
+              <span class="w-2 h-2 rounded-full bg-current"></span>
+              {{user.active ? 'Active' : 'Blocked'}}
+            </span>
+          </td>
+
+          <td class="px-8 py-5 text-right">
+            <div class="flex justify-end gap-1">
+              <button (click)="openEditModal(user)" title="Edit User"
+                      class="p-2 rounded-lg text-slate-400 hover:text-[#0066FF] hover:bg-blue-50 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+              </button>
+              <button (click)="toggleBlock(user)" [title]="user.active ? 'Block User' : 'Unblock User'"
+                      class="p-2 rounded-lg text-slate-400 hover:text-orange-500 hover:bg-orange-50 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </button>
+              <button (click)="deleteUser(user.id)" title="Delete User"
+                      class="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="users.length === 0" class="p-20 text-center">
+      <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">👤</div>
+      <p class="text-slate-400 font-bold">No {{ currentRole.toLowerCase() }}s found in the database.</p>
+    </div>
+  </div>
+
+  <!-- CRUD MODAL -->
+  <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div class="bg-white rounded-[32px] w-full max-w-lg shadow-2xl p-10 border border-slate-100">
+      <div class="mb-8">
+        <h3 class="text-2xl font-black text-slate-900">{{isEditMode ? 'Update Profile' : 'Register New User'}}</h3>
+        <p class="text-slate-500 text-sm">Please provide the details for the {{ userForm.value.role | lowercase }} account.</p>
+      </div>
+
+      <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="space-y-4">
+        <!-- Name Grid -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-400 ml-1">First Name</label>
+            <input formControlName="name" class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-400 ml-1">Last Name</label>
+            <input formControlName="lastName" class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50">
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-400 ml-1">Email Address</label>
+          <input formControlName="email" type="email" class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-400 ml-1">Phone Number</label>
+          <input formControlName="phone" class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50">
+        </div>
+        
+        <div *ngIf="!isEditMode" class="space-y-1">
+          <label class="text-xs font-bold text-slate-400 ml-1">Account Password</label>
+          <input type="password" formControlName="password" class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-400 ml-1">Assigned Role</label>
+          <select formControlName="role" class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF] appearance-none">
+            <option value="STUDENT">Student</option>
+            <option value="TUTOR">Teacher (Tutor)</option>
+            <option value="ADMIN">Administrator</option>
+          </select>
+        </div>
+
+        <!-- Modal Actions -->
+        <div class="flex gap-3 pt-8">
+          <button type="button" (click)="showModal = false" class="flex-1 h-12 border border-slate-200 rounded-xl font-bold text-slate-500 hover:bg-slate-50">Cancel</button>
+          <button type="submit" [disabled]="userForm.invalid" 
+                  class="flex-1 h-12 bg-[#0066FF] text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-600 disabled:bg-slate-200">
+            {{ isEditMode ? 'Update' : 'Create' }} User
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
