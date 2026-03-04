@@ -21,7 +21,7 @@ public class PackageProxyController {
 
     // ✅ CREATE package (ADMIN)
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody Map<String, Object> body, HttpServletRequest req) {
+    public ResponseEntity<String> create(@RequestBody Object body, HttpServletRequest req) {
         return proxy.forward(PACKAGE_BASE, HttpMethod.POST, body, req);
     }
 
@@ -34,7 +34,7 @@ public class PackageProxyController {
     // ✅ UPDATE package (ADMIN) ---> NEW
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable Long id,
-                                         @RequestBody Map<String, Object> body,
+                                         @RequestBody Object body,
                                          HttpServletRequest req) {
         return proxy.forward(PACKAGE_BASE + "/" + id, HttpMethod.PUT, body, req);
     }
@@ -54,7 +54,7 @@ public class PackageProxyController {
     // ✅ ADD ITEM (ADMIN)
     @PostMapping("/{id}/items")
     public ResponseEntity<String> addItem(@PathVariable Long id,
-                                          @RequestBody Map<String, Object> body,
+                                          @RequestBody Object body,
                                           HttpServletRequest req) {
         return proxy.forward(PACKAGE_BASE + "/" + id + "/items", HttpMethod.POST, body, req);
     }

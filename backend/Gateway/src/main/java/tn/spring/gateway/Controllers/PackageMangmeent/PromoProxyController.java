@@ -20,12 +20,12 @@ public class PromoProxyController {
     }
 
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody Map<String, Object> body, HttpServletRequest req) {
+    public ResponseEntity<String> create(@RequestBody Object body, HttpServletRequest req) {
         return proxy.forward(PROMO_BASE, HttpMethod.POST, body, req);
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<String> validate(@RequestBody Map<String, Object> body, HttpServletRequest req) {
+    public ResponseEntity<String> validate(@RequestBody Object body, HttpServletRequest req) {
         return proxy.forward(PROMO_BASE + "/validate", HttpMethod.POST, body, req);
     }
     @GetMapping
@@ -40,7 +40,7 @@ public class PromoProxyController {
 
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable Long id,
-                                         @RequestBody Map<String, Object> body,
+                                         @RequestBody Object body,
                                          HttpServletRequest req) {
         return proxy.forward(PROMO_BASE + "/" + id, HttpMethod.PUT, body, req);
     }

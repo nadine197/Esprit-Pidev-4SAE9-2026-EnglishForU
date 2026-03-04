@@ -20,7 +20,7 @@ public class SubscriptionProxyController {
     }
 
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody Map<String, Object> body, HttpServletRequest req) {
+    public ResponseEntity<String> create(@RequestBody Object body, HttpServletRequest req) {
         return proxy.forward(SUB_BASE, HttpMethod.POST, body, req);
     }
 

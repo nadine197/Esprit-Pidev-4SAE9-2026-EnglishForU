@@ -20,13 +20,13 @@ public class PaymentProxyController {
     }
 
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody Map<String, Object> body, HttpServletRequest req) {
+    public ResponseEntity<String> create(@RequestBody Object body, HttpServletRequest req) {
         return proxy.forward(PAY_BASE, HttpMethod.POST, body, req);
     }
 
     @PostMapping("/{id}/confirm")
     public ResponseEntity<String> confirm(@PathVariable Long id,
-                                          @RequestBody Map<String, Object> body,
+                                          @RequestBody Object body,
                                           HttpServletRequest req) {
         return proxy.forward(PAY_BASE + "/" + id + "/confirm", HttpMethod.POST, body, req);
     }
