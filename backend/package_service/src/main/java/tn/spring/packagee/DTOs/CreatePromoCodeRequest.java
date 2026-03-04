@@ -1,6 +1,7 @@
 package tn.spring.packagee.DTOs;
 
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,11 +29,9 @@ public class CreatePromoCodeRequest {
     @Min(1)
     private Integer usageLimit;
 
-    @Min(1)
-    private Integer usagePerUserLimit;
-
-    @DecimalMin(value = "0.00", inclusive = true)
-    private BigDecimal minAmount;
+    @Size(max = 50)
+    private String forUser;
+    private int currentUses = 0;
 
     private Boolean active = true;
 

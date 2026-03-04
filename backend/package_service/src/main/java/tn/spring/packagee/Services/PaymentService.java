@@ -42,7 +42,6 @@ public class PaymentService  {
         if (finalAmount.compareTo(BigDecimal.ZERO) < 0) finalAmount = BigDecimal.ZERO;
 
         p.setAmountFinal(finalAmount);
-        p.setCurrency(req.getCurrency() != null ? req.getCurrency() : "TND");
         p.setPaymentMethod(req.getPaymentMethod());
         p.setStatus(PaymentStatus.PENDING);
 
@@ -106,7 +105,6 @@ public class PaymentService  {
         r.setAmountOriginal(p.getAmountOriginal());
         r.setDiscountAmount(p.getDiscountAmount());
         r.setAmountFinal(p.getAmountFinal());
-        r.setCurrency(p.getCurrency());
         r.setStatus(p.getStatus());
         r.setPaymentMethod(p.getPaymentMethod());
         r.setCreatedAt(p.getCreatedAt());

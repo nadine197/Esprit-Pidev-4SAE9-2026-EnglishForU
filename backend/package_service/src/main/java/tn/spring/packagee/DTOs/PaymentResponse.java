@@ -21,7 +21,6 @@ public class PaymentResponse {
     private BigDecimal amountOriginal;
     private BigDecimal discountAmount;
     private BigDecimal amountFinal;
-    private String currency;
 
     private PaymentStatus status;
     private PaymentMethod paymentMethod;

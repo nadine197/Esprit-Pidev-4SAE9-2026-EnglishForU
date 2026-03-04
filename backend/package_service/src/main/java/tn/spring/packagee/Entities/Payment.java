@@ -39,8 +39,7 @@ public class Payment {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amountFinal;
 
-    @Column(nullable = false, length = 8)
-    private String currency = "TND";
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
