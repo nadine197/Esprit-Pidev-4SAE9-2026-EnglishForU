@@ -2,12 +2,14 @@ package tn.spring.packagee.Entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import tn.spring.packagee.Enum.DiscountType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -39,15 +41,23 @@ public class PromoCode {
     // global usage limit
     private Integer usageLimit;
 
-    // per user usage limit
-    private Integer usagePerUserLimit;
 
-    @Column(precision = 12, scale = 2)
-    private BigDecimal minAmount;
+
+    @Column(name = "current_uses", nullable = false)
+    private int currentUses = 0;
+
 
     @Column(nullable = false)
     private Boolean active = true;
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt ;
 
+
+
+
+    @Size(max = 50)
+    @Column(name = "for_user")
+    private String forUser;
     // getters/setters
 
 }

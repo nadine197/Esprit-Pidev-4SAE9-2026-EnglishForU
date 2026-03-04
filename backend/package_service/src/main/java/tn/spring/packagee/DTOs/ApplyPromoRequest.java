@@ -18,11 +18,7 @@ public class ApplyPromoRequest {
     @NotNull
     private Long studentId;
 
-    @NotNull
-    private AppliedToType appliedToType;
 
-    @NotNull
-    private Long appliedToId;
 
     @NotNull @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal amountOriginal;

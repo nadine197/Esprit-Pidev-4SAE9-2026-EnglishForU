@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http)  {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -33,8 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/subscriptions/**").authenticated()
 
                         .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                );
 
         return http.build();
     }
