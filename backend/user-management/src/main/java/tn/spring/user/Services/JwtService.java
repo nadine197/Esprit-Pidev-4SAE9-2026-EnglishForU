@@ -23,6 +23,13 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;    // Access token: 30 minutes
+
+    @Value("${app.security.cookie.secure:false}")
+    private boolean secureCookie;
+
+    @Value("${app.security.cookie.path:/api/auth}")
+    private String refreshCookiePath;
+
     public static final long ACCESS_TOKEN_TTL_MS = 30L * 60 * 1000;
 
     // Refresh token: 1 day OR 30 days
@@ -73,8 +80,8 @@ public class JwtService {
     public void addRefreshCookie(HttpServletResponse response, String refreshToken, long maxAgeSeconds) {
         ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
-                .secure(true)
-                .path("/auth")
+                .secure(secureCookie)
+                .path(refreshCookiePath)
                 .maxAge(maxAgeSeconds)
                 .sameSite("Lax") // use "None" + Secure if cross-site + withCredentials
                 .build();
@@ -85,8 +92,8 @@ public class JwtService {
     public void clearRefreshCookie(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
-                .secure(true)
-                .path("/auth")
+                .secure(secureCookie)
+                .path(refreshCookiePath)
                 .maxAge(0)
                 .sameSite("Lax")
                 .build();

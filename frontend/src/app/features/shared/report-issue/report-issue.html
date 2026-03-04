@@ -1,0 +1,84 @@
+<button
+  type="button"
+  (click)="openModal()"
+  class="fixed bottom-6 right-6 z-50 rounded-full bg-[#0066FF] px-5 py-3 text-sm font-bold text-white shadow-lg hover:bg-blue-600"
+>
+  Report Issue
+</button>
+
+<div *ngIf="isOpen" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4" (click)="closeModal()">
+  <div class="w-full max-w-2xl rounded-2xl bg-white p-6" (click)="$event.stopPropagation()">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-xl font-bold text-slate-900">Report an Issue</h2>
+      <button type="button" class="text-slate-500 hover:text-slate-700" (click)="closeModal()">✕</button>
+    </div>
+
+    <form [formGroup]="reportForm" (ngSubmit)="submit()" class="space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-slate-700">Title *</label>
+        <input formControlName="title" class="w-full rounded-lg border border-slate-300 p-2" />
+        <p *ngIf="reportForm.get('title')?.touched && reportForm.get('title')?.invalid" class="mt-1 text-xs text-red-600">
+          Title is required.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label class="mb-1 block text-sm font-semibold text-slate-700">Category *</label>
+          <select formControlName="category" class="w-full rounded-lg border border-slate-300 p-2">
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-semibold text-slate-700">Severity *</label>
+          <select formControlName="severity" class="w-full rounded-lg border border-slate-300 p-2">
+            <option *ngFor="let severity of severities" [value]="severity">{{ severity }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-slate-700">Description *</label>
+        <textarea formControlName="description" rows="3" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
+        <p *ngIf="reportForm.get('description')?.touched && reportForm.get('description')?.invalid" class="mt-1 text-xs text-red-600">
+          Description is required.
+        </p>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-semibold text-slate-700">Steps to reproduce</label>
+        <textarea formControlName="stepsToReproduce" rows="2" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label class="mb-1 block text-sm font-semibold text-slate-700">Expected result</label>
+          <textarea formControlName="expectedResult" rows="2" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-semibold text-slate-700">Actual result</label>
+          <textarea formControlName="actualResult" rows="2" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <button type="button" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold" (click)="closeModal()" [disabled]="isSubmitting">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="rounded-lg bg-[#0066FF] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+          [disabled]="isSubmitting"
+        >
+          {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="toastMessage" class="fixed bottom-20 right-6 z-[70] rounded-lg px-4 py-3 text-sm font-semibold text-white"
+     [ngClass]="toastType === 'success' ? 'bg-green-600' : 'bg-red-600'">
+  {{ toastMessage }}
+</div>

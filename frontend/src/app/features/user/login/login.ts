@@ -42,9 +42,11 @@ export class LoginComponent {
 
     if (role === 'ADMIN') {
       this.router.navigate(['/admin/dashboard']);
-    
+
     } else if (role === 'TUTOR') {
       this.router.navigate(['/tutor/dashboard']);
+    } else if (role === 'HELP_DESK') {
+      this.router.navigate(['/helpdesk/board']);
     } else {
       this.router.navigate(['/student-home']); 
     }

@@ -12,11 +12,13 @@ import { UserModule } from './features/user-module';
 import { AdminModule } from './features/admin/admin-module';
 import { TutorModule } from './features/tutor/tutor-module';
 import { StudentModule } from './features/student/student.module';
+import { HelpdeskBoardComponent } from './features/helpdesk/board/helpdesk-board';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent
+    CoursesComponent,
+    HelpdeskBoardComponent
   ],
   imports: [
     BrowserModule,

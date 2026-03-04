@@ -11,6 +11,7 @@ import { UserListComponent } from './features/admin/user-list/user-list';
 import { TutorDashboardComponent } from './features/tutor/dashboard/tutor-dashboard';
 import { TutorLayoutComponent } from './features/tutor/layout/tutor-layout';
 import { StudentHomeComponent } from './features/student/student-home/student-home';
+import { HelpdeskBoardComponent } from './features/helpdesk/board/helpdesk-board';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -42,6 +43,12 @@ const routes: Routes = [
     component: StudentHomeComponent, 
     canActivate: [authGuard],
     data: { roles: ['STUDENT'] } 
+  },
+  {
+    path: 'helpdesk/board',
+    component: HelpdeskBoardComponent,
+    canActivate: [authGuard],
+    data: { roles: ['HELP_DESK'] }
   },
   { path: '', redirectTo: 'main', pathMatch: 'full' }
 ];

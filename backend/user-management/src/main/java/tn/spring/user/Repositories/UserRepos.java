@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface UserRepos extends JpaRepository<User, UUID> {
     Optional<User> findByEmailIgnoreCase(String email);
     Optional<User> findByPrefixAndPhone(String prefix,String  phone); // ✅ nouvelle méthode
+    List<User> findByRole(UserRole role);
 
     // ✅ FIX
     List<User> findByRoleIn(List<UserRole> roles);

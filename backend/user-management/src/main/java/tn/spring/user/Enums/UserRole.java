@@ -1,5 +1,5 @@
 package tn.spring.user.Enums;
 
 public enum UserRole {
-    SUPER_ADMIN,ADMIN,STUDENT,TUTOR
+    SUPER_ADMIN,ADMIN,STUDENT,TUTOR,HELP_DESK
 }
