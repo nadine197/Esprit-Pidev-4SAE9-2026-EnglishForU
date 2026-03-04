@@ -70,25 +70,25 @@ public class ApptController {
         return ResponseEntity.ok(service.findAllPaged(search, pageable));
     }
 
-    @PutMapping("/{id}/accept")
-    public ResponseEntity<Appointment> acceptAppointment(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.updateStatus(id, ApptStatus.CONFIRMED, null, null));
-    }
-
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Appointment> cancel(@PathVariable UUID id) {
         // AJOUTEZ UN 4ème PARAMÈTRE 'null' ICI
-        return ResponseEntity.ok(service.updateStatus(id, ApptStatus.CANCELLED, null, null));
+        return ResponseEntity.ok(service.updateStatus(id, ApptStatus.CANCELLED, null, null, 0));
     }
 
-    // Remplacez vos anciennes méthodes "complete" par cette version unique
     @PutMapping("/{id}/complete")
     public ResponseEntity<Appointment> complete(
             @PathVariable UUID id,
             @RequestParam String result,
-            @RequestParam(required = false) String score) { // 'required = false' permet de ne pas planter si le score est absent
+            @RequestParam String score,
+            @RequestParam(defaultValue = "0") int cheatCount) { // Vérifiez bien cette ligne
+        return ResponseEntity.ok(service.updateStatus(id, ApptStatus.COMPLETED, result, score, cheatCount));
+    }
 
-        return ResponseEntity.ok(service.updateStatus(id, ApptStatus.COMPLETED, result, score));
+    // Pour les autres méthodes (Accept/Cancel), passe "0" pour le cheatCount
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<Appointment> acceptAppointment(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.updateStatus(id, ApptStatus.CONFIRMED, null, null, 0));
     }
 
     @PutMapping("/{id}/reschedule")

@@ -64,13 +64,16 @@ public class ApptService {
     }
 
     @Transactional
-    public Appointment updateStatus(UUID id, ApptStatus status, String result, String score) { // Ajout du paramètre score
+    public Appointment updateStatus(UUID id, ApptStatus status, String result, String score, int cheatCount) {
         Appointment appt = apptRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
         appt.setStatus(status);
         if (result != null) appt.setLevelResult(result);
-        if (score != null) appt.setQcmScore(score); // Enregistre le score dans la DB
+        if (score != null) appt.setQcmScore(score);
+
+        // --- ENREGISTREMENT DE LA SÉCURITÉ ---
+        appt.setTabSwitchCount(cheatCount);
 
         Appointment saved = apptRepository.save(appt);
 
@@ -84,11 +87,14 @@ public class ApptService {
             message += "YOUR ACCESS CODE: " + appt.getAccessCode() + "\n";
             message += "Use this code on our homepage to start your test.";
         }
-        // Optionnel : Tu peux ajouter un message si le test est COMPLETED
         else if (status == ApptStatus.COMPLETED) {
             message += "Congratulations! You have completed your test.\n";
             message += "Score: " + score + "\n";
-            message += "Level: " + result;
+            message += "Level: " + result + "\n";
+
+            if (cheatCount > 0) {
+                message += "\nNote: Our system detected that you left the test page " + cheatCount + " time(s).";
+            }
         }
 
         notificationService.sendEmail(appt.getVisitorEmail(), subject, message);
@@ -106,9 +112,6 @@ public class ApptService {
         notificationService.sendSms(appt.getVisitorPhone(), text);
 
         return saved;
-    }
-    public Appointment updateStatus(UUID id, ApptStatus status, String result) {
-        return this.updateStatus(id, status, result, null); // Appelle la version à 4 params
     }
 
 }
