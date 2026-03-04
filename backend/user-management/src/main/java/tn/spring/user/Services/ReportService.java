@@ -81,6 +81,49 @@ public class ReportService {
         Report report = reportRepo.findById(reportId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "REPORT_NOT_FOUND"));
 
+        if (request.getTitle() != null) {
+            String title = request.getTitle().trim();
+            if (title.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "TITLE_REQUIRED");
+            }
+            report.setTitle(title);
+        }
+
+        if (request.getCategory() != null) {
+            report.setCategory(request.getCategory());
+        }
+
+        if (request.getSeverity() != null) {
+            report.setSeverity(request.getSeverity());
+        }
+
+        if (request.getDescription() != null) {
+            String description = request.getDescription().trim();
+            if (description.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "DESCRIPTION_REQUIRED");
+            }
+            report.setDescription(description);
+        }
+
+        if (request.getStepsToReproduce() != null) {
+            report.setStepsToReproduce(nullableTrim(request.getStepsToReproduce()));
+        }
+        if (request.getExpectedResult() != null) {
+            report.setExpectedResult(nullableTrim(request.getExpectedResult()));
+        }
+        if (request.getActualResult() != null) {
+            report.setActualResult(nullableTrim(request.getActualResult()));
+        }
+        if (request.getPageUrl() != null) {
+            report.setPageUrl(nullableTrim(request.getPageUrl()));
+        }
+        if (request.getUserAgent() != null) {
+            report.setUserAgent(nullableTrim(request.getUserAgent()));
+        }
+        if (request.getAppVersion() != null) {
+            report.setAppVersion(nullableTrim(request.getAppVersion()));
+        }
+
         if (request.getStatus() != null) {
             report.setStatus(request.getStatus());
         }

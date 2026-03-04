@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,11 +24,14 @@ import { HelpdeskBoardComponent } from './features/helpdesk/board/helpdesk-board
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     SharedModule,
+    FormsModule,
     ReactiveFormsModule,
-    RouterModule ,
+    RouterModule,
     HttpClientModule,
+    DragDropModule,
     TutorModule,
     StudentModule,
   ],

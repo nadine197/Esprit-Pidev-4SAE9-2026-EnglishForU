@@ -1,74 +1,208 @@
-<div class="min-h-screen bg-slate-50 p-6">
-  <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+<div class="helpdesk-container">
+  <!-- Header -->
+  <div class="helpdesk-header">
     <div>
-      <h1 class="text-2xl font-bold text-slate-900">Helpdesk Ticket Board</h1>
-      <p class="text-sm text-slate-500">Manage user reports and move them across statuses.</p>
+      <h1 class="helpdesk-title">Helpdesk Ticket Board</h1>
+      <p class="helpdesk-subtitle">Drag and drop tickets to change status • Flags show ticket age</p>
     </div>
 
-    <div class="flex flex-col gap-3 sm:flex-row">
+    <div class="helpdesk-controls">
       <input
         type="text"
-        placeholder="Search by title or description"
-        class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+        placeholder="Search tickets..."
+        class="search-input"
         (input)="onSearchInput($event)"
       />
 
-      <select class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" (change)="onSeverityFilterChange($event)">
+      <select class="severity-select" (change)="onSeverityFilterChange($event)">
         <option *ngFor="let severity of severityFilters" [value]="severity">
           {{ severity === 'ALL' ? 'All Severities' : severity }}
         </option>
       </select>
 
-      <button type="button" class="rounded-lg bg-[#0066FF] px-4 py-2 text-sm font-semibold text-white" (click)="loadReports()">
-        Refresh
+      <button type="button" class="refresh-btn" (click)="loadReports()">
+        <span>↻</span> Refresh
       </button>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">Loading tickets...</div>
-  <div *ngIf="errorMessage" class="mb-4 rounded-lg bg-red-100 p-3 text-sm text-red-700">{{ errorMessage }}</div>
+  <!-- Loading & Error States -->
+  <div *ngIf="isLoading" class="loading-state">Loading tickets...</div>
+  <div *ngIf="errorMessage" class="error-state">{{ errorMessage }}</div>
 
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-5" *ngIf="!isLoading">
-    <div *ngFor="let status of statuses" class="rounded-xl border border-slate-200 bg-white p-3">
-      <div class="mb-3 border-b border-slate-100 pb-2 text-sm font-bold text-slate-700">
-        {{ status }} ({{ getReportsByStatus(status).length }})
+  <!-- Kanban Board -->
+  <div class="kanban-board" *ngIf="!isLoading" cdkDropListGroup>
+    <div
+      *ngFor="let status of statuses"
+      class="kanban-column"
+      cdkDropList
+      [cdkDropListData]="status"
+      [cdkDropListSortingDisabled]="false"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <!-- Column Header -->
+      <div class="column-header">
+        <div class="column-title">
+          <span class="status-name">{{ status }}</span>
+          <span class="ticket-count">{{ getReportsByStatus(status).length }}</span>
+        </div>
       </div>
 
-      <div class="space-y-3">
+      <!-- Tickets -->
+      <div class="tickets-container">
         <div
           *ngFor="let report of getReportsByStatus(status); trackBy: trackByReportId"
-          class="rounded-lg border border-slate-200 bg-slate-50 p-3"
-          [ngClass]="selectedTicketId === report.id ? 'ring-2 ring-[#0066FF]' : ''"
+          class="ticket-card"
+          [class.assigned]="isAssignedToCurrentUser(report)"
+          [class.critical]="report.severity === 'CRITICAL'"
+          [class.high]="report.severity === 'HIGH'"
+          cdkDrag
+          [cdkDragData]="report"
+          (click)="openTicketModal(report)"
         >
-          <div class="mb-2 flex items-start justify-between gap-2">
-            <p class="text-sm font-semibold text-slate-800">{{ report.title }}</p>
-            <span class="rounded px-2 py-0.5 text-[10px] font-bold" [ngClass]="getSeverityClass(report.severity)">
-              {{ report.severity }}
-            </span>
+          <!-- Flag System -->
+          <div class="ticket-flag" *ngIf="report.shouldShowFlag" [ngClass]="getFlagClass(report.flagStatus)">
+            <svg *ngIf="report.flagStatus === 'critical'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm0-13c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5z"/>
+            </svg>
+            <svg *ngIf="report.flagStatus === 'warning'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+            </svg>
+            <span class="age-text">{{ getAgeDisplayText(report.ageInHours) }}</span>
           </div>
 
-          <p class="mb-2 text-xs text-slate-600">{{ report.shortDescription }}</p>
-          <p class="text-[11px] text-slate-500">Reporter: {{ report.createdBy.name }} {{ report.createdBy.lastName }}</p>
-          <p class="text-[11px] text-slate-500">Created: {{ report.createdAt | date:'short' }}</p>
-          <p class="mb-2 text-[11px] text-slate-500">
-            Assignee:
-            {{ report.assignedTo ? (report.assignedTo.name + ' ' + report.assignedTo.lastName) : 'Unassigned' }}
-          </p>
+          <!-- Priority Badge -->
+          <div class="priority-badge" [ngClass]="getSeverityClass(report.severity)">
+            {{ report.severity }}
+          </div>
 
-          <div class="space-y-2">
-            <select class="w-full rounded border border-slate-300 px-2 py-1 text-xs" (change)="onStatusChange(report, $event)">
-              <option *ngFor="let item of statuses" [value]="item" [selected]="item === report.status">{{ item }}</option>
-            </select>
+          <!-- Title -->
+          <h3 class="ticket-title">{{ report.title }}</h3>
 
+          <!-- Description -->
+          <p class="ticket-description">{{ report.shortDescription }}</p>
+
+          <!-- Metadata -->
+          <div class="ticket-metadata">
+            <div class="meta-item">
+              <span class="meta-label">Reporter:</span>
+              <span class="meta-value">{{ report.createdBy.name }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Created:</span>
+              <span class="meta-value">{{ report.createdAt | date:'short' }}</span>
+            </div>
+          </div>
+
+          <!-- Assignee -->
+          <div class="ticket-assignee">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>{{ report.assignedTo ? (report.assignedTo.name + ' ' + report.assignedTo.lastName) : 'Unassigned' }}</span>
+          </div>
+
+          <!-- Actions -->
+          <div class="ticket-actions">
             <button
               *ngIf="!isAssignedToCurrentUser(report)"
               type="button"
-              class="w-full rounded border border-[#0066FF] px-2 py-1 text-xs font-semibold text-[#0066FF]"
-              (click)="assignToMe(report)"
+              class="assign-btn"
+              (click)="assignToMe(report); $event.stopPropagation()"
             >
-              Assign to me
+              Assign to Me
             </button>
+            <div *ngIf="isAssignedToCurrentUser(report)" class="assigned-badge">
+              ✓ Assigned to You
+            </div>
           </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="getReportsByStatus(status).length === 0" class="empty-column">
+          <p>No tickets</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticket-modal-backdrop" *ngIf="isModalOpen" (click)="closeTicketModal()">
+    <div class="ticket-modal" (click)="$event.stopPropagation()">
+      <div class="ticket-modal-header">
+        <h2>Ticket #{{ activeTicket?.id }}</h2>
+        <button type="button" class="close-modal-btn" (click)="closeTicketModal()">✕</button>
+      </div>
+
+      <div class="ticket-modal-body">
+        <section class="ticket-main-section">
+          <label class="field-label">Title</label>
+          <input class="modal-input" [(ngModel)]="editDraft.title" placeholder="Ticket title" />
+
+          <label class="field-label">Description</label>
+          <textarea class="modal-textarea large" [(ngModel)]="editDraft.description" placeholder="Describe the issue"></textarea>
+
+          <div class="main-grid two-cols">
+            <div>
+              <label class="field-label">Steps to reproduce</label>
+              <textarea class="modal-textarea" [(ngModel)]="editDraft.stepsToReproduce"></textarea>
+            </div>
+            <div>
+              <label class="field-label">Expected result</label>
+              <textarea class="modal-textarea" [(ngModel)]="editDraft.expectedResult"></textarea>
+            </div>
+          </div>
+
+          <label class="field-label">Actual result</label>
+          <textarea class="modal-textarea" [(ngModel)]="editDraft.actualResult"></textarea>
+        </section>
+
+        <aside class="ticket-sidebar-section">
+          <label class="field-label">Status</label>
+          <select class="modal-input" [(ngModel)]="editDraft.status">
+            <option *ngFor="let item of statuses" [value]="item">{{ item }}</option>
+          </select>
+
+          <label class="field-label">Severity</label>
+          <select class="modal-input" [(ngModel)]="editDraft.severity">
+            <option *ngFor="let item of severityFilters" [value]="item" [hidden]="item === 'ALL'">{{ item }}</option>
+          </select>
+
+          <label class="field-label">Category</label>
+          <select class="modal-input" [(ngModel)]="editDraft.category">
+            <option *ngFor="let item of categories" [value]="item">{{ item }}</option>
+          </select>
+
+          <label class="field-label">Page URL</label>
+          <input class="modal-input" [(ngModel)]="editDraft.pageUrl" placeholder="https://..." />
+
+          <label class="field-label">App Version</label>
+          <input class="modal-input" [(ngModel)]="editDraft.appVersion" placeholder="1.0.0" />
+
+          <label class="field-label">User Agent</label>
+          <textarea class="modal-textarea small" [(ngModel)]="editDraft.userAgent"></textarea>
+
+          <div class="meta-box">
+            <p><strong>Reporter:</strong> {{ activeTicket?.createdBy?.name }} {{ activeTicket?.createdBy?.lastName }}</p>
+            <p><strong>Created:</strong> {{ activeTicket?.createdAt | date:'short' }}</p>
+            <p><strong>Updated:</strong> {{ activeTicket?.updatedAt | date:'short' }}</p>
+            <p><strong>Assignee:</strong> {{ activeTicket?.assignedTo ? (activeTicket?.assignedTo?.name + ' ' + activeTicket?.assignedTo?.lastName) : 'Unassigned' }}</p>
+          </div>
+
+          <div class="assignee-actions">
+            <button type="button" class="secondary-btn" (click)="assignToMeFromModal()">Assign to me</button>
+            <button type="button" class="secondary-btn muted" (click)="unassignFromModal()">Unassign</button>
+          </div>
+        </aside>
+      </div>
+
+      <div class="ticket-modal-footer">
+        <span class="modal-error" *ngIf="modalErrorMessage">{{ modalErrorMessage }}</span>
+        <div class="modal-footer-actions">
+          <button type="button" class="secondary-btn" (click)="closeTicketModal()">Cancel</button>
+          <button type="button" class="primary-btn" [disabled]="isSavingModal" (click)="saveTicketChanges()">
+            {{ isSavingModal ? 'Saving...' : 'Save changes' }}
+          </button>
         </div>
       </div>
     </div>

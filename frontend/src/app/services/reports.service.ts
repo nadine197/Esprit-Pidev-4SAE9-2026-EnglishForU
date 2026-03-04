@@ -48,6 +48,16 @@ export interface CreateReportPayload {
 }
 
 export interface UpdateHelpdeskReportPayload {
+  title?: string;
+  category?: ReportCategory;
+  severity?: ReportSeverity;
+  description?: string;
+  stepsToReproduce?: string;
+  expectedResult?: string;
+  actualResult?: string;
+  pageUrl?: string;
+  userAgent?: string;
+  appVersion?: string;
   status?: ReportStatus;
   assignedToUserId?: string;
   assignToMe?: boolean;
