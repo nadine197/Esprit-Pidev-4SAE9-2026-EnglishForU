@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: englishforu-postgres-dev
+    environment:
+      POSTGRES_DB: GestionUserPI
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: inception722
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    networks:
+      - englishforu-network
+    restart: unless-stopped
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: englishforu-eureka-dev
+    ports:
+      - "8761:8761"
+    volumes:
+      - ./eureka-server/target:/app/target
+    networks:
+      - englishforu-network
+    restart: unless-stopped
+
+  user-management:
+    build:
+      context: ./user-management
+      dockerfile: Dockerfile
+    container_name: englishforu-user-service-dev
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/GestionUserPI
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: inception722
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SERVER_NAME: http://localhost:4200
+      SPRING_PROFILES_ACTIVE: dev
+    volumes:
+      - ./user-management/target:/app/target
+    depends_on:
+      - postgres
+      - eureka-server
+    networks:
+      - englishforu-network
+    restart: unless-stopped
+
+volumes:
+  postgres_dev_data:
+    driver: local
+
+networks:
+  englishforu-network:
+    driver: bridge

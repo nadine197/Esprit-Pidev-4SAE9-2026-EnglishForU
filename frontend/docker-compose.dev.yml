@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: englishforu-frontend-dev
+    ports:
+      - "4200:4200"
+    volumes:
+      # Mount source code for hot reload
+      - ./src:/app/src
+      - ./angular.json:/app/angular.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tailwind.config.js:/app/tailwind.config.js
+      # Exclude node_modules from mounting
+      - /app/node_modules
+      - /app/.angular
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    networks:
+      - englishforu-network
+
+networks:
+  englishforu-network:
+    driver: bridge

@@ -1,0 +1,40 @@
+# Node modules
+node_modules
+npm-debug.log
+
+# Angular cache
+.angular
+
+# Build output
+dist
+.dist
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage
+*.spec.ts
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Environment files (if you have sensitive data)
+.env
+.env.local
+.env.*.local

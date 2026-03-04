@@ -1,0 +1,37 @@
+# Maven build cache
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE files
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Logs
+*.log
+
+# Test files
+src/test/
