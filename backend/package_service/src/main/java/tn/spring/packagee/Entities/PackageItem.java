@@ -3,8 +3,12 @@ package tn.spring.packagee.Entities;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import tn.spring.packagee.Enum.PackageItemType;
 
+@Setter
+@Getter
 @Entity
 @Table(
         name = "package_item",
@@ -31,17 +35,5 @@ public class PackageItem {
     @Column(nullable = false)
     private Long itemId;
 
-    // getters/setters
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public PackageOffer getPackageOffer() { return packageOffer; }
-    public void setPackageOffer(PackageOffer packageOffer) { this.packageOffer = packageOffer; }
-
-    public PackageItemType getItemType() { return itemType; }
-    public void setItemType(PackageItemType itemType) { this.itemType = itemType; }
-
-    public Long getItemId() { return itemId; }
-    public void setItemId(Long itemId) { this.itemId = itemId; }
 }

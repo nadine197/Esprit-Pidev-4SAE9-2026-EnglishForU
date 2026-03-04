@@ -2,6 +2,8 @@ package tn.spring.packagee.Entities;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import tn.spring.packagee.Enum.PaymentMethod;
 import tn.spring.packagee.Enum.PaymentStatus;
 import tn.spring.packagee.Enum.TargetType;
@@ -9,6 +11,8 @@ import tn.spring.packagee.Enum.TargetType;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 @Table(
         name = "payment",
@@ -58,36 +62,4 @@ public class Payment {
 
     // getters/setters
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
-
-    public BigDecimal getAmountOriginal() { return amountOriginal; }
-    public void setAmountOriginal(BigDecimal amountOriginal) { this.amountOriginal = amountOriginal; }
-
-    public BigDecimal getDiscountAmount() { return discountAmount; }
-    public void setDiscountAmount(BigDecimal discountAmount) { this.discountAmount = discountAmount; }
-
-    public BigDecimal getAmountFinal() { return amountFinal; }
-    public void setAmountFinal(BigDecimal amountFinal) { this.amountFinal = amountFinal; }
-
-    public String getCurrency() { return currency; }
-    public void setCurrency(String currency) { this.currency = currency; }
-
-    public PaymentStatus getStatus() { return status; }
-    public void setStatus(PaymentStatus status) { this.status = status; }
-
-    public PaymentMethod getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(PaymentMethod paymentMethod) { this.paymentMethod = paymentMethod; }
-
-    public TargetType getTargetType() { return targetType; }
-    public void setTargetType(TargetType targetType) { this.targetType = targetType; }
-
-    public Long getTargetId() { return targetId; }
-    public void setTargetId(Long targetId) { this.targetId = targetId; }
-
-    public Instant getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 }

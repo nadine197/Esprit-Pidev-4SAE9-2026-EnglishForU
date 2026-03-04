@@ -2,10 +2,14 @@ package tn.spring.packagee.Entities;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import tn.spring.packagee.Enum.TransactionStatus;
 
 import java.time.Instant;
 
+@Setter
+@Getter
 @Entity
 @Table(
         name = "payment_transaction",
@@ -44,27 +48,4 @@ public class Transaction {
 
     // getters/setters
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getPaymentId() { return paymentId; }
-    public void setPaymentId(Long paymentId) { this.paymentId = paymentId; }
-
-    public String getProvider() { return provider; }
-    public void setProvider(String provider) { this.provider = provider; }
-
-    public String getProviderRef() { return providerRef; }
-    public void setProviderRef(String providerRef) { this.providerRef = providerRef; }
-
-    public TransactionStatus getStatus() { return status; }
-    public void setStatus(TransactionStatus status) { this.status = status; }
-
-    public String getRequestPayload() { return requestPayload; }
-    public void setRequestPayload(String requestPayload) { this.requestPayload = requestPayload; }
-
-    public String getResponsePayload() { return responsePayload; }
-    public void setResponsePayload(String responsePayload) { this.responsePayload = responsePayload; }
-
-    public Instant getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 }
