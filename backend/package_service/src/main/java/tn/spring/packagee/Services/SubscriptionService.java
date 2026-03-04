@@ -4,13 +4,16 @@ package tn.spring.packagee.Services;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.spring.packagee.DTOs.CreateSubscriptionRequest;
+import tn.spring.packagee.DTOs.PaymentResponse;
 import tn.spring.packagee.DTOs.SubscriptionResponse;
 import tn.spring.packagee.Entities.PackageOffer;
 import tn.spring.packagee.Entities.PackageSubscription;
+import tn.spring.packagee.Entities.Payment;
 import tn.spring.packagee.Enum.SubscriptionStatus;
 import tn.spring.packagee.Exceptions.NotFoundException;
 import tn.spring.packagee.Repositories.PackageOfferRepository;
 import tn.spring.packagee.Repositories.PackageSubscriptionRepository;
+import tn.spring.packagee.Repositories.PaymentRepository;
 
 
 import java.time.LocalDate;
@@ -23,15 +26,22 @@ public class SubscriptionService {
 
     private final PackageOfferRepository offerRepo;
     private final PackageSubscriptionRepository subRepo;
-
-    public SubscriptionService(PackageOfferRepository offerRepo, PackageSubscriptionRepository subRepo) {
+    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepo;
+    public SubscriptionService(PackageOfferRepository offerRepo, PackageSubscriptionRepository subRepo,
+                               PaymentService paymentService, PaymentRepository paymentRepo) {
         this.offerRepo = offerRepo;
         this.subRepo = subRepo;
+        this.paymentService = paymentService;
+        this.paymentRepo = paymentRepo;
     }
 
     public SubscriptionResponse createSubscription(CreateSubscriptionRequest req) {
         PackageOffer offer = offerRepo.findById(req.getPackageOfferId())
                 .orElseThrow(() -> new NotFoundException("PackageOffer not found: " + req.getPackageOfferId()));
+       Payment pay = paymentRepo.findById(req.getPaymentId()).orElseThrow(
+               ()->  new NotFoundException("Payment not found: " + req.getPaymentId())
+       );
 
         LocalDate start = LocalDate.now();
         LocalDate end = start.plusDays(offer.getDurationDays());
@@ -42,7 +52,7 @@ public class SubscriptionService {
         s.setStartDate(start);
         s.setEndDate(end);
         s.setStatus(SubscriptionStatus.ACTIVE);
-        s.setPaymentId(req.getPaymentId());
+        s.setPayment(pay );
 
         s = subRepo.save(s);
         return toResponse(s);
@@ -64,7 +74,7 @@ public class SubscriptionService {
         r.setEndDate(s.getEndDate());
         r.setStatus(s.getStatus());
         r.setRemainingUses(s.getRemainingUses());
-        r.setPaymentId(s.getPaymentId());
+        r.setPayment( paymentService.toResponse(s.getPayment()) );
         return r;
     }
 }

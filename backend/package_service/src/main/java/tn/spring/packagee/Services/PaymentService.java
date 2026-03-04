@@ -97,7 +97,7 @@ public class PaymentService  {
                 .collect(Collectors.toList());
     }
 
-    private PaymentResponse toResponse(Payment p) {
+    public PaymentResponse toResponse(Payment p) {
         PaymentResponse r = new PaymentResponse();
         r.setId(p.getId());
         r.setStudentId(p.getStudentId());
