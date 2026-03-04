@@ -64,7 +64,34 @@ public class PackageOfferService {
                 .map(PackageMapper::toResponse)
                 .collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
+    public List<PackageOfferResponse> listAll() {
+        return offerRepo.findAll().stream()
+                .map(PackageMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 
+    public PackageOfferResponse update(Long id, PackageOffer req) {
+        PackageOffer offer = offerRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("PackageOffer not found: " + id));
+
+        offer.setName(req.getName());
+        offer.setDescription(req.getDescription());
+        offer.setType(req.getType());
+        offer.setDurationDays(req.getDurationDays());
+        offer.setPrice(req.getPrice());
+
+        offerRepo.save(offer);
+        return PackageMapper.toResponse(offer);
+    }
+
+    public void setActive(Long id, boolean active) {
+        PackageOffer offer = offerRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("PackageOffer not found: " + id));
+
+        offer.setIsActive(active);
+        offerRepo.save(offer);
+    }
     @Transactional(readOnly = true)
     public List<PackageOfferResponse> searchByName(String q) {
         return offerRepo.findByNameContainingIgnoreCase(q).stream()

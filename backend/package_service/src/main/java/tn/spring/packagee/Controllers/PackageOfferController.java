@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.spring.packagee.DTOs.AddPackageItemRequest;
 import tn.spring.packagee.DTOs.CreatePackageOfferRequest;
 import tn.spring.packagee.DTOs.PackageOfferResponse;
+import tn.spring.packagee.Entities.PackageOffer;
 import tn.spring.packagee.Services.PackageOfferService;
 
 
@@ -25,6 +26,34 @@ public class PackageOfferController {
     @PostMapping
     public PackageOfferResponse create(@Valid @RequestBody CreatePackageOfferRequest req) {
         return service.create(req);
+    }
+    // ✅ ADMIN: get all (active + inactive)
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
+    @GetMapping
+    public List<PackageOfferResponse> all() {
+        return service.listAll();
+    }
+
+    // ✅ ADMIN: update package
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
+    @PutMapping("/{id}")
+    public PackageOfferResponse update(@PathVariable Long id,
+                                       @Valid @RequestBody PackageOffer req) {
+        return service.update(id, req);
+    }
+
+    // ✅ ADMIN: disable (soft delete)
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
+    @PutMapping("/{id}/disable")
+    public void disable(@PathVariable Long id) {
+        service.setActive(id, false);
+    }
+
+    // ✅ ADMIN: enable
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
+    @PutMapping("/{id}/enable")
+    public void enable(@PathVariable Long id) {
+        service.setActive(id, true);
     }
     @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
 
