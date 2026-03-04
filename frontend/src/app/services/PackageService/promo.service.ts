@@ -2,30 +2,37 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import {
+  PromoCode,
+  CreatePromoCodeRequest,
+  ApplyPromoRequest,
+  ApplyPromoResponse
+} from 'src/app/models/promo.models';
+
 @Injectable({ providedIn: 'root' })
 export class PromoService {
   private apiUrl = `${environment.gatewayUrl}/api/promos`;
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders() {
+  private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
   // ADMIN: create promo
-  createPromo(payload: any): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}`, payload, { headers: this.getHeaders() });
+  createPromo(payload: CreatePromoCodeRequest): Observable<void> {
+    return this.http.post<void>(this.apiUrl, payload, { headers: this.getHeaders() });
   }
 
   // ADMIN: get all
-  getAllPromos(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`, { headers: this.getHeaders() });
+  getAllPromos(): Observable<PromoCode[]> {
+    return this.http.get<PromoCode[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
-  // ADMIN: update
-  updatePromo(id: number, payload: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, payload, { headers: this.getHeaders() });
+  // ADMIN: update (your backend currently expects PromoCode entity in update)
+  updatePromo(id: number, payload: Partial<PromoCode>): Observable<PromoCode> {
+    return this.http.put<PromoCode>(`${this.apiUrl}/${id}`, payload, { headers: this.getHeaders() });
   }
 
   // ADMIN: delete
@@ -44,7 +51,7 @@ export class PromoService {
   }
 
   // STUDENT/ADMIN: validate promo
-  validatePromo(payload: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/validate`, payload, { headers: this.getHeaders() });
+  validatePromo(payload: ApplyPromoRequest): Observable<ApplyPromoResponse> {
+    return this.http.post<ApplyPromoResponse>(`${this.apiUrl}/validate`, payload, { headers: this.getHeaders() });
   }
 }

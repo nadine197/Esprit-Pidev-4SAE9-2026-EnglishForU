@@ -1,21 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PackageOfferResponse, AddPackageItemRequest } from 'src/app/models/package.models';
 import { PackageOfferService } from 'src/app/services/PackageService/package-offer.service';
 
 @Component({
-   selector: 'app-package-management',
+  selector: 'app-package-management',
   templateUrl: './package-management.component.html',
   styleUrls: ['./package-management.component.css']
 })
 export class PackageManagementComponent implements OnInit {
-  packages: any[] = [];
+  packages: PackageOfferResponse[] = [];
   loading = false;
 
   showModal = false;
   isEditMode = false;
   selectedId: number | null = null;
 
+  // ✅ Add Item modal state
+  showItemModal = false;
+  selectedPackageForItems: PackageOfferResponse | null = null;
+
   packageForm: FormGroup;
+
+  // ✅ Add Item form
+  itemForm: FormGroup;
 
   constructor(private packageService: PackageOfferService, private fb: FormBuilder) {
     this.packageForm = this.fb.group({
@@ -25,6 +33,11 @@ export class PackageManagementComponent implements OnInit {
       durationDays: [1, [Validators.required, Validators.min(1)]],
       price: [0, [Validators.required, Validators.min(0)]],
       isActive: [true, Validators.required]
+    });
+
+    this.itemForm = this.fb.group({
+      itemType: ['', Validators.required],
+      itemId: [null, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -59,7 +72,7 @@ export class PackageManagementComponent implements OnInit {
     this.showModal = true;
   }
 
-  openEditModal(p: any) {
+  openEditModal(p: PackageOfferResponse) {
     this.isEditMode = true;
     this.selectedId = p.id;
 
@@ -97,14 +110,46 @@ export class PackageManagementComponent implements OnInit {
     }
   }
 
-  toggleActive(p: any) {
+  toggleActive(p: PackageOfferResponse) {
     const call = p.isActive
       ? this.packageService.disablePackage(p.id)
       : this.packageService.enablePackage(p.id);
 
     call.subscribe({
       next: () => {
-        p.isActive = !p.isActive; // instant UI update
+        p.isActive = !p.isActive;
+      }
+    });
+  }
+
+  // ✅ OPEN Add Item modal
+  openAddItemModal(p: PackageOfferResponse) {
+    this.selectedPackageForItems = p;
+    this.itemForm.reset({
+      itemType: '',
+      itemId: null
+    });
+    this.showItemModal = true;
+  }
+
+  closeItemModal() {
+    this.showItemModal = false;
+    this.selectedPackageForItems = null;
+  }
+
+  // ✅ SAVE item
+  saveItem() {
+    if (this.itemForm.invalid || !this.selectedPackageForItems) return;
+
+    const payload: AddPackageItemRequest = this.itemForm.value;
+
+    this.packageService.addItem(this.selectedPackageForItems.id, payload).subscribe({
+      next: (updatedPackage) => {
+        // update list instantly without reload
+        const idx = this.packages.findIndex(x => x.id === updatedPackage.id);
+        if (idx !== -1) this.packages[idx] = updatedPackage;
+
+        this.closeItemModal();
       }
     });
   }

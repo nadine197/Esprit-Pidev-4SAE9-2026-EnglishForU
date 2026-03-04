@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import {
+  PackageOfferResponse,
+  CreatePackageOfferRequest,
+  AddPackageItemRequest
+} from 'src/app/models/package.models';
 
 @Injectable({ providedIn: 'root' })
 export class PackageOfferService {
@@ -9,24 +14,24 @@ export class PackageOfferService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders() {
+  private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
   // ADMIN: create package
-  createPackage(payload: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}`, payload, { headers: this.getHeaders() });
+  createPackage(payload: CreatePackageOfferRequest): Observable<PackageOfferResponse> {
+    return this.http.post<PackageOfferResponse>(this.apiUrl, payload, { headers: this.getHeaders() });
   }
 
   // ADMIN: get all packages (active + inactive)
-  getAllPackages(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`, { headers: this.getHeaders() });
+  getAllPackages(): Observable<PackageOfferResponse[]> {
+    return this.http.get<PackageOfferResponse[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
-  // ADMIN: update package
-  updatePackage(id: number, payload: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, payload, { headers: this.getHeaders() });
+  // ADMIN: update package (backend expects PackageOffer entity; use Partial to be flexible)
+  updatePackage(id: number, payload: Partial<PackageOfferResponse>): Observable<PackageOfferResponse> {
+    return this.http.put<PackageOfferResponse>(`${this.apiUrl}/${id}`, payload, { headers: this.getHeaders() });
   }
 
   // ADMIN: enable package
@@ -40,18 +45,18 @@ export class PackageOfferService {
   }
 
   // ADMIN: add item
-  addItem(packageId: number, payload: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/${packageId}/items`, payload, { headers: this.getHeaders() });
+  addItem(packageId: number, payload: AddPackageItemRequest): Observable<PackageOfferResponse> {
+    return this.http.post<PackageOfferResponse>(`${this.apiUrl}/${packageId}/items`, payload, { headers: this.getHeaders() });
   }
 
   // PUBLIC / STUDENT: list active
-  getActivePackages(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/active`, { headers: this.getHeaders() });
+  getActivePackages(): Observable<PackageOfferResponse[]> {
+    return this.http.get<PackageOfferResponse[]>(`${this.apiUrl}/active`, { headers: this.getHeaders() });
   }
 
   // PUBLIC / STUDENT: search
-  searchPackages(q: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/search`, {
+  searchPackages(q: string): Observable<PackageOfferResponse[]> {
+    return this.http.get<PackageOfferResponse[]>(`${this.apiUrl}/search`, {
       headers: this.getHeaders(),
       params: { q }
     });

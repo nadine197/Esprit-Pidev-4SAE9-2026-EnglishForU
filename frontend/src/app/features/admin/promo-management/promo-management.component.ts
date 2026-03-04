@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PromoCode } from 'src/app/models/promo.models';
 import { PromoService } from 'src/app/services/PackageService/promo.service';
 
 @Component({
@@ -8,8 +9,7 @@ import { PromoService } from 'src/app/services/PackageService/promo.service';
   styleUrls: ['./promo-management.component.css']
 })
 export class PromoManagementComponent implements OnInit {
-  promos: any[] = [];
-  loading = false;
+promos: PromoCode[] = [];  loading = false;
 
   showModal = false;
   isEditMode = false;

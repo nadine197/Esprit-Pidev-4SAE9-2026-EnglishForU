@@ -22,6 +22,8 @@
           <th class="px-8 py-5">Duration</th>
           <th class="px-8 py-5">Price</th>
           <th class="px-8 py-5">Status</th>
+          <th class="px-8 py-5">Created</th>
+<th class="px-8 py-5">Items</th>
           <th class="px-8 py-5 text-right">Actions</th>
         </tr>
       </thead>
@@ -59,7 +61,16 @@
               {{ p.isActive ? 'Enabled' : 'Disabled' }}
             </span>
           </td>
+<td class="px-8 py-5 text-slate-600 font-medium">
+  {{ p.createdAt ? (p.createdAt | date:'yyyy-MM-dd HH:mm') : '—' }}
+</td>
 
+<td class="px-8 py-5 text-slate-600 font-medium">
+<div class="text-xs text-slate-400">
+<span *ngFor="let it of (p.items || []); let last = last">    {{ it.itemType }}#{{ it.itemId }}<span *ngIf="!last">, </span>
+  </span>
+</div>
+</td>
           <td class="px-8 py-5 text-right">
             <div class="flex justify-end gap-1">
               <!-- Edit -->
@@ -67,7 +78,10 @@
                       class="p-2 rounded-lg text-slate-400 hover:text-[#0066FF] hover:bg-blue-50 transition-all">
                 ✏️
               </button>
-
+<button (click)="openAddItemModal(p)" title="Add Item"
+        class="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
+  ➕
+</button>
               <!-- Enable/Disable -->
               <button (click)="toggleActive(p)" [title]="p.isActive ? 'Disable' : 'Enable'"
                       class="p-2 rounded-lg text-slate-400 hover:text-orange-500 hover:bg-orange-50 transition-all">
@@ -160,5 +174,46 @@
 
       </form>
     </div>
+  </div>
+</div>
+<!-- ✅ Add Item Modal -->
+<div *ngIf="showItemModal"
+     class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-[32px] w-full max-w-lg shadow-2xl p-10 border border-slate-100">
+    <div class="mb-8">
+      <h3 class="text-2xl font-black text-slate-900">
+        Add Item to: {{ selectedPackageForItems?.name }}
+      </h3>
+      <p class="text-slate-500 text-sm">Attach a course/event/etc to this package.</p>
+    </div>
+
+    <form [formGroup]="itemForm" (ngSubmit)="saveItem()" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-400 ml-1">Item Type</label>
+          <input formControlName="itemType"
+                 placeholder="COURSE or EVENT ..."
+                 class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-400 ml-1">Item ID</label>
+          <input type="number" formControlName="itemId"
+                 class="h-12 w-full border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50">
+        </div>
+      </div>
+
+      <div class="flex gap-3 pt-8">
+        <button type="button" (click)="closeItemModal()"
+                class="flex-1 h-12 border border-slate-200 rounded-xl font-bold text-slate-500 hover:bg-slate-50">
+          Cancel
+        </button>
+
+        <button type="submit" [disabled]="itemForm.invalid"
+                class="flex-1 h-12 bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 disabled:bg-slate-200">
+          Add Item
+        </button>
+      </div>
+    </form>
   </div>
 </div>
