@@ -1,0 +1,214 @@
+<div class="min-h-screen bg-slate-50 p-10" *ngIf="quiz">
+  <div class="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow">
+
+    <!-- TITLE -->
+    <h1 *ngIf="!isEditMode" class="text-3xl font-bold mb-6">
+      {{ quiz.title }}
+    </h1>
+
+    <input *ngIf="isEditMode"
+           [(ngModel)]="editedQuiz.title"
+           class="text-3xl font-bold mb-6 border p-2 rounded w-full"/>
+
+    <!-- ADMIN BUTTONS -->
+    <div class="flex gap-4 mb-8" *ngIf="userRole === 'ADMIN' || userRole === 'TUTOR'">
+
+      <button *ngIf="!isEditMode"
+              (click)="enableEditMode()"
+              class="bg-yellow-500 text-white px-4 py-2 rounded-xl">
+        Update Quiz
+      </button>
+
+      <button *ngIf="isEditMode"
+              (click)="saveQuiz()"
+              class="bg-green-600 text-white px-4 py-2 rounded-xl">
+        Save Quiz
+      </button>
+
+      <button *ngIf="isEditMode"
+              (click)="cancelEdit()"
+              class="bg-gray-500 text-white px-4 py-2 rounded-xl">
+        Cancel
+      </button>
+
+      <button (click)="deleteQuiz()"
+              class="bg-red-600 text-white px-4 py-2 rounded-xl">
+        Delete Quiz
+      </button>
+    </div>
+
+    <!-- QUESTIONS -->
+    <div *ngFor="let question of (isEditMode ? editedQuiz.questions : quiz.questions); let i = index"
+         class="mb-8 border-b pb-6">
+
+      <div class="flex items-center gap-3 mb-3">
+
+        <!-- Question text -->
+        <h3 *ngIf="!isEditMode" class="font-bold flex-1">
+          {{ question.text }}
+        </h3>
+
+        <input *ngIf="isEditMode"
+               [(ngModel)]="editedQuiz.questions[i].text"
+               class="border p-2 rounded w-full"/>
+
+        <!-- Save Question -->
+        <button *ngIf="isEditMode"
+                (click)="saveQuestion(editedQuiz.questions[i])"
+                class="bg-green-500 text-white px-3 py-1 rounded-lg text-sm">
+          💾
+        </button>
+
+        <!-- Show correct answer -->
+        <button (click)="toggleShowCorrectAnswer(question.id)"
+                *ngIf="(userRole === 'ADMIN' || userRole === 'TUTOR') && !isEditMode"
+                class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm">
+          {{ showCorrectAnswerMap[question.id] ? 'Hide Answer' : 'Show Answer' }}
+        </button>
+      </div>
+
+      <!-- ANSWERS -->
+      <div class="mt-3">
+
+        <div *ngFor="let answer of question.answers || []; let j = index"
+             class="mb-2 flex items-center gap-2">
+
+          <!-- STUDENT MODE -->
+          <ng-container *ngIf="!isEditMode">
+            <input type="radio"
+                   name="{{question.id}}"
+                   [disabled]="showCorrectAnswerMap[question.id]"
+                   (change)="selectAnswer(question.id, answer.id)">
+            <span>{{ answer.text }}</span>
+          </ng-container>
+
+          <!-- EDIT MODE -->
+          <ng-container *ngIf="isEditMode">
+
+            <!-- Text -->
+            <input [(ngModel)]="editedQuiz.questions[i].answers[j].text"
+                   class="border p-1 rounded w-full"/>
+
+            <!-- Correct checkbox -->
+            <input type="checkbox"
+                   [(ngModel)]="editedQuiz.questions[i].answers[j].correct" />
+
+            <!-- Save Answer -->
+            <button (click)="saveAnswer(editedQuiz.questions[i].answers[j])"
+                    class="bg-green-500 text-white px-2 py-1 rounded-full text-sm">
+              ✔
+            </button>
+
+            <!-- Delete Answer -->
+            <button (click)="deleteAnswer(i, j)"
+                    class="bg-red-500 text-white px-2 py-1 rounded-full text-sm">
+              ✖
+            </button>
+
+          </ng-container>
+
+        </div>
+
+        <!-- Add Answer Button -->
+        <button *ngIf="isEditMode"
+                (click)="addAnswer(editedQuiz.questions[i])"
+                class="mt-2 bg-indigo-500 text-white px-3 py-1 rounded-lg text-sm">
+          ➕ Add Answer
+        </button>
+
+      </div>
+
+      <!-- Correct Answer Display -->
+      <div *ngIf="showCorrectAnswerMap[question.id]   && correctAnswersMap[question.id]?.length
+                  && (userRole === 'ADMIN' || userRole === 'TUTOR') 
+                  && !isEditMode"
+           class="mt-2 text-green-600 font-semibold">
+ <li *ngFor="let answer of correctAnswersMap[question.id]">
+      {{ answer.text }}
+    </li>      </div>
+
+    </div>
+
+    <!-- Add Question Button -->
+    <div *ngIf="isEditMode" class="mb-6">
+      <button (click)="addQuestion()"
+              class="bg-purple-600 text-white px-4 py-2 rounded-xl">
+        ➕ Add Question
+      </button>
+    </div>
+
+    <!-- STUDENT SECTION -->
+    <div class="mt-6" *ngIf="userRole === 'STUDENT' && !isEditMode">
+
+      <button *ngIf="!passedQuiz"
+              (click)="submitQuiz()"
+              [disabled]="submitDisabled"
+              class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold disabled:bg-gray-400">
+        Submit Answers
+      </button>
+
+      <div *ngIf="submitDisabled && cooldownRemaining > 0"
+           class="text-red-500 mt-3 font-semibold">
+        You must wait {{ cooldownRemaining }} seconds before retrying.
+      </div>
+
+      <button *ngIf="passedQuiz"
+              (click)="generateCertificate()"
+              class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold">
+        Generate Certificate
+      </button>
+      <!-- 🔥 POPUP CERTIFICATE -->
+<div *ngIf="showCertPopup"
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+
+  <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+
+    <h2 class="text-xl font-bold mb-4 text-center">
+      Generate Certificate
+    </h2>
+
+    <input
+      type="text"
+      [(ngModel)]="certUserName"
+      placeholder="Your Name"
+      class="w-full border rounded-lg px-3 py-2 mb-3"
+    />
+
+    <input
+      type="email"
+      [(ngModel)]="certUserEmail"
+      placeholder="Your Email"
+      class="w-full border rounded-lg px-3 py-2 mb-4"
+    />
+
+    <div class="flex justify-end gap-2">
+      <button
+        (click)="showCertPopup=false"
+        class="px-4 py-2 bg-gray-300 rounded-lg">
+        Cancel
+      </button>
+<button
+  (click)="confirmGenerateCertificate()"
+  [disabled]="isSending"
+  class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold flex items-center gap-2">
+
+  <span *ngIf="!isSending">Validate</span>
+
+  <span *ngIf="isSending" class="animate-pulse">
+    Sending...
+  </span>
+</button>
+    </div>
+
+  </div>
+</div>
+
+    </div>
+
+  </div>
+  
+</div>
+<div *ngIf="showToastFlag"
+     class="fixed bottom-5 right-5 bg-black text-white px-6 py-3 rounded-xl shadow-lg z-50">
+  {{ toastMessage }}
+</div>
