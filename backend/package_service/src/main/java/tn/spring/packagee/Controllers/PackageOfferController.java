@@ -1,6 +1,7 @@
 package tn.spring.packagee.Controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.packagee.DTOs.AddPackageItemRequest;
 import tn.spring.packagee.DTOs.CreatePackageOfferRequest;
@@ -19,11 +20,13 @@ public class PackageOfferController {
     public PackageOfferController(PackageOfferService service) {
         this.service = service;
     }
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
 
     @PostMapping
     public PackageOfferResponse create(@Valid @RequestBody CreatePackageOfferRequest req) {
         return service.create(req);
     }
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
 
     @PostMapping("/{id}/items")
     public PackageOfferResponse addItem(@PathVariable Long id, @Valid @RequestBody AddPackageItemRequest req) {
