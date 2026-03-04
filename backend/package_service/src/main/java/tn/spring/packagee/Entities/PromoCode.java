@@ -2,11 +2,15 @@ package tn.spring.packagee.Entities;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import tn.spring.packagee.Enum.DiscountType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Setter
+@Getter
 @Entity
 @Table(
         name = "promo_code",
@@ -46,33 +50,4 @@ public class PromoCode {
 
     // getters/setters
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
-
-    public DiscountType getDiscountType() { return discountType; }
-    public void setDiscountType(DiscountType discountType) { this.discountType = discountType; }
-
-    public BigDecimal getDiscountValue() { return discountValue; }
-    public void setDiscountValue(BigDecimal discountValue) { this.discountValue = discountValue; }
-
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-
-    public Integer getUsageLimit() { return usageLimit; }
-    public void setUsageLimit(Integer usageLimit) { this.usageLimit = usageLimit; }
-
-    public Integer getUsagePerUserLimit() { return usagePerUserLimit; }
-    public void setUsagePerUserLimit(Integer usagePerUserLimit) { this.usagePerUserLimit = usagePerUserLimit; }
-
-    public BigDecimal getMinAmount() { return minAmount; }
-    public void setMinAmount(BigDecimal minAmount) { this.minAmount = minAmount; }
-
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
 }

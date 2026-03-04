@@ -1,10 +1,14 @@
 package tn.spring.packagee.Entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import tn.spring.packagee.Enum.SubscriptionStatus;
 
 import java.time.LocalDate;
 
+@Setter
+@Getter
 @Entity
 @Table(
         name = "package_subscription",
@@ -44,27 +48,4 @@ public class PackageSubscription {
 
     // getters/setters
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
-
-    public Long getPackageOfferId() { return packageOfferId; }
-    public void setPackageOfferId(Long packageOfferId) { this.packageOfferId = packageOfferId; }
-
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-
-    public SubscriptionStatus getStatus() { return status; }
-    public void setStatus(SubscriptionStatus status) { this.status = status; }
-
-    public Integer getRemainingUses() { return remainingUses; }
-    public void setRemainingUses(Integer remainingUses) { this.remainingUses = remainingUses; }
-
-    public Long getPaymentId() { return paymentId; }
-    public void setPaymentId(Long paymentId) { this.paymentId = paymentId; }
 }

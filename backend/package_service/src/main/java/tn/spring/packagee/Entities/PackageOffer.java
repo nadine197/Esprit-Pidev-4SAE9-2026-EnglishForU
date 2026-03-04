@@ -1,6 +1,8 @@
 package tn.spring.packagee.Entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import tn.spring.packagee.Enum.PackageType;
 
 import java.math.BigDecimal;
@@ -8,6 +10,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "package_offer")
 public class PackageOffer {
@@ -43,30 +47,4 @@ public class PackageOffer {
 
     // getters/setters
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public PackageType getType() { return type; }
-    public void setType(PackageType type) { this.type = type; }
-
-    public Integer getDurationDays() { return durationDays; }
-    public void setDurationDays(Integer durationDays) { this.durationDays = durationDays; }
-
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
-
-    public Boolean getIsActive() { return isActive; }
-    public void setIsActive(Boolean active) { isActive = active; }
-
-    public Instant getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
-
-    public List<PackageItem> getItems() { return items; }
-    public void setItems(List<PackageItem> items) { this.items = items; }
 }
