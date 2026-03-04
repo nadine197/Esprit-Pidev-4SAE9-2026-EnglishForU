@@ -33,6 +33,6 @@ public class Appointment {
 
     private String qcmScore; // Pour stocker "3/4" par exemple
 
-    private int tabSwitchCount; // Nombre de fois où il a changé d'onglet
-
+    // Appointment.java
+    private Integer tabSwitchCount = 0; // Utilise Integer, pas int
 }

@@ -76,12 +76,16 @@ public class ApptController {
         return ResponseEntity.ok(service.updateStatus(id, ApptStatus.CANCELLED, null, null, 0));
     }
 
+    // Dans ApptController.java (Microservice)
+    // Dans ApptController.java (Microservice)
     @PutMapping("/{id}/complete")
     public ResponseEntity<Appointment> complete(
             @PathVariable UUID id,
-            @RequestParam String result,
-            @RequestParam String score,
-            @RequestParam(defaultValue = "0") int cheatCount) { // Vérifiez bien cette ligne
+            @RequestParam(required = false, defaultValue = "Unknown") String result,
+            @RequestParam(required = false, defaultValue = "0/0") String score,
+            @RequestParam(required = false, defaultValue = "0") Integer cheatCount) {
+
+        // On appelle le service avec les valeurs (qui seront soit les vraies, soit les défauts)
         return ResponseEntity.ok(service.updateStatus(id, ApptStatus.COMPLETED, result, score, cheatCount));
     }
 

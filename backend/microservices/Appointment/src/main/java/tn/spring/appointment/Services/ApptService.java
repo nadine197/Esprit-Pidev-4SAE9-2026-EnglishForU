@@ -64,7 +64,7 @@ public class ApptService {
     }
 
     @Transactional
-    public Appointment updateStatus(UUID id, ApptStatus status, String result, String score, int cheatCount) {
+    public Appointment updateStatus(UUID id, ApptStatus status, String result, String score, Integer cheatCount) { // Remplacé int par Integer
         Appointment appt = apptRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
@@ -73,7 +73,8 @@ public class ApptService {
         if (score != null) appt.setQcmScore(score);
 
         // --- ENREGISTREMENT DE LA SÉCURITÉ ---
-        appt.setTabSwitchCount(cheatCount);
+        // Maintenant, la comparaison != null fonctionne car cheatCount est un Integer
+        appt.setTabSwitchCount(cheatCount != null ? cheatCount : 0);
 
         Appointment saved = apptRepository.save(appt);
 
@@ -92,7 +93,8 @@ public class ApptService {
             message += "Score: " + score + "\n";
             message += "Level: " + result + "\n";
 
-            if (cheatCount > 0) {
+            // Vérification sécurisée pour le message d'email
+            if (cheatCount != null && cheatCount > 0) {
                 message += "\nNote: Our system detected that you left the test page " + cheatCount + " time(s).";
             }
         }
