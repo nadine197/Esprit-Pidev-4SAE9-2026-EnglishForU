@@ -11,6 +11,8 @@ import { UserListComponent } from './features/admin/user-list/user-list';
 import { TutorDashboardComponent } from './features/tutor/dashboard/tutor-dashboard';
 import { TutorLayoutComponent } from './features/tutor/layout/tutor-layout';
 import { StudentHomeComponent } from './features/student/student-home/student-home';
+import { PackageManagementComponent } from './features/admin/package-management/package-management.component';
+import { PromoManagementComponent } from './features/admin/promo-management/promo-management.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -23,6 +25,8 @@ const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'promos', component: PromoManagementComponent },
+{ path: 'packages', component: PackageManagementComponent },
 {       path: 'users/:role',component: UserListComponent 
 },      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

@@ -19,6 +19,8 @@ export class SidebarComponent {
       hasSubmenu: true // Marks this as a dropdown
     },
     { label: 'Course Catalog', link: '/admin/courses', icon: 'book' },
+      { label: 'Promo Codes', link: '/admin/promos', icon: 'tag' },
+  { label: 'Package Management', link: '/admin/packages', icon: 'box' },
     { label: 'Appointments', link: '/admin/appointments', icon: 'calendar' },
     { label: 'Settings', link: '/admin/settings', icon: 'settings' },
   ];

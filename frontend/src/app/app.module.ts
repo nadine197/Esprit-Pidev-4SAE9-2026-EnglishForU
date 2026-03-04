@@ -12,11 +12,15 @@ import { UserModule } from './features/user-module';
 import { AdminModule } from './features/admin/admin-module';
 import { TutorModule } from './features/tutor/tutor-module';
 import { StudentModule } from './features/student/student.module';
+import { PromoManagementComponent } from './features/admin/promo-management/promo-management.component';
+import { PackageManagementComponent } from './features/admin/package-management/package-management.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent
+    CoursesComponent,
+    PromoManagementComponent,
+    PackageManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -27,6 +31,8 @@ import { StudentModule } from './features/student/student.module';
     HttpClientModule,
     TutorModule,
     StudentModule,
+        ReactiveFormsModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]
