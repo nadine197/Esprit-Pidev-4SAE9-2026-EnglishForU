@@ -18,6 +18,6 @@ public class SubscriptionResponse {
     private LocalDate endDate;
     private SubscriptionStatus status;
     private Integer remainingUses;
-    private Long paymentId;
+    private PaymentResponse payment;
 
 }

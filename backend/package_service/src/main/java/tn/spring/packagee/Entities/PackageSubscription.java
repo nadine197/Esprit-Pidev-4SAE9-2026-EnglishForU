@@ -43,8 +43,9 @@ public class PackageSubscription {
 
     private Integer remainingUses;
 
-    // payment-service reference (optional)
-    private Long paymentId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="payment_id")
+    private Payment payment;
 
     // getters/setters
 
