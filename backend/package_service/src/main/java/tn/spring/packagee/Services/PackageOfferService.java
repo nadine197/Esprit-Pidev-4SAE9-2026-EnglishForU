@@ -70,6 +70,13 @@ public class PackageOfferService {
                 .map(PackageMapper::toResponse)
                 .collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
+    public PackageOfferResponse getByID(Long id) {
+        PackageOffer p =  offerRepo.findById(id).orElseThrow(
+                        ()-> new NotFoundException("not found")
+                );
+                return PackageMapper.toResponse(p);
+    }
 
     public PackageOfferResponse update(Long id, PackageOffer req) {
         PackageOffer offer = offerRepo.findById(id)

@@ -30,6 +30,10 @@ public class PackageOfferController {
     public List<PackageOfferResponse> all() {
         return service.listAll();
     }
+    @GetMapping("/{id}")
+    public PackageOfferResponse byId(@PathVariable Long id) {
+        return service.getByID(id);
+    }
 
     // ✅ ADMIN: update package
     @PutMapping("/{id}")

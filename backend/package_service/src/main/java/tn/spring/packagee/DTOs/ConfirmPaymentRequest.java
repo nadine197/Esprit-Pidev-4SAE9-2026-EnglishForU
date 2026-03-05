@@ -11,12 +11,11 @@ public class ConfirmPaymentRequest {
 
     @NotBlank
     private String provider;
-    private Long promoCodeId;     // optional
 
 
     @NotBlank
     private String providerRef;
 
-    private String responsePayload;
+
 
 }

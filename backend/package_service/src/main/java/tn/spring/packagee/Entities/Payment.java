@@ -38,7 +38,6 @@ public class Payment {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amountFinal;
-    private Long promoCodeId;     // optional
 
 
 
