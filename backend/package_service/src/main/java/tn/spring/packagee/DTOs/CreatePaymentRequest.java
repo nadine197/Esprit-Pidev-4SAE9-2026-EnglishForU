@@ -13,9 +13,9 @@ import java.util.UUID;
 @Setter
 @Getter
 public class CreatePaymentRequest {
-
-    @NotNull
-    private UUID studentId;
+    @NotBlank
+    @Email
+    private String studentEmail;
 
     @NotNull
     private TargetType targetType;
