@@ -25,7 +25,6 @@ export interface CreatePromoCodeRequest {
 
 export interface ApplyPromoRequest {
   code: string;
-  studentId: number;
   amountOriginal: number;
 }
 

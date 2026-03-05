@@ -1,5 +1,5 @@
 export interface CreatePaymentRequest {
-  studentId: number;
+  studentEmail: string;     // ✅ instead of studentId
   targetType: TargetType;
   targetId: number;
   amountOriginal: number;

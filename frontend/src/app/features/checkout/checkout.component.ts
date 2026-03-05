@@ -6,6 +6,7 @@ import { CreatePaymentRequest, PaymentMethod } from 'src/app/models/payment.mode
 import { PaymentService } from 'src/app/services/PackageService/payment.service';
 import { PromoService } from 'src/app/services/PackageService/promo.service';
 import { ApplyPromoRequest, ApplyPromoResponse } from 'src/app/models/promo.models';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -41,20 +42,23 @@ export class CheckoutComponent implements OnInit {
   amountOriginal = 0;
   discountAmount = 0;
   amountFinal = 0;
+  studentEmail: string="";
 
-  constructor(
-    private route: ActivatedRoute,
-    public router: Router,
-    private packageService: PackageOfferService,
-    private paymentService: PaymentService,
-    private promoService: PromoService // ✅ add this
-  ) {}
-
+constructor(
+  private route: ActivatedRoute,
+  public router: Router,
+  private packageService: PackageOfferService,
+  private paymentService: PaymentService,
+  private promoService: PromoService,
+  private authService: AuthService
+) {}
   ngOnInit(): void {
     this.packageId = Number(this.route.snapshot.paramMap.get('packageId'));
     this.loadPackage();
   }
-
+get currentUser() {
+  return this.authService.getUser();
+}
   selectMethod(m: PaymentMethod) {
     this.selectedMethod = m;
     this.showProviderBox = false;
@@ -103,7 +107,6 @@ export class CheckoutComponent implements OnInit {
 
     const payload: ApplyPromoRequest = {
       code,
-      studentId: this.studentId,
       amountOriginal: this.amountOriginal
     };
 
@@ -141,55 +144,49 @@ export class CheckoutComponent implements OnInit {
     this.amountFinal = this.amountOriginal;
   }
 
-  createPayment() {
-    if (!this.pkg || !this.selectedMethod) return;
+createPayment() {
+  if (!this.pkg || !this.selectedMethod) return;
 
-    this.loadingPay = true;
-    this.error = null;
-
-    const payload: CreatePaymentRequest = {
-      studentId: this.studentId,
-      targetType: 'PACKAGE',
-      targetId: this.pkg.id,
-
-      // ✅ keep original and discount separate
-      amountOriginal: this.amountOriginal,
-      discountAmount: this.discountAmount,
-
-      paymentMethod: this.selectedMethod
-    };
-
-    this.paymentService.createPayment(payload).subscribe({
-      next: (paymentRes) => {
-        this.paymentId = paymentRes.id;
-
-  if (this.selectedMethod === 'CASH') {
-  // ✅ Don't confirm. Don't mark success.
-  // Show instructions to go pay at an agency.
-  this.loadingPay = false;
-
-  this.router.navigate(['/payment-result'], {
-    queryParams: {
-      status: 'pending',
-      id: paymentRes.id,
-      method: 'CASH'
-    }
-  });
-  return;
-}
-
-        this.showProviderBox = true;
-        this.providerCheckoutUrl = paymentRes.checkoutUrl || null;
-        this.loadingPay = false;
-      },
-      error: (err) => {
-        console.error(err);
-        this.error = 'Payment creation failed.';
-        this.loadingPay = false;
-      }
-    });
+  const user = this.authService.getUser();
+  if (!user?.email) {
+    this.error = 'You must login first.';
+    return;
   }
 
+  this.loadingPay = true;
+  this.error = null;
+
+  const payload: CreatePaymentRequest = {
+    studentEmail: user.email,     // ✅ email from auth
+    targetType: 'PACKAGE',
+    targetId: this.pkg.id,
+    amountOriginal: this.amountOriginal,
+    discountAmount: this.discountAmount,
+    paymentMethod: this.selectedMethod
+  };
+
+  this.paymentService.createPayment(payload).subscribe({
+    next: (paymentRes) => {
+      this.paymentId = paymentRes.id;
+
+      if (this.selectedMethod === 'CASH') {
+        this.loadingPay = false;
+        this.router.navigate(['/payment-result'], {
+          queryParams: { status: 'pending', id: paymentRes.id, method: 'CASH' }
+        });
+        return;
+      }
+
+      this.showProviderBox = true;
+      this.providerCheckoutUrl = paymentRes.checkoutUrl || null;
+      this.loadingPay = false;
+    },
+    error: () => {
+      this.error = 'Payment creation failed.';
+      this.loadingPay = false;
+    }
+  });
+}
 
   payNow() {
     // If you have a redirect URL from backend, easiest:
