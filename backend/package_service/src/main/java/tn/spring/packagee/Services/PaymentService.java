@@ -57,7 +57,8 @@ public class PaymentService  {
         if (p.getStatus() == PaymentStatus.SUCCESS) {
             return toResponse(p);
         }
-
+       p.setProvider(req.getProvider());
+        p.setProviderRef(req.getProviderRef());
         p.setStatus(PaymentStatus.SUCCESS);
         paymentRepo.save(p);
 
