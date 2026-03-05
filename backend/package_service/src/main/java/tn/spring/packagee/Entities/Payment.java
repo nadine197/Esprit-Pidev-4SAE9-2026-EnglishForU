@@ -32,6 +32,11 @@ public class Payment {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amountOriginal;
+    @Column(nullable = false)
+    private String provider;
+
+     private String providerRef;
+    ;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal discountAmount = BigDecimal.ZERO;
