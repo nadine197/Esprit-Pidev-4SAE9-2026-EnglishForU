@@ -39,9 +39,22 @@ public class PaymentController {
     public PaymentResponse get(@PathVariable Long id) {
         return service.getById(id);
     }
+    @GetMapping
+    public List<PaymentResponse> list(
 
+    ) {
+        return service.list();
+    }
     @GetMapping("/student/{studentId}")
     public List<PaymentResponse> byStudent(@PathVariable Long studentId) {
         return service.listByStudent(studentId);
+    }
+    @PostMapping("/{id}/status")
+    public PaymentResponse updateStatus(@PathVariable Long id, @RequestParam String status) {
+        return service.updateStatus(id, status);
+    }
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.deleteIfPending(id);
     }
 }
