@@ -8,6 +8,7 @@ import lombok.Setter;
 import tn.spring.packagee.Enum.PackageType;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Setter
 @Getter
@@ -24,7 +25,8 @@ public class CreatePackageOfferRequest {
 
     @NotNull @Min(1)
     private Integer durationDays;
-
+    @NotNull
+    private List<String> features;
     @NotNull @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal price;
 

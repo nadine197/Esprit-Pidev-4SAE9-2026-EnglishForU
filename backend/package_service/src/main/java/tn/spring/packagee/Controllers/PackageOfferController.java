@@ -45,6 +45,7 @@ public class PackageOfferController {
     }
 
     // ✅ ADMIN: enable
+    @PutMapping("/{id}/enable")
     public void enable(@PathVariable Long id) {
         service.setActive(id, true);
     }

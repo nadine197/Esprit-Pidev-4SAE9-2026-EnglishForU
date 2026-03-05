@@ -38,7 +38,7 @@ public class PackageOfferService {
         e.setDurationDays(req.getDurationDays());
         e.setPrice(req.getPrice());
         e.setIsActive(req.getIsActive() != null ? req.getIsActive() : true);
-
+        e.setFeatures(req.getFeatures());
         e = offerRepo.save(e);
         return PackageMapper.toResponse(e);
     }
@@ -80,7 +80,7 @@ public class PackageOfferService {
         offer.setType(req.getType());
         offer.setDurationDays(req.getDurationDays());
         offer.setPrice(req.getPrice());
-
+         offer.setFeatures(req.getFeatures());
         offerRepo.save(offer);
         return PackageMapper.toResponse(offer);
     }

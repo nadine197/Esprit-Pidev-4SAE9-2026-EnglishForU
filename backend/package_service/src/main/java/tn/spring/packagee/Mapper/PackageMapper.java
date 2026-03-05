@@ -18,6 +18,7 @@ public class PackageMapper {
         r.setDurationDays(e.getDurationDays());
         r.setPrice(e.getPrice());
         r.setIsActive(e.getIsActive());
+        r.setFeatures(e.getFeatures());
         r.setCreatedAt(e.getCreatedAt());
 
         r.setItems(e.getItems().stream().map(PackageMapper::toItemResponse).collect(Collectors.toList()));
