@@ -38,7 +38,8 @@ public class Payment {
 
      private String providerRef;
     ;
-
+    private String voucherNumber;     // ex: VCH-2026-0000007
+    private Instant confirmedAt;
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal discountAmount = BigDecimal.ZERO;
 

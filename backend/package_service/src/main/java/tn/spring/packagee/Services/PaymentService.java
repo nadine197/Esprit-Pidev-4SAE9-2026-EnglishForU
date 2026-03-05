@@ -81,15 +81,23 @@ public class PaymentService  {
         Payment p = paymentRepo.findById(paymentId)
                 .orElseThrow(() -> new NotFoundException("Payment not found: " + paymentId));
 
-        // avoid confirming twice
         if (p.getStatus() == PaymentStatus.SUCCESS) {
             return toResponse(p);
         }
-        p.setPaymentMethod(req.getProvider());
+
+        // ✅ provider is method here
+        // better: p.setProvider(req.getProvider()); but you use paymentMethod; keep your design:
+        p.setPaymentMethod(req.getProvider()); // if provider is enum string
         p.setProviderRef(req.getProviderRef());
         p.setStatus(PaymentStatus.SUCCESS);
-        paymentRepo.save(p);
 
+        // ✅ voucher meta (only once)
+        p.setConfirmedAt(java.time.Instant.now());
+        if (p.getVoucherNumber() == null) {
+            p.setVoucherNumber("VCH-" + java.time.Year.now().getValue() + "-" + String.format("%07d", p.getId()));
+        }
+
+        paymentRepo.save(p);
         return toResponse(p);
     }
     public PaymentResponse fail(Long paymentId) {
@@ -154,7 +162,8 @@ public class PaymentService  {
         r.setAmountFinal(p.getAmountFinal());
         r.setProviderRef(p.getProviderRef());
         r.setCheckoutUrl(p.getCheckoutUrl());
-
+        r.setVoucherNumber(p.getVoucherNumber());
+        r.setConfirmedAt(p.getConfirmedAt());
         r.setStudentFullName(p.getStudentFullName());
         r.setStatus(p.getStatus());
         r.setPaymentMethod(p.getPaymentMethod());

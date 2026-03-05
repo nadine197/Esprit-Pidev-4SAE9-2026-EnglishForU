@@ -25,6 +25,8 @@ public class PaymentResponse {
     private String providerRef;          // flouci payment_id / stripe session id
     private String checkoutUrl;
     private PaymentStatus status;
+    private String voucherNumber;
+    private Instant confirmedAt;
     private PaymentMethod paymentMethod;
     private Instant createdAt;
 
