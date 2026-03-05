@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PaymentService } from 'src/app/services/PackageService/payment.service';
 
 type ResultStatus = 'success' | 'failed' | 'pending';
 type Method = 'CASH' | 'STRIPE' | 'FLOUCI' | null;
@@ -16,7 +17,9 @@ export class PaymentResultComponent implements OnInit {
   subtitle = '';
   emoji = '⏳';
 
-  constructor(private route: ActivatedRoute, public router: Router) {}
+  constructor(private route: ActivatedRoute, public router: Router,
+    private paymentService: PaymentService
+  ) {}
 
 
 method: Method = null;
@@ -66,7 +69,17 @@ private applyCopy() {
   this.title = 'Payment pending';
   this.subtitle = 'We are waiting for confirmation. If you paid online, refresh in a moment.';
 }
-
+downloadVoucher() {
+  const id = Number(this.route.snapshot.queryParamMap.get('id'));
+  this.paymentService.downloadVoucher(id).subscribe(blob => {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `voucher-${id}.pdf`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+});
+}
   goPricing() {
     this.router.navigate(['/main']);
   }

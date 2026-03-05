@@ -37,7 +37,13 @@ deletePayment(id: number): Observable<void> {
   createPayment(payload: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, payload, { headers: this.getHeaders() });
   }
-
+downloadVoucher(paymentId: number) {
+  const token = localStorage.getItem('token');
+  return this.http.get(`${this.apiUrl}/${paymentId}/voucher`, {
+    headers: { Authorization: `Bearer ${token}` },
+    responseType: 'blob'
+  });
+}
   // confirm payment
   confirmPayment(id: number, payload: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${id}/confirm`, payload, { headers: this.getHeaders() });

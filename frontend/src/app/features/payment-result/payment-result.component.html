@@ -24,12 +24,11 @@
         Back to plans
       </button>
 
-      <button
-        *ngIf="status !== 'success'"
-        class="flex-1 h-11 rounded-xl font-black bg-[#0066FF] text-white hover:opacity-95"
-        (click)="retry()">
-        Try again
-      </button>
+<button
+  class="h-11 px-5 rounded-xl font-black bg-slate-900 text-white"
+  (click)="downloadVoucher()">
+  Download voucher (PDF)
+</button>
 
       <button
         *ngIf="status === 'success'"
