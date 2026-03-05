@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -14,13 +14,17 @@ import { TutorModule } from './features/tutor/tutor-module';
 import { StudentModule } from './features/student/student.module';
 import { PromoManagementComponent } from './features/admin/promo-management/promo-management.component';
 import { PackageManagementComponent } from './features/admin/package-management/package-management.component';
+import { CheckoutComponent } from './features/checkout/checkout.component';
+import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CoursesComponent,
     PromoManagementComponent,
-    PackageManagementComponent
+    PackageManagementComponent,
+    CheckoutComponent,
+    PaymentResultComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +35,8 @@ import { PackageManagementComponent } from './features/admin/package-management/
     HttpClientModule,
     TutorModule,
     StudentModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FormsModule
 
   ],
   providers: [],

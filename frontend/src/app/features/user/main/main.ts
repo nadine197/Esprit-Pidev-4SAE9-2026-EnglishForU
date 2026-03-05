@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { PackageOfferResponse } from 'src/app/models/package.models';
 import { PackageOfferService } from 'src/app/services/PackageService/package-offer.service';
 
@@ -38,7 +39,7 @@ export class MainComponent implements OnInit {
     { name: 'Maria Rodriguez', role: 'General English', content: 'Starting from scratch, I’m now confidently speaking.' }
   ];
 
-  constructor(private packageOfferService: PackageOfferService) {}
+  constructor(private router: Router,private packageOfferService: PackageOfferService) {}
 
   ngOnInit(): void {
     this.loadActivePackages();
@@ -95,9 +96,7 @@ loadActivePackages(): void {
 private titleCase(s: string): string {
   return (s || '').replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
 }
-  onGetStarted(pkg: UiPackageCard): void {
-    // hook this to your payment flow / route
-    console.log('Selected package:', pkg);
-    // e.g. this.router.navigate(['/checkout', pkg.id]);
-  }
+onGetStarted(pkg: UiPackageCard) {
+  this.router.navigate(['/checkout', pkg.id]);
+}
 }

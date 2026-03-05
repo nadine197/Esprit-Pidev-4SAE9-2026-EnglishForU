@@ -1,16 +1,16 @@
 export interface CreatePaymentRequest {
   studentId: number;
-  packageOfferId: number;
-  amount: number;
-  promoCodeId?: number | null;
-  provider: string;
+  targetType: TargetType;
+  targetId: number;
+  amountOriginal: number;
+  discountAmount?: number;
+  paymentMethod: PaymentMethod;
 }
-
+export type PaymentMethod = 'CASH' | 'STRIPE' | 'FLOUCI';
+export type TargetType = 'PACKAGE'| 'EVENT'; // add more later
 export interface ConfirmPaymentRequest {
   provider: string;
-  promoCodeId?: number | null;
   providerRef: string;
-  responsePayload?: string | null;
 }
 
 export interface PaymentResponse {

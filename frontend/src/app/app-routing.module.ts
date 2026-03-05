@@ -13,12 +13,16 @@ import { TutorLayoutComponent } from './features/tutor/layout/tutor-layout';
 import { StudentHomeComponent } from './features/student/student-home/student-home';
 import { PackageManagementComponent } from './features/admin/package-management/package-management.component';
 import { PromoManagementComponent } from './features/admin/promo-management/promo-management.component';
+import { CheckoutComponent } from './features/checkout/checkout.component';
+import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'main', component: MainComponent },
   { path: 'courses', component: CoursesComponent },
+   { path: 'checkout/:packageId', component: CheckoutComponent },
+  { path: 'payment-result', component: PaymentResultComponent },
   { 
     path: 'admin', 
     component: AdminLayoutComponent, 

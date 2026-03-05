@@ -1,0 +1,39 @@
+<div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-sm p-10 text-center">
+
+    <div class="text-5xl mb-4">{{ emoji }}</div>
+
+    <h1 class="text-3xl font-black text-slate-900">{{ title }}</h1>
+    <p class="text-slate-500 mt-3">{{ subtitle }}</p>
+
+    <div *ngIf="paymentId" class="mt-6 text-xs text-slate-400">
+      Payment ID: <span class="font-bold text-slate-600">#{{ paymentId }}</span>
+    </div>
+
+    <div class="mt-10 flex flex-col sm:flex-row gap-3">
+      <button
+        class="flex-1 h-11 rounded-xl font-black border border-slate-200 text-slate-700 hover:bg-slate-50"
+        (click)="goPricing()">
+        Back to plans
+      </button>
+
+      <button
+        *ngIf="status !== 'success'"
+        class="flex-1 h-11 rounded-xl font-black bg-[#0066FF] text-white hover:opacity-95"
+        (click)="retry()">
+        Try again
+      </button>
+
+      <button
+        *ngIf="status === 'success'"
+        class="flex-1 h-11 rounded-xl font-black bg-[#0066FF] text-white hover:opacity-95"
+        (click)="router.navigate(['/student/dashboard'])">
+        Go to dashboard
+      </button>
+    </div>
+
+    <div class="mt-6 text-[11px] text-slate-400">
+      Need help? Contact support and mention your Payment ID.
+    </div>
+  </div>
+</div>

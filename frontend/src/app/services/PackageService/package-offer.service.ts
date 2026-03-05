@@ -34,6 +34,10 @@ export class PackageOfferService {
     return this.http.put<PackageOfferResponse>(`${this.apiUrl}/${id}`, payload, { headers: this.getHeaders() });
   }
 
+    GetById(id: number): Observable<PackageOfferResponse> {
+    return this.http.get<PackageOfferResponse>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
   // ADMIN: enable package
   enablePackage(id: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/enable`, {}, { headers: this.getHeaders() });
