@@ -9,15 +9,16 @@ import tn.spring.packagee.Enum.TargetType;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.UUID;
 
 @Setter
 @Getter
 public class PaymentResponse {
     private Long id;
-    private Long studentId;
+    private UUID studentId;
     private TargetType targetType;
     private Long targetId;
-
+    private String studentFullName;
     private BigDecimal amountOriginal;
     private BigDecimal discountAmount;
     private BigDecimal amountFinal;
