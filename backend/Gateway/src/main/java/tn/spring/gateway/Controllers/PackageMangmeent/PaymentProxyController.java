@@ -23,7 +23,24 @@ public class PaymentProxyController {
     public ResponseEntity<String> create(@RequestBody Object body, HttpServletRequest req) {
         return proxy.forward(PAY_BASE, HttpMethod.POST, body, req);
     }
+    @GetMapping
+    public ResponseEntity<String> list(
+                                       HttpServletRequest req) {
 
+
+        return proxy.forward(PAY_BASE, HttpMethod.GET, null, req);
+    }
+
+    @PostMapping("/{id}/status")
+    public ResponseEntity<String> updateStatus(@PathVariable Long id,
+                                               @RequestParam String status,
+                                               HttpServletRequest req) {
+        return proxy.forward(PAY_BASE + "/" + id + "/status?status=" + status, HttpMethod.POST, null, req);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id, HttpServletRequest req) {
+        return proxy.forward(PAY_BASE + "/" + id, HttpMethod.DELETE, null, req);
+    }
     @PostMapping("/{id}/confirm")
     public ResponseEntity<String> confirm(@PathVariable Long id,
                                           @RequestBody Object body,
@@ -33,9 +50,9 @@ public class PaymentProxyController {
 
     @PostMapping("/{id}/fail")
     public ResponseEntity<String> fail(@PathVariable Long id,
-                                       @RequestParam String reason,
+
                                        HttpServletRequest req) {
-        return proxy.forward(PAY_BASE + "/" + id + "/fail?reason=" + reason, HttpMethod.POST, null, req);
+        return proxy.forward(PAY_BASE + "/" + id + "/fail?reason=", HttpMethod.POST, null, req);
     }
 
     @GetMapping("/{id}")
