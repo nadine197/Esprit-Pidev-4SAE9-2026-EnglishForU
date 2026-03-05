@@ -51,7 +51,7 @@ export class PackageOfferService {
 
   // PUBLIC / STUDENT: list active
   getActivePackages(): Observable<PackageOfferResponse[]> {
-    return this.http.get<PackageOfferResponse[]>(`${this.apiUrl}/active`, { headers: this.getHeaders() });
+    return this.http.get<PackageOfferResponse[]>(`${this.apiUrl}/active`);
   }
 
   // PUBLIC / STUDENT: search

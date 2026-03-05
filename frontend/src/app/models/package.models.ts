@@ -12,7 +12,8 @@ export interface PackageOfferResponse {
   description: string;
   type: PackageType;
   durationDays: number;
-  price: number;          // backend BigDecimal -> number in TS
+  price: number;    
+    features: string[];      // backend BigDecimal -> number in TS
   isActive: boolean;
   createdAt: string;      // backend Instant -> ISO string
   items: PackageItemResponse[];
@@ -23,6 +24,7 @@ export interface CreatePackageOfferRequest {
   name: string;
   description?: string;
   type: PackageType;
+    features: string[];
   durationDays: number;
   price: number;
   isActive?: boolean; // if backend supports it

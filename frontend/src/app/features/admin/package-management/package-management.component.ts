@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PackageOfferResponse, AddPackageItemRequest } from 'src/app/models/package.models';
+import { PackageOfferResponse, AddPackageItemRequest, CreatePackageOfferRequest } from 'src/app/models/package.models';
 import { PackageOfferService } from 'src/app/services/PackageService/package-offer.service';
 
 @Component({
@@ -16,13 +16,10 @@ export class PackageManagementComponent implements OnInit {
   isEditMode = false;
   selectedId: number | null = null;
 
-  // ✅ Add Item modal state
   showItemModal = false;
   selectedPackageForItems: PackageOfferResponse | null = null;
 
   packageForm: FormGroup;
-
-  // ✅ Add Item form
   itemForm: FormGroup;
 
   constructor(private packageService: PackageOfferService, private fb: FormBuilder) {
@@ -32,7 +29,10 @@ export class PackageManagementComponent implements OnInit {
       type: ['COURSE_ONLY', Validators.required],
       durationDays: [1, [Validators.required, Validators.min(1)]],
       price: [0, [Validators.required, Validators.min(0)]],
-      isActive: [true, Validators.required]
+      isActive: [true, Validators.required],
+
+      // ✅ NEW: textarea version (one feature per line)
+      featuresText: ['']
     });
 
     this.itemForm = this.fb.group({
@@ -66,7 +66,8 @@ export class PackageManagementComponent implements OnInit {
       type: 'COURSE_ONLY',
       durationDays: 1,
       price: 0,
-      isActive: true
+      isActive: true,
+      featuresText: '' // ✅ NEW
     });
 
     this.showModal = true;
@@ -82,16 +83,37 @@ export class PackageManagementComponent implements OnInit {
       type: p.type,
       durationDays: p.durationDays,
       price: p.price,
-      isActive: !!p.isActive
+      isActive: !!p.isActive,
+
+      // ✅ NEW: convert array -> textarea (line per feature)
+      featuresText: (p.features || []).join('\n')
     });
 
     this.showModal = true;
   }
 
+  private parseFeatures(text: string): string[] {
+    return (text || '')
+      .split('\n')
+      .map(x => x.trim())
+      .filter(Boolean);
+  }
+
   savePackage() {
     if (this.packageForm.invalid) return;
 
-    const payload = this.packageForm.value;
+    const v = this.packageForm.value;
+
+    // ✅ Convert textarea -> string[]
+    const payload: CreatePackageOfferRequest = {
+      name: v.name,
+      description: v.description,
+      type: v.type,
+      durationDays: Number(v.durationDays),
+      price: Number(v.price),
+      isActive: !!v.isActive,
+      features: this.parseFeatures(v.featuresText) // ✅ NEW
+    };
 
     if (this.isEditMode && this.selectedId) {
       this.packageService.updatePackage(this.selectedId, payload).subscribe({
@@ -122,7 +144,6 @@ export class PackageManagementComponent implements OnInit {
     });
   }
 
-  // ✅ OPEN Add Item modal
   openAddItemModal(p: PackageOfferResponse) {
     this.selectedPackageForItems = p;
     this.itemForm.reset({
@@ -137,7 +158,6 @@ export class PackageManagementComponent implements OnInit {
     this.selectedPackageForItems = null;
   }
 
-  // ✅ SAVE item
   saveItem() {
     if (this.itemForm.invalid || !this.selectedPackageForItems) return;
 
@@ -145,7 +165,6 @@ export class PackageManagementComponent implements OnInit {
 
     this.packageService.addItem(this.selectedPackageForItems.id, payload).subscribe({
       next: (updatedPackage) => {
-        // update list instantly without reload
         const idx = this.packages.findIndex(x => x.id === updatedPackage.id);
         if (idx !== -1) this.packages[idx] = updatedPackage;
 

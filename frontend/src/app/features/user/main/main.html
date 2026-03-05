@@ -46,38 +46,97 @@
     </div>
   </section>
 
-  <!-- Pricing Section -->
-  <section id="pricing" class="py-24 bg-slate-50">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold text-slate-900 mb-4">Choose Your Plan</h2>
-        <p class="text-slate-500">Flexible packages designed to fit every learner's goals.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <div *ngFor="let pkg of packages" 
-             [ngClass]="pkg.popular ? 'border-[#0066FF] shadow-xl ring-1 ring-blue-100' : 'border-slate-200 shadow-sm'"
-             class="relative p-10 bg-white rounded-3xl border flex flex-col">
-          <div *ngIf="pkg.popular" class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#0066FF] text-white px-4 py-1 rounded-full text-xs font-bold">
-            Most Popular
-          </div>
-          <h3 class="text-2xl font-bold mb-2">{{pkg.name}}</h3>
-          <div class="mb-8">
-            <span class="text-4xl font-extrabold">${{pkg.price}}</span>
-            <span class="text-slate-400">/month</span>
-          </div>
-          <ul class="space-y-4 mb-10 flex-1">
-            <li *ngFor="let feat of pkg.features" class="flex items-center gap-3 text-sm text-slate-600">
-              <span class="text-[#0066FF]">✓</span> {{feat}}
-            </li>
-          </ul>
-          <button [ngClass]="pkg.popular ? 'bg-[#0066FF] text-white' : 'bg-slate-50 text-slate-700'" class="w-full py-4 rounded-xl font-bold hover:opacity-90 transition-all">
-            Get Started
-          </button>
-        </div>
-      </div>
+<section id="pricing" class="py-24 bg-slate-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-14">
+      <h2 class="text-4xl font-black text-slate-900 mb-3">Plans that fit your goals</h2>
+      <p class="text-slate-500 max-w-2xl mx-auto">
+        Pick a package and start improving your English with structured courses, events, and support.
+      </p>
     </div>
-  </section>
 
+    <!-- Loading -->
+    <div *ngIf="isLoadingPackages" class="text-center text-slate-500 py-10">
+      Loading packages...
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="packagesError" class="text-center text-red-600 py-6">
+      {{ packagesError }}
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!isLoadingPackages && !packagesError && packages.length === 0"
+         class="max-w-xl mx-auto text-center bg-white border border-slate-200 rounded-3xl p-10">
+      <div class="text-3xl mb-3">📦</div>
+      <p class="text-slate-900 font-extrabold">No active packages right now</p>
+      <p class="text-slate-500 text-sm mt-2">Check back soon — new plans will be published shortly.</p>
+    </div>
+
+    <!-- Cards -->
+    <div *ngIf="!isLoadingPackages && !packagesError && packages.length > 0"
+         class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+      <div *ngFor="let pkg of packages"
+           class="relative bg-white rounded-3xl border flex flex-col p-9 transition-all"
+           [ngClass]="pkg.popular
+              ? 'border-[#0066FF] shadow-xl ring-1 ring-blue-100 -translate-y-1'
+              : 'border-slate-200 shadow-sm hover:shadow-md'">
+
+        <!-- Popular badge -->
+        <div *ngIf="pkg.popular"
+             class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#0066FF] text-white px-4 py-1 rounded-full text-xs font-black">
+          Most Popular
+        </div>
+
+        <!-- Type badge -->
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-black uppercase px-3 py-1 rounded-full bg-slate-100 text-slate-700">
+            {{ pkg.type }}
+          </span>
+          <span class="text-xs text-slate-400">
+            {{ pkg.durationLabel }}
+          </span>
+        </div>
+
+        <h3 class="text-2xl font-black text-slate-900 mb-2">{{ pkg.name }}</h3>
+
+        <p *ngIf="pkg.description" class="text-sm text-slate-500 mb-6 line-clamp-2">
+          {{ pkg.description }}
+        </p>
+        <p *ngIf="!pkg.description" class="text-sm text-slate-400 mb-6">
+          A complete plan to help you improve faster.
+        </p>
+
+        <div class="mb-7">
+          <span class="text-4xl font-extrabold text-slate-900">{{ pkg.price }}</span>
+          <span class="text-slate-400 ml-1">TND</span>
+        </div>
+
+        <ul class="space-y-3 mb-8 flex-1">
+          <li *ngFor="let feat of pkg.features" class="flex items-start gap-3 text-sm text-slate-600">
+            <span class="text-[#0066FF] mt-0.5">✓</span>
+            <span class="leading-5">{{ feat }}</span>
+          </li>
+        </ul>
+
+        <button
+          (click)="onGetStarted(pkg)"
+          class="w-full py-3.5 rounded-xl font-black transition-all"
+          [ngClass]="pkg.popular
+            ? 'bg-[#0066FF] text-white hover:opacity-95'
+            : 'bg-slate-50 text-slate-800 hover:bg-slate-100'">
+          Choose plan
+        </button>
+
+        <p class="text-[11px] text-slate-400 mt-3 text-center">
+          Cancel anytime • Secure checkout
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
   <!-- Testimonials Section -->
   <section id="testimonials" class="py-24">
     <div class="container mx-auto px-4">
