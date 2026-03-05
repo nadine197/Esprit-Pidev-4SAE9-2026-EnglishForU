@@ -1,0 +1,87 @@
+<div class="space-y-8 p-8 bg-slate-50 min-h-screen">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-3xl font-black text-slate-900">Discussion Groups</h2>
+      <p class="text-slate-400 text-sm">Manage class discussions and member assignments</p>
+    </div>
+    <button (click)="openAddModal()" class="bg-[#0066FF] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-all">
+      + Create New Group
+    </button>
+  </div>
+
+  <!-- Liste des Groupes -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let group of groups" class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-md transition-all group">
+      <div class="flex justify-between items-start mb-4">
+        <div class="w-12 h-12 bg-blue-50 text-[#0066FF] rounded-2xl flex items-center justify-center font-black text-xl">
+          {{group.groupName.substring(0,1).toUpperCase()}}
+        </div>
+        <div class="flex gap-1">
+          <button (click)="openEditModal(group)" class="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-colors">✏️</button>
+          <button (click)="onDelete(group.id)" class="p-2 hover:bg-red-50 rounded-lg text-red-500 transition-colors">🗑️</button>
+        </div>
+      </div>
+      <h4 class="text-xl font-bold text-slate-900 truncate">{{group.groupName}}</h4>
+      <p class="text-sm text-slate-500 font-medium">Tutor: <span class="text-[#0066FF]">{{group.tutorName}}</span></p>
+      <div class="mt-4 pt-4 border-t border-slate-50">
+        <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+          {{group.studentIds?.length || 0}} Students enrolled
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CRÉATION / ÉDITION -->
+  <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div class="bg-white rounded-[40px] w-full max-w-lg p-10 shadow-2xl">
+      <h3 class="text-2xl font-black mb-2 text-slate-900">{{ isEditMode ? 'Update Group' : 'Setup Discussion Group' }}</h3>
+      <p class="text-slate-500 text-sm mb-8">Assign a tutor and select students for this group.</p>
+      
+      <div class="space-y-6">
+        <!-- Nom du groupe -->
+        <div class="space-y-1">
+          <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Group Name</label>
+          <input [(ngModel)]="newGroup.groupName" name="groupName" placeholder="e.g. IELTS Advanced Class" 
+                 class="w-full h-14 border border-slate-200 rounded-2xl px-4 outline-none focus:border-[#0066FF] bg-slate-50/50">
+        </div>
+
+        <!-- Sélection Tuteur -->
+        <div class="space-y-1">
+          <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Assign a Tutor</label>
+          <select [(ngModel)]="newGroup.tutorId" name="tutorId" 
+                  class="w-full h-14 border border-slate-200 rounded-2xl px-4 bg-white outline-none focus:border-[#0066FF] cursor-pointer">
+            <option value="" disabled selected>Select a teacher</option>
+            <option *ngFor="let tutor of tutors" [value]="tutor.id">
+              {{tutor.name}} {{tutor.lastName}}
+            </option>
+          </select>
+          <p *ngIf="tutors.length === 0" class="text-[9px] text-red-400 font-bold ml-2">⚠️ No tutors available. Check User-Service.</p>
+        </div>
+
+        <!-- Sélection Étudiants -->
+        <div class="space-y-1">
+          <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Select Students</label>
+          <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-2xl p-4 space-y-3 bg-slate-50/30">
+            <p *ngIf="students.length === 0" class="text-xs text-slate-400 text-center py-4">No students available.</p>
+            <div *ngFor="let student of students" class="flex items-center gap-3">
+              <input type="checkbox" [checked]="isStudentSelected(student.id)" (change)="toggleStudent(student.id)" 
+                     class="w-5 h-5 rounded-md accent-[#0066FF] cursor-pointer">
+              <span class="text-sm font-bold text-slate-700">{{student.name}} {{student.lastName}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex gap-4 pt-6">
+          <button (click)="showModal = false" class="flex-1 h-14 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-all">Cancel</button>
+          <button (click)="onSaveGroup()" 
+                  [disabled]="!newGroup.groupName || !newGroup.tutorId || newGroup.studentIds.length === 0"
+                  class="flex-1 h-14 bg-[#0066FF] text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 disabled:opacity-30 disabled:shadow-none transition-all">
+            {{ isEditMode ? 'Update Group' : 'Create Group' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

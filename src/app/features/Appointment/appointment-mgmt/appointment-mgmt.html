@@ -1,0 +1,171 @@
+<div class="space-y-10">
+  
+  <!-- Section 1: Add Availability (Inchangé) -->
+  <div class="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
+    <h3 class="text-xl font-bold mb-6 text-slate-900 flex items-center gap-2">
+      <span class="w-2 h-6 bg-[#0066FF] rounded-full"></span>
+      Define Available Slots
+    </h3>
+    <div class="flex flex-wrap gap-4 items-end">
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Start Time</label>
+        <input type="datetime-local" [(ngModel)]="newSlot.startTime" class="h-12 border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50 transition-all">
+      </div>
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">End Time</label>
+        <input type="datetime-local" [(ngModel)]="newSlot.endTime" class="h-12 border border-slate-200 rounded-xl px-4 text-sm outline-none focus:border-[#0066FF] bg-slate-50/50 transition-all">
+      </div>
+      <button (click)="addSlot()" [disabled]="!newSlot.startTime || !newSlot.endTime" class="h-12 bg-slate-900 text-white px-8 rounded-xl font-bold hover:bg-[#0066FF] transition-all">Add Slot</button>
+    </div>
+  </div>
+
+  <!-- Section 2: Manage Bookings -->
+  <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
+    
+    <!-- Header -->
+    <div class="p-8 border-b border-slate-100 flex justify-between items-center">
+      <h3 class="font-bold text-slate-900 text-xl">Visitor Appointments</h3>
+      <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search..." class="h-11 px-4 w-64 rounded-2xl border border-slate-200 bg-slate-50/50 text-sm outline-none">
+    </div>
+    <div class="bg-slate-50 p-6 rounded-[24px] border border-slate-200 mb-6 flex flex-wrap gap-4 items-end">
+  
+  <!-- Filtre Statut -->
+  <div class="flex flex-col gap-1">
+    <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Status</label>
+    <select [(ngModel)]="filterStatus" (change)="onSearch()" 
+            class="h-10 border border-slate-200 rounded-xl px-3 text-xs bg-white outline-none focus:border-[#0066FF]">
+      <option value="">All Status</option>
+      <option value="PENDING">Pending</option>
+      <option value="CONFIRMED">Confirmed</option>
+      <option value="COMPLETED">Completed</option>
+    </select>
+  </div>
+
+  <!-- Filtre Mode -->
+  <div class="flex flex-col gap-1">
+    <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Mode</label>
+    <select [(ngModel)]="filterLocation" (change)="onSearch()" 
+            class="h-10 border border-slate-200 rounded-xl px-3 text-xs bg-white">
+      <option value="">All Modes</option>
+      <option value="ON_SITE">On Site</option>
+      <option value="REMOTE">Remote</option>
+    </select>
+  </div>
+
+  <!-- Filtre Triche (Switch) -->
+  <div class="flex items-center gap-2 h-10 px-4 bg-white border border-slate-200 rounded-xl">
+    <input type="checkbox" [(ngModel)]="filterSuspicious" (change)="onSearch()" class="w-4 h-4 accent-red-500">
+    <span class="text-xs font-bold text-red-600">Show Suspicious Only</span>
+  </div>
+
+  <!-- Reset Button -->
+  <button (click)="resetFilters()" class="h-10 px-4 text-xs font-bold text-slate-400 hover:text-slate-600 transition-all">
+    Reset
+  </button>
+</div>
+    
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-slate-50/50 text-slate-400 text-[10px] uppercase font-black tracking-widest">
+        <tr>
+          <th class="px-8 py-5">Visitor Details</th>
+          <th class="px-8 py-5">Requested Time</th>
+          <th class="px-8 py-5 text-center">Status</th>
+          <th class="px-8 py-5 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="text-sm">
+        <tr *ngFor="let appt of appointments" class="border-b border-slate-50 hover:bg-slate-50/30 transition-all">
+          
+          <!-- COLONNE 1 : IDENTITÉ + SCORE -->
+          <td class="px-8 py-5">
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-900">{{appt.visitorName}}</span>
+              <span class="text-xs text-slate-400 mb-1">{{appt.visitorEmail}}</span>
+             <!-- Zone des résultats IA (Score + Niveau + Alerte Triche) -->
+    <div *ngIf="appt.status === 'COMPLETED'" class="flex flex-wrap gap-2 animate-in fade-in duration-700">
+      
+      
+
+      <!-- Le Niveau -->
+      <span class="text-[10px] font-bold text-slate-500 uppercase">
+        {{appt.levelResult}}
+      </span>
+
+      <!-- INDICATEUR DE TRICHE (Badge Rouge si > 0) -->
+      <div *ngIf="appt.tabSwitchCount > 0" 
+           class="flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded-md border border-red-100 animate-pulse">
+        <span class="text-[10px] font-black uppercase">⚠️ CHEAT: {{appt.tabSwitchCount}} Exits</span>
+      </div>
+      
+      <!-- Mention si aucune triche (Optionnel, pour le rassurer) -->
+      <span *ngIf="appt.tabSwitchCount === 0" class="text-[9px] text-green-500 font-bold flex items-center">
+        ✓ Verified Session
+      </span>
+
+    </div>
+  </div>
+</td>
+
+          <!-- COLONNE 2 : DATE (Inchangé) -->
+          <td class="px-8 py-5">
+            <span class="text-slate-600 font-medium">{{appt.appointmentDate | date:'medium'}}</span>
+          </td>
+
+          <!-- COLONNE 3 : STATUS + ALERTE TRICHE -->
+          <td class="px-8 py-5 text-center">
+            <div class="flex flex-col items-center gap-1">
+              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter"
+                [ngClass]="{
+                  'bg-orange-100 text-orange-600': appt.status === 'PENDING',
+                  'bg-blue-100 text-blue-600': appt.status === 'CONFIRMED',
+                  'bg-red-100 text-red-600': appt.status === 'CANCELLED',
+                  'bg-green-100 text-green-700': appt.status === 'COMPLETED'
+                }">
+                {{appt.status}}
+              </span>
+
+              <!-- Badge Alerte Triche (S'affiche si le compteur est > 0) -->
+              <div *ngIf="appt.tabSwitchCount > 0" class="animate-in fade-in">
+                <span class="text-[9px] font-black bg-red-50 text-red-600 px-1.5 py-0.5 rounded border border-red-100 flex items-center gap-1">
+                  ⚠️ SUSPICIOUS: {{appt.tabSwitchCount}} exits
+                </span>
+              </div>
+            </div>
+          </td>
+
+          <!-- COLONNE 4 : ACTIONS -->
+          <td class="px-8 py-5 text-right">
+            <div class="flex justify-end gap-3">
+              <button *ngIf="appt.status === 'PENDING'" (click)="onAccept(appt.id)" class="text-[#0066FF] font-bold text-xs hover:underline">Accept</button>
+              <button *ngIf="appt.status === 'CONFIRMED'" (click)="onComplete(appt.id)" class="text-green-600 font-bold text-xs hover:underline">Mark Done</button>
+              <button *ngIf="appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED'" (click)="onCancel(appt.id)" class="text-red-400 font-bold text-xs hover:underline">Cancel</button>
+              <span *ngIf="appt.status === 'COMPLETED'" class="text-slate-300 italic text-xs">Finalized</span>
+            </div>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+    <!-- Pagination Footer -->
+<div class="p-6 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <p class="text-xs text-slate-500 font-medium">
+    Showing page <span class="text-slate-900 font-bold">{{currentPage + 1}}</span> of <span class="text-slate-900 font-bold">{{totalPages}}</span>
+  </p>
+  <div class="flex items-center gap-2">
+    <button (click)="previousPage()" [disabled]="currentPage === 0"
+            class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-all">
+      Previous
+    </button>
+    <button (click)="nextPage()" [disabled]="currentPage + 1 >= totalPages"
+            class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-all">
+      Next
+    </button>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div *ngIf="appointments.length === 0" class="p-20 text-center text-slate-400 font-medium border-t border-slate-100">
+  No appointments found matching your search.
+</div>
+  </div>
+</div>
