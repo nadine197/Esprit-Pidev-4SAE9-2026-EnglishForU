@@ -30,7 +30,11 @@ public class PackageProxyController {
     public ResponseEntity<String> all(HttpServletRequest req) {
         return proxy.forward(PACKAGE_BASE, HttpMethod.GET, null, req);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getbyId(@PathVariable Long id,
+                                         HttpServletRequest req) {
+        return proxy.forward(PACKAGE_BASE + "/" + id, HttpMethod.GET, null, req);
+    }
     // ✅ UPDATE package (ADMIN) ---> NEW
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable Long id,
