@@ -1,8 +1,8 @@
-# 📅 Appointment & Discussion Microservice - EnglishForU
+#  Appointment & Discussion Microservice - EnglishForU
 
 Ce microservice est le cœur fonctionnel de la plateforme **EnglishForU**, une solution intelligente de gestion pour une école de langue anglaise. Il gère à la fois le cycle de vie des rendez-vous de test de niveau et la structure des groupes de discussion pédagogiques.
 
-## 🚀 Fonctionnalités Clés
+##  Fonctionnalités Clés
 
 ### 1. Gestion des Rendez-vous (CRUD & Plus)
 *   **Réservation dynamique** : Choix du mode de passage (**On Site** ou **Remote**).
@@ -21,7 +21,7 @@ Ce microservice est le cœur fonctionnel de la plateforme **EnglishForU**, une s
 *   **Affectation Dynamique** : Liaison multi-étudiants et tuteur via IDs UUID.
 *   **Filtrage Intelligent** : Requêtes SQL natives pour assurer que chaque utilisateur (Tuteur/Étudiant) ne voit que les groupes auxquels il appartient.
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 *   **Framework** : Java Spring Boot 3.x
 *   **Base de données** : PostgreSQL
@@ -30,13 +30,7 @@ Ce microservice est le cœur fonctionnel de la plateforme **EnglishForU**, une s
 *   **Sécurité** : JWT Token parsing, Proxy Forwarding
 *   **Outils** : Lombok, Maven
 
-## 🌍 Objectifs de Développement Durable (ODD)
-
-Ce projet intègre une dimension éthique et responsable :
-*   **ODD 4 - Éducation de Qualité** : Garantie de l'intégrité des examens via le Proctoring et suivi personnalisé des niveaux pour ne laisser aucun étudiant de côté.
-*   **ODD 12 - Consommation Responsable (Green AI)** : Optimisation des requêtes et utilisation de l'**ACP (Analyse en Composantes Principales)** pour réduire la charge de calcul des serveurs et la consommation énergétique.
-
-## ⚙️ Installation & Configuration
+##  Installation & Configuration
 
 1.  **Cloner le repository** :
     ```bash
@@ -55,7 +49,7 @@ Ce projet intègre une dimension éthique et responsable :
     mvn spring-boot:run
     ```
 
-## 🔌 API Endpoints Principaux
+##  API Endpoints Principaux
 
 | Méthode | Endpoint | Description |
 | :--- | :--- | :--- |
@@ -65,6 +59,5 @@ Ce projet intègre une dimension éthique et responsable :
 | `GET` | `/api/discussions/groups/user/{id}` | Récupérer les groupes d'un utilisateur spécifique. |
 | `POST` | `/api/discussions/groups` | Créer un nouveau groupe (Admin). |
 
-## 👥 Auteurs
-*   **Équipe ML Appliqué** - Architecture & Modélisation
-*   Développement Backend : [Ton Nom/Pseudo]
+##  Auteurs
+*   Développement Backend : [MED KHALIL ESSOURI]
