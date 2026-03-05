@@ -3,15 +3,47 @@
   <div class="flex items-center justify-between">
     <div>
       <h2 class="text-3xl font-black text-slate-900">Payments Management</h2>
-      <p class="text-slate-500">Viewing {{ payments.length }} payments</p>
+      <p class="text-slate-500">
+        Viewing {{ filteredPayments.length }} / {{ payments.length }} payments
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <label class="text-xs font-black text-slate-400">Rows</label>
+      <select
+        [ngModel]="pageSize"
+        (ngModelChange)="setPageSize($event)"
+        class="h-10 border border-slate-200 rounded-xl px-3 text-sm bg-white outline-none focus:border-[#0066FF]">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="8">8</option>
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+      </select>
     </div>
   </div>
 
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center text-slate-500 py-10">
+    Loading payments...
+  </div>
+
   <!-- Filters -->
-  <div class="bg-white rounded-[24px] border border-slate-200 p-5 flex flex-col md:flex-row gap-3 md:items-end">
-    <div class="flex-1">
+  <div class="bg-white rounded-[24px] border border-slate-200 p-5 grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+    <!-- Search -->
+    <div class="md:col-span-2">
+      <label class="text-xs font-black text-slate-400 ml-1">Search student</label>
+      <input
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+        placeholder="Search by student name / last name (or studentId)"
+        class="h-11 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF]">
+    </div>
+
+    <!-- Status -->
+    <div>
       <label class="text-xs font-black text-slate-400 ml-1">Status</label>
       <select [(ngModel)]="filterStatus"
+              (change)="applyFilters()"
               class="h-11 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF]">
         <option value="">All</option>
         <option value="PENDING">PENDING</option>
@@ -20,9 +52,11 @@
       </select>
     </div>
 
-    <div class="flex-1">
-      <label class="text-xs font-black text-slate-400 ml-1">Provider</label>
+    <!-- Method -->
+    <div>
+      <label class="text-xs font-black text-slate-400 ml-1">Payment Method</label>
       <select [(ngModel)]="filterProvider"
+              (change)="applyFilters()"
               class="h-11 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF]">
         <option value="">All</option>
         <option value="CASH">CASH</option>
@@ -31,13 +65,27 @@
       </select>
     </div>
 
-    <div class="flex gap-2">
+    <!-- Package filter -->
+    <div class="md:col-span-2">
+      <label class="text-xs font-black text-slate-400 ml-1">Package</label>
+      <select [(ngModel)]="filterPackageId"
+              (change)="applyFilters()"
+              class="h-11 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF]">
+        <option value="">All packages</option>
+        <option *ngFor="let pkg of packages" [ngValue]="pkg.id">
+          {{ pkg.name }} (ID: {{ pkg.id }})
+        </option>
+      </select>
+    </div>
+
+    <!-- Buttons -->
+    <div class="md:col-span-2 flex gap-2">
       <button (click)="applyFilters()"
-              class="h-11 px-5 rounded-xl font-black bg-[#0066FF] text-white hover:bg-blue-600">
+              class="flex-1 h-11 px-5 rounded-xl font-black bg-[#0066FF] text-white hover:bg-blue-600">
         Apply
       </button>
       <button (click)="resetFilters()"
-              class="h-11 px-5 rounded-xl font-black border border-slate-200 text-slate-600 hover:bg-slate-50">
+              class="flex-1 h-11 px-5 rounded-xl font-black border border-slate-200 text-slate-600 hover:bg-slate-50">
         Reset
       </button>
     </div>
@@ -50,7 +98,7 @@
         <tr>
           <th class="px-8 py-5">Payment</th>
           <th class="px-8 py-5">Student</th>
-          <th class="px-8 py-5">Target</th>
+          <th class="px-8 py-5">Package</th>
           <th class="px-8 py-5">Method</th>
           <th class="px-8 py-5">Status</th>
           <th class="px-8 py-5">Amounts</th>
@@ -61,27 +109,34 @@
       </thead>
 
       <tbody class="text-sm">
-        <tr *ngFor="let p of payments"
+        <tr *ngFor="let p of pagedPayments"
             class="border-b border-slate-50 hover:bg-slate-50/50 transition-all group">
 
           <!-- Payment -->
           <td class="px-8 py-5">
             <div class="flex flex-col">
               <span class="font-black text-slate-900">#{{ p.id }}</span>
-              <span class="text-xs text-slate-400">{{ p.provider || '—' }}</span>
+              <span class="text-xs text-slate-400">{{ p.paymentMethod }}</span>
             </div>
           </td>
 
           <!-- Student -->
-          <td class="px-8 py-5 text-slate-600 font-medium">
-            {{ p.studentId }}
-          </td>
-
-          <!-- Target -->
           <td class="px-8 py-5">
             <div class="flex flex-col">
-              <span class="font-bold text-slate-700">{{ p.targetType }}</span>
-              <span class="text-xs text-slate-400">ID: {{ p.targetId }}</span>
+              <span class="font-bold text-slate-900">{{ p.studentFullName || ('Student #' + p.studentId) }}</span>
+              <span class="text-xs text-slate-400">ID: {{ p.studentId }}</span>
+            </div>
+          </td>
+
+          <!-- Package -->
+          <td class="px-8 py-5">
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-700">
+                {{ getPackageNameByPayment(p) }}
+              </span>
+              <span class="text-xs text-slate-400">
+                {{ p.targetType }} / ID: {{ p.targetId }}
+              </span>
             </div>
           </td>
 
@@ -154,9 +209,41 @@
       </tbody>
     </table>
 
-    <div *ngIf="payments.length === 0" class="p-20 text-center">
+    <!-- Empty state -->
+    <div *ngIf="!loading && filteredPayments.length === 0" class="p-20 text-center">
       <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">💳</div>
       <p class="text-slate-400 font-bold">No payments found.</p>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="filteredPayments.length > 0"
+         class="flex flex-col md:flex-row items-center justify-between gap-3 px-8 py-5 border-t border-slate-100">
+      <div class="text-sm text-slate-500">
+        Showing <span class="font-bold text-slate-700">{{ showingFrom }}</span>
+        to <span class="font-bold text-slate-700">{{ showingTo }}</span>
+        of <span class="font-bold text-slate-700">{{ filteredPayments.length }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button (click)="prevPage()"
+                [disabled]="page === 1"
+                class="h-10 px-4 rounded-xl font-black border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40">
+          Prev
+        </button>
+
+        <button *ngFor="let n of pages"
+                (click)="goToPage(n)"
+                [ngClass]="n === page ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'"
+                class="h-10 w-10 rounded-xl font-black border">
+          {{ n }}
+        </button>
+
+        <button (click)="nextPage()"
+                [disabled]="page === totalPages"
+                class="h-10 px-4 rounded-xl font-black border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40">
+          Next
+        </button>
+      </div>
     </div>
   </div>
 

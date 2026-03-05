@@ -21,7 +21,7 @@ export interface PaymentResponse {
   studentId: number;
   targetType: TargetType;
   targetId: number;
-
+  studentFullName?: string;
   amountOriginal: number;
   discountAmount: number;
   amountFinal: number;
