@@ -57,7 +57,7 @@ public class PaymentService  {
         if (p.getStatus() == PaymentStatus.SUCCESS) {
             return toResponse(p);
         }
-       p.setProvider(req.getProvider());
+        p.setPaymentMethod(req.getProvider());
         p.setProviderRef(req.getProviderRef());
         p.setStatus(PaymentStatus.SUCCESS);
         paymentRepo.save(p);
@@ -86,7 +86,35 @@ public class PaymentService  {
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
+    public List<PaymentResponse> list() {
+        // simplest version: fetch all then filter in memory
+        // (later: create repository query)
+        return paymentRepo.findAll().stream()
+                   .map(this::toResponse)
+                .toList();
+    }
 
+    public PaymentResponse updateStatus(Long id, String status) {
+        Payment p = paymentRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Payment not found: " + id));
+
+        PaymentStatus newStatus = PaymentStatus.valueOf(status.toUpperCase());
+        p.setStatus(newStatus);
+        paymentRepo.save(p);
+
+        return toResponse(p);
+    }
+
+    public void deleteIfPending(Long id) {
+        Payment p = paymentRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Payment not found: " + id));
+
+        if (p.getStatus() != PaymentStatus.PENDING) {
+            throw new BadRequestException("Only PENDING payments can be deleted.");
+        }
+
+        paymentRepo.delete(p);
+    }
     public PaymentResponse toResponse(Payment p) {
         PaymentResponse r = new PaymentResponse();
         r.setId(p.getId());
@@ -96,6 +124,7 @@ public class PaymentService  {
         r.setAmountOriginal(p.getAmountOriginal());
         r.setDiscountAmount(p.getDiscountAmount());
         r.setAmountFinal(p.getAmountFinal());
+        r.setProviderRef(p.getProviderRef());
         r.setStatus(p.getStatus());
         r.setPaymentMethod(p.getPaymentMethod());
         r.setCreatedAt(p.getCreatedAt());
