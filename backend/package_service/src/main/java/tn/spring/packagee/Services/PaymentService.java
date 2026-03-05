@@ -17,6 +17,7 @@ import tn.spring.packagee.Repositories.PromoCodeRepository;
 
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,10 +28,12 @@ public class PaymentService  {
     private final PaymentRepository paymentRepo;
 
     private final UserClient userClient;
+    private final PaymentFlouciService flouciService;
 
-    public PaymentService(PaymentRepository paymentRepo, UserClient userClient) {
+    public PaymentService(PaymentRepository paymentRepo, UserClient userClient, PaymentFlouciService flouciService) {
         this.paymentRepo = paymentRepo;
         this.userClient = userClient;
+        this.flouciService = flouciService;
     }
 
     public PaymentResponse create(CreatePaymentRequest req) {
@@ -54,6 +57,23 @@ public class PaymentService  {
         p.setStatus(PaymentStatus.PENDING);
 
         p = paymentRepo.save(p);
+        if (req.getPaymentMethod().name().equals("FLOUCI")) {
+            try {
+                    BigInteger amountMillimes = BigInteger.valueOf(finalAmount.multiply(BigDecimal.valueOf(1000)).intValue()); // TND -> millimes
+                String trackingId = "PAY_" + p.getId(); // put your internal payment id here
+
+                var flouciRes = flouciService.generatePayment(amountMillimes);
+                p.setCheckoutUrl(flouciRes.getLink());
+
+                p.setProviderRef(flouciRes.getPayment_id());
+                p = paymentRepo.save(p);
+
+            } catch (Exception e) {
+                p.setStatus(PaymentStatus.FAILED);
+                paymentRepo.save(p);
+                throw new RuntimeException("Flouci init failed: " + e.getMessage());
+            }
+        }
         return toResponse(p);
     }
 
@@ -133,6 +153,8 @@ public class PaymentService  {
         r.setDiscountAmount(p.getDiscountAmount());
         r.setAmountFinal(p.getAmountFinal());
         r.setProviderRef(p.getProviderRef());
+        r.setCheckoutUrl(p.getCheckoutUrl());
+
         r.setStudentFullName(p.getStudentFullName());
         r.setStatus(p.getStatus());
         r.setPaymentMethod(p.getPaymentMethod());

@@ -10,7 +10,7 @@ import tn.spring.packagee.Enum.PaymentMethod;
 @Getter
 public class ConfirmPaymentRequest {
 
-    @NotBlank
+
     private PaymentMethod provider;
 
 
