@@ -22,8 +22,8 @@ public class PaymentResponse {
     private BigDecimal amountOriginal;
     private BigDecimal discountAmount;
     private BigDecimal amountFinal;
-    private String provider;
-    private String providerRef;
+    private String providerRef;          // flouci payment_id / stripe session id
+    private String checkoutUrl;
     private PaymentStatus status;
     private PaymentMethod paymentMethod;
     private Instant createdAt;

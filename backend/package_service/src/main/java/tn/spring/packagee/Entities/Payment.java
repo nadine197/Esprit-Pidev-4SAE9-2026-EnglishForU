@@ -34,6 +34,7 @@ public class Payment {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amountOriginal;
 
+    private String checkoutUrl;
 
      private String providerRef;
     ;
