@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tn.spring.appointment.Enums.ApptStatus;
+import tn.spring.appointment.Enums.LocationType;
 import tn.spring.appointment.Models.Appointment;
 import tn.spring.appointment.Models.Availability;
 import tn.spring.appointment.Models.DiscussionGroup;
@@ -122,5 +123,16 @@ public class ApptService {
 
     public List<DiscussionGroup> getGroupsByUserId(String userId) {
         return groupRepository.findGroupsByMemberId(userId);
+    }
+
+    public Page<Appointment> findAllPagedAdvanced(String search, ApptStatus status, LocationType location, Boolean suspicious, Pageable pageable) {
+
+        // On prépare le pattern de recherche ici pour éviter le crash SQL lower(bytea)
+        String searchPattern = null;
+        if (search != null && !search.trim().isEmpty()) {
+            searchPattern = "%" + search.trim().toLowerCase() + "%";
+        }
+
+        return apptRepository.findAllWithFilters(searchPattern, status, location, suspicious, pageable);
     }
 }

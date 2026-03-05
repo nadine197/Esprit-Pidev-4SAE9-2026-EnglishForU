@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.appointment.Enums.ApptStatus;
+import tn.spring.appointment.Enums.LocationType;
 import tn.spring.appointment.Models.Appointment;
 import tn.spring.appointment.Models.Availability;
 import tn.spring.appointment.Services.ApptService;
@@ -51,23 +52,20 @@ public class ApptController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "") String search,
+            @RequestParam(required = false) ApptStatus status,
+            @RequestParam(required = false) LocationType locationType,
+            @RequestParam(required = false) Boolean suspicious,
             @RequestParam(defaultValue = "appointmentDate,desc") String sort) {
 
-        // 1. On découpe "appointmentDate,asc" en un tableau ["appointmentDate", "asc"]
         String[] sortParams = sort.split(",");
         String sortField = sortParams[0];
+        Sort.Direction direction = (sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc"))
+                ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        // 2. On détermine la direction (par défaut DESC si non précisé ou incorrect)
-        Sort.Direction direction = Sort.Direction.DESC;
-        if (sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc")) {
-            direction = Sort.Direction.ASC;
-        }
-
-        // 3. On crée l'objet Pageable avec le tri REEL
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
 
-        // 4. On passe ce pageable au service
-        return ResponseEntity.ok(service.findAllPaged(search, pageable));
+        // ✅ CORRECTION : On passe tous les filtres au service
+        return ResponseEntity.ok(service.findAllPagedAdvanced(search, status, locationType, suspicious, pageable));
     }
 
     @PutMapping("/{id}/cancel")
@@ -76,8 +74,7 @@ public class ApptController {
         return ResponseEntity.ok(service.updateStatus(id, ApptStatus.CANCELLED, null, null, 0));
     }
 
-    // Dans ApptController.java (Microservice)
-    // Dans ApptController.java (Microservice)
+
     @PutMapping("/{id}/complete")
     public ResponseEntity<Appointment> complete(
             @PathVariable UUID id,
