@@ -41,7 +41,13 @@ public class PackageOffer {
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
-
+    @ElementCollection
+    @CollectionTable(
+            name = "package_features",
+            joinColumns = @JoinColumn(name = "package_offer_id")
+    )
+    @Column(name = "feature")
+    private List<String> features = new ArrayList<>();
     @OneToMany(mappedBy = "packageOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PackageItem> items = new ArrayList<>();
 

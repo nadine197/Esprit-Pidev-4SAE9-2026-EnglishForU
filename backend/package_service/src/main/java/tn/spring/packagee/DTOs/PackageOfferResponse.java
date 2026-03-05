@@ -1,6 +1,7 @@
 package tn.spring.packagee.DTOs;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import tn.spring.packagee.Enum.PackageType;
@@ -19,6 +20,7 @@ public class PackageOfferResponse {
     private Integer durationDays;
     private BigDecimal price;
     private Boolean isActive;
+    private List<String> features;
     private Instant createdAt;
     private List<PackageItemResponse> items;
 
