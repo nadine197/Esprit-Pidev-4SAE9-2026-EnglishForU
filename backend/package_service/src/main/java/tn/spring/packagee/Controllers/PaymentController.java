@@ -31,8 +31,8 @@ public class PaymentController {
     }
 
     @PostMapping("/{id}/fail")
-    public PaymentResponse fail(@PathVariable Long id, @RequestParam String reason) {
-        return service.fail(id, reason);
+    public PaymentResponse fail(@PathVariable Long id) {
+        return service.fail(id);
     }
 
     @GetMapping("/{id}")

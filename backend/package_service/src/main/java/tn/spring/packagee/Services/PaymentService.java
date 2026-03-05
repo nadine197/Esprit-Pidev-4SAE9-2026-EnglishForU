@@ -7,14 +7,12 @@ import tn.spring.packagee.DTOs.CreatePaymentRequest;
 import tn.spring.packagee.DTOs.PaymentResponse;
 import tn.spring.packagee.Entities.Payment;
 import tn.spring.packagee.Entities.PromoCode;
-import tn.spring.packagee.Entities.Transaction;
 import tn.spring.packagee.Enum.PaymentStatus;
 import tn.spring.packagee.Enum.TransactionStatus;
 import tn.spring.packagee.Exceptions.BadRequestException;
 import tn.spring.packagee.Exceptions.NotFoundException;
 import tn.spring.packagee.Repositories.PaymentRepository;
 import tn.spring.packagee.Repositories.PromoCodeRepository;
-import tn.spring.packagee.Repositories.TransactionRepository;
 
 
 import java.math.BigDecimal;
@@ -26,15 +24,10 @@ import java.util.stream.Collectors;
 public class PaymentService  {
 
     private final PaymentRepository paymentRepo;
-    private final TransactionRepository txRepo;
-    private final PromoCodeRepository promoRepo;
 
-    public PaymentService(PaymentRepository paymentRepo,
-                          TransactionRepository txRepo,
-                          PromoCodeRepository promoRepo) {
+    public PaymentService(PaymentRepository paymentRepo
+                          ) {
         this.paymentRepo = paymentRepo;
-        this.txRepo = txRepo;
-        this.promoRepo = promoRepo;
     }
 
     public PaymentResponse create(CreatePaymentRequest req) {
@@ -68,46 +61,14 @@ public class PaymentService  {
         p.setStatus(PaymentStatus.SUCCESS);
         paymentRepo.save(p);
 
-        // ✅ increment promo usage only after success
-        if (p.getPromoCodeId() != null) {
-            PromoCode promo = promoRepo.findById(p.getPromoCodeId())
-                    .orElseThrow(() -> new NotFoundException("Promo code not found: " + p.getPromoCodeId()));
-
-            if (!Boolean.TRUE.equals(promo.getActive())) {
-                throw new BadRequestException("Promo code is disabled");
-            }
-
-            if (promo.getUsageLimit() != null && promo.getCurrentUses() >= promo.getUsageLimit()) {
-                throw new BadRequestException("Promo usage limit reached");
-            }
-
-            promo.setCurrentUses(promo.getCurrentUses() + 1);
-            promoRepo.save(promo);
-        }
-
-        Transaction tx = new Transaction();
-        tx.setPaymentId(p.getId());
-        tx.setProvider(req.getProvider());
-        tx.setProviderRef(req.getProviderRef());
-        tx.setStatus(TransactionStatus.CONFIRMED);
-        tx.setResponsePayload(req.getResponsePayload());
-        txRepo.save(tx);
-
         return toResponse(p);
     }
-    public PaymentResponse fail(Long paymentId, String reason) {
+    public PaymentResponse fail(Long paymentId) {
         Payment p = paymentRepo.findById(paymentId)
                 .orElseThrow(() -> new NotFoundException("Payment not found: " + paymentId));
         p.setStatus(PaymentStatus.FAILED);
 
-        Transaction tx = new Transaction();
-        tx.setPaymentId(p.getId());
-        tx.setProvider("UNKNOWN");
-        tx.setProviderRef("FAIL-" + p.getId());
-        tx.setStatus(TransactionStatus.REJECTED);
-        tx.setResponsePayload(reason);
 
-        txRepo.save(tx);
         return toResponse(p);
     }
 

@@ -31,7 +31,6 @@ public class CreatePaymentRequest {
     @NotNull
     private PaymentMethod paymentMethod;
 
-    @Size(max = 8)
-    private String currency = "TND";
+
 
 }
