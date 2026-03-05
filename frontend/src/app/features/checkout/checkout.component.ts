@@ -163,12 +163,20 @@ export class CheckoutComponent implements OnInit {
       next: (paymentRes) => {
         this.paymentId = paymentRes.id;
 
-        if (this.selectedMethod === 'CASH') {
-          this.router.navigate(['/payment-result'], {
-            queryParams: { status: 'success', id: paymentRes.id }
-          });
-          return;
-        }
+  if (this.selectedMethod === 'CASH') {
+  // ✅ Don't confirm. Don't mark success.
+  // Show instructions to go pay at an agency.
+  this.loadingPay = false;
+
+  this.router.navigate(['/payment-result'], {
+    queryParams: {
+      status: 'pending',
+      id: paymentRes.id,
+      method: 'CASH'
+    }
+  });
+  return;
+}
 
         this.showProviderBox = true;
         this.providerCheckoutUrl = paymentRes.checkoutUrl || null;
@@ -194,26 +202,30 @@ export class CheckoutComponent implements OnInit {
     // Then redirect to provider page. (Depends on your backend integration)
   }
 
-  // Call these after provider returns (success/fail).
-  confirmPayment(providerRef?: string) {
+confirmPayment(providerRef?: string) {
+  if (!this.paymentId || !this.selectedMethod) return;
+
+  const provider = this.selectedMethod; // "CASH" | "STRIPE" | "FLOUCI"
+
+  this.paymentService.confirmPayment(this.paymentId, {
+    provider,
+    providerRef: providerRef || null
+  }).subscribe({
+    next: () => {
+      this.router.navigate(['/payment-result'], {
+        queryParams: { status: 'success', id: this.paymentId }
+      });
+    },
+    error: () => {
+      this.error = 'Payment confirmation failed.';
+    }
+  });
+}
+
+  failPayment() {
     if (!this.paymentId) return;
 
-    this.paymentService.confirmPayment(this.paymentId, { providerRef }).subscribe({
-      next: () => {
-        this.router.navigate(['/payment-result'], {
-          queryParams: { status: 'success', id: this.paymentId }
-        });
-      },
-      error: () => {
-        this.error = 'Payment confirmation failed.';
-      }
-    });
-  }
-
-  failPayment(reason: string) {
-    if (!this.paymentId) return;
-
-    this.paymentService.failPayment(this.paymentId, reason).subscribe({
+    this.paymentService.failPayment(this.paymentId).subscribe({
       next: () => {
         this.router.navigate(['/payment-result'], {
           queryParams: { status: 'failed', id: this.paymentId }

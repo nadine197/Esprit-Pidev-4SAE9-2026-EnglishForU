@@ -120,7 +120,14 @@
           (click)="createPayment()">
           {{ loadingPay ? 'Processing...' : 'Continue' }}
         </button>
-
+<!-- Cash instructions -->
+<div *ngIf="selectedMethod === 'CASH'" class="mt-4 p-4 rounded-2xl border border-slate-200 bg-slate-50">
+  <p class="text-sm font-black text-slate-800 mb-1">Pay in cash at an agency</p>
+  <p class="text-xs text-slate-500">
+    After you click Continue, you’ll receive a payment reference.
+    Visit the nearest agency to complete your payment.
+  </p>
+</div>
         <!-- Provider box (Stripe / Flouci) -->
         <div *ngIf="showProviderBox" class="mt-6 p-4 rounded-2xl border border-slate-200 bg-slate-50">
           <p class="text-sm font-bold text-slate-700 mb-2">
@@ -138,7 +145,7 @@
 
           <div class="flex gap-2 mt-3">
             <button class="flex-1 h-10 rounded-xl font-bold border border-slate-200 hover:bg-white"
-                    (click)="failPayment('User cancelled')">
+                    (click)="failPayment()">
               Cancel
             </button>
             <button class="flex-1 h-10 rounded-xl font-bold border border-slate-200 hover:bg-white"

@@ -1,0 +1,191 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-3xl font-black text-slate-900">Payments Management</h2>
+      <p class="text-slate-500">Viewing {{ payments.length }} payments</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white rounded-[24px] border border-slate-200 p-5 flex flex-col md:flex-row gap-3 md:items-end">
+    <div class="flex-1">
+      <label class="text-xs font-black text-slate-400 ml-1">Status</label>
+      <select [(ngModel)]="filterStatus"
+              class="h-11 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF]">
+        <option value="">All</option>
+        <option value="PENDING">PENDING</option>
+        <option value="SUCCESS">SUCCESS</option>
+        <option value="FAILED">FAILED</option>
+      </select>
+    </div>
+
+    <div class="flex-1">
+      <label class="text-xs font-black text-slate-400 ml-1">Provider</label>
+      <select [(ngModel)]="filterProvider"
+              class="h-11 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF]">
+        <option value="">All</option>
+        <option value="CASH">CASH</option>
+        <option value="STRIPE">STRIPE</option>
+        <option value="FLOUCI">FLOUCI</option>
+      </select>
+    </div>
+
+    <div class="flex gap-2">
+      <button (click)="applyFilters()"
+              class="h-11 px-5 rounded-xl font-black bg-[#0066FF] text-white hover:bg-blue-600">
+        Apply
+      </button>
+      <button (click)="resetFilters()"
+              class="h-11 px-5 rounded-xl font-black border border-slate-200 text-slate-600 hover:bg-slate-50">
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-slate-50/50 text-slate-400 text-[10px] uppercase font-black tracking-widest">
+        <tr>
+          <th class="px-8 py-5">Payment</th>
+          <th class="px-8 py-5">Student</th>
+          <th class="px-8 py-5">Target</th>
+          <th class="px-8 py-5">Method</th>
+          <th class="px-8 py-5">Status</th>
+          <th class="px-8 py-5">Amounts</th>
+          <th class="px-8 py-5">Provider Ref</th>
+          <th class="px-8 py-5">Created</th>
+          <th class="px-8 py-5 text-right">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody class="text-sm">
+        <tr *ngFor="let p of payments"
+            class="border-b border-slate-50 hover:bg-slate-50/50 transition-all group">
+
+          <!-- Payment -->
+          <td class="px-8 py-5">
+            <div class="flex flex-col">
+              <span class="font-black text-slate-900">#{{ p.id }}</span>
+              <span class="text-xs text-slate-400">{{ p.provider || '—' }}</span>
+            </div>
+          </td>
+
+          <!-- Student -->
+          <td class="px-8 py-5 text-slate-600 font-medium">
+            {{ p.studentId }}
+          </td>
+
+          <!-- Target -->
+          <td class="px-8 py-5">
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-700">{{ p.targetType }}</span>
+              <span class="text-xs text-slate-400">ID: {{ p.targetId }}</span>
+            </div>
+          </td>
+
+          <!-- Method -->
+          <td class="px-8 py-5">
+            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-700">
+              {{ p.paymentMethod }}
+            </span>
+          </td>
+
+          <!-- Status -->
+          <td class="px-8 py-5">
+            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase"
+                  [ngClass]="p.status === 'SUCCESS'
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : p.status === 'FAILED'
+                      ? 'bg-red-50 text-red-600'
+                      : 'bg-slate-100 text-slate-700'">
+              {{ p.status }}
+            </span>
+          </td>
+
+          <!-- Amounts -->
+          <td class="px-8 py-5">
+            <div class="text-xs text-slate-600 space-y-1">
+              <div class="flex justify-between gap-4">
+                <span class="text-slate-400">Original</span>
+                <span class="font-bold">{{ p.amountOriginal }} TND</span>
+              </div>
+              <div class="flex justify-between gap-4">
+                <span class="text-slate-400">Discount</span>
+                <span class="font-bold text-emerald-700">- {{ p.discountAmount }} TND</span>
+              </div>
+              <div class="h-px bg-slate-100"></div>
+              <div class="flex justify-between gap-4">
+                <span class="text-slate-400">Final</span>
+                <span class="font-black text-slate-900">{{ p.amountFinal }} TND</span>
+              </div>
+            </div>
+          </td>
+
+          <!-- Provider Ref -->
+          <td class="px-8 py-5 text-slate-600 font-medium">
+            <span class="text-xs text-slate-400" *ngIf="!p.providerRef">—</span>
+            <span class="text-xs font-bold text-slate-700" *ngIf="p.providerRef">{{ p.providerRef }}</span>
+          </td>
+
+          <!-- Created -->
+          <td class="px-8 py-5 text-slate-600 font-medium">
+            {{ p.createdAt ? (p.createdAt | date:'yyyy-MM-dd HH:mm') : '—' }}
+          </td>
+
+          <!-- Actions -->
+          <td class="px-8 py-5 text-right">
+            <div class="flex justify-end gap-1">
+              <button (click)="openStatusModal(p)" title="Update status"
+                      class="p-2 rounded-lg text-slate-400 hover:text-[#0066FF] hover:bg-blue-50 transition-all">
+                ✏️
+              </button>
+
+              <button (click)="deletePayment(p)" title="Delete"
+                      [class.opacity-40]="p.status !== 'PENDING'"
+                      class="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all">
+                🗑️
+              </button>
+            </div>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="payments.length === 0" class="p-20 text-center">
+      <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">💳</div>
+      <p class="text-slate-400 font-bold">No payments found.</p>
+    </div>
+  </div>
+
+  <!-- Status Modal -->
+  <div *ngIf="showStatusModal"
+       class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-[28px] w-full max-w-lg shadow-2xl p-8 border border-slate-100">
+      <h3 class="text-2xl font-black text-slate-900 mb-2">Update Payment Status</h3>
+      <p class="text-slate-500 text-sm mb-6">Payment #{{ selectedPayment?.id }}</p>
+
+      <label class="text-xs font-black text-slate-400 ml-1">New status</label>
+      <select [(ngModel)]="newStatus"
+              class="h-11 w-full border border-slate-200 rounded-xl px-4 text-sm bg-white outline-none focus:border-[#0066FF] mt-2">
+        <option value="PENDING">PENDING</option>
+        <option value="SUCCESS">SUCCESS</option>
+        <option value="FAILED">FAILED</option>
+      </select>
+
+      <div class="flex gap-3 pt-8">
+        <button type="button" (click)="showStatusModal=false"
+                class="flex-1 h-11 border border-slate-200 rounded-xl font-black text-slate-500 hover:bg-slate-50">
+          Cancel
+        </button>
+
+        <button (click)="saveStatus()"
+                class="flex-1 h-11 bg-[#0066FF] text-white rounded-xl font-black hover:bg-blue-600">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

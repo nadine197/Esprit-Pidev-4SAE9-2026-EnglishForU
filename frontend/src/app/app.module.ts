@@ -16,6 +16,7 @@ import { PromoManagementComponent } from './features/admin/promo-management/prom
 import { PackageManagementComponent } from './features/admin/package-management/package-management.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
+import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PaymentResultComponent } from './features/payment-result/payment-result
     PromoManagementComponent,
     PackageManagementComponent,
     CheckoutComponent,
-    PaymentResultComponent
+    PaymentResultComponent,
+    PaymentManagementComponent
   ],
   imports: [
     BrowserModule,

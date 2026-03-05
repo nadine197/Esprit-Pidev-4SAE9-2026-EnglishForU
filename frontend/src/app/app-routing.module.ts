@@ -15,6 +15,7 @@ import { PackageManagementComponent } from './features/admin/package-management/
 import { PromoManagementComponent } from './features/admin/promo-management/promo-management.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
+import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -30,6 +31,8 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'promos', component: PromoManagementComponent },
+            { path: 'payments', component: PaymentManagementComponent },
+
 { path: 'packages', component: PackageManagementComponent },
 {       path: 'users/:role',component: UserListComponent 
 },      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }

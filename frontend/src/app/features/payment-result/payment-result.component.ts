@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 type ResultStatus = 'success' | 'failed' | 'pending';
-
+type Method = 'CASH' | 'STRIPE' | 'FLOUCI' | null;
 @Component({
   selector: 'app-payment-result',
   templateUrl: './payment-result.component.html'
@@ -18,43 +18,54 @@ export class PaymentResultComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, public router: Router) {}
 
-  ngOnInit(): void {
-    this.route.queryParamMap.subscribe(params => {
-      const rawStatus = (params.get('status') || 'pending').toLowerCase();
-      this.paymentId = params.get('id') ? Number(params.get('id')) : null;
-      this.reason = params.get('reason');
 
-      if (rawStatus === 'success' || rawStatus === 'failed' || rawStatus === 'pending') {
-        this.status = rawStatus;
-      } else {
-        this.status = 'pending';
-      }
+method: Method = null;
+ngOnInit(): void {
+  this.route.queryParamMap.subscribe(params => {
+    const rawStatus = (params.get('status') || 'pending').toLowerCase();
+    this.paymentId = params.get('id') ? Number(params.get('id')) : null;
+    this.reason = params.get('reason');
 
-      this.applyCopy();
-    });
+    const m = (params.get('method') || '').toUpperCase();
+    this.method = (m === 'CASH' || m === 'STRIPE' || m === 'FLOUCI') ? (m as any) : null;
+
+    this.status = (rawStatus === 'success' || rawStatus === 'failed' || rawStatus === 'pending')
+      ? (rawStatus as ResultStatus)
+      : 'pending';
+
+    this.applyCopy();
+  });
+}
+private applyCopy() {
+  // ✅ CASH pending special copy
+  if (this.status === 'pending' && this.method === 'CASH') {
+    this.emoji = '🧾';
+    this.title = 'Cash payment pending';
+    this.subtitle =
+      'Please go to the nearest agency and pay using your Payment ID as reference. ' +
+      'Your package will be activated after payment is verified.';
+    return;
   }
 
-  private applyCopy() {
-    if (this.status === 'success') {
-      this.emoji = '✅';
-      this.title = 'Payment successful';
-      this.subtitle = 'Your package is activated. You can start learning right away.';
-      return;
-    }
-
-    if (this.status === 'failed') {
-      this.emoji = '❌';
-      this.title = 'Payment failed';
-      this.subtitle = this.reason
-        ? `Reason: ${this.reason}`
-        : 'We couldn’t complete your payment. Please try again.';
-      return;
-    }
-
-    this.emoji = '⏳';
-    this.title = 'Payment pending';
-    this.subtitle = 'We are waiting for confirmation. If you paid online, refresh in a moment.';
+  // normal success/failed/pending
+  if (this.status === 'success') {
+    this.emoji = '✅';
+    this.title = 'Payment successful';
+    this.subtitle = 'Your package is activated. You can start learning right away.';
+    return;
   }
+
+  if (this.status === 'failed') {
+    this.emoji = '❌';
+    this.title = 'Payment failed';
+    this.subtitle = this.reason ? `Reason: ${this.reason}` : 'We couldn’t complete your payment. Please try again.';
+    return;
+  }
+
+  this.emoji = '⏳';
+  this.title = 'Payment pending';
+  this.subtitle = 'We are waiting for confirmation. If you paid online, refresh in a moment.';
+}
 
   goPricing() {
     this.router.navigate(['/main']);
