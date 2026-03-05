@@ -162,7 +162,8 @@ public class PromoService {
         BigDecimal discount = computeDiscount(promo, req.getAmountOriginal());
         BigDecimal finalAmount = req.getAmountOriginal().subtract(discount);
         if (finalAmount.compareTo(BigDecimal.ZERO) < 0) finalAmount = BigDecimal.ZERO;
-
+        promo.setCurrentUses(promo.getCurrentUses()+1);
+        promoRepo.save(promo);
         return new ApplyPromoResponse(true, promo.getCode(), discount, finalAmount);
     }
 
