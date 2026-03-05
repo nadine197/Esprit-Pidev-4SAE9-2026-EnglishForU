@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tn.spring.packagee.DTOs.ConfirmPaymentRequest;
 import tn.spring.packagee.DTOs.CreatePaymentRequest;
 import tn.spring.packagee.DTOs.PaymentResponse;
+import tn.spring.packagee.DTOs.UserPublicDTO;
 import tn.spring.packagee.Entities.Payment;
 import tn.spring.packagee.Entities.PromoCode;
 import tn.spring.packagee.Enum.PaymentStatus;
@@ -34,14 +35,14 @@ public class PaymentService  {
 
     public PaymentResponse create(CreatePaymentRequest req) {
         Payment p = new Payment();
-        p.setStudentId(req.getStudentId());
+
         p.setTargetType(req.getTargetType());
         p.setTargetId(req.getTargetId());
 
         // ✅ fetch and store student full name ONCE at creation
-        String fullName = userClient.fetchStudentFullName(req.getStudentId());
-        p.setStudentFullName(fullName != null ? fullName : "Student");
-
+        UserPublicDTO user = userClient.fetchStudentByEmail(req.getStudentEmail());
+        p.setStudentFullName(user.getName()  + " " + user.getLastName());
+        p.setStudentId(user.getId());
         p.setAmountOriginal(req.getAmountOriginal());
         p.setDiscountAmount(req.getDiscountAmount() != null ? req.getDiscountAmount() : BigDecimal.ZERO);
 
