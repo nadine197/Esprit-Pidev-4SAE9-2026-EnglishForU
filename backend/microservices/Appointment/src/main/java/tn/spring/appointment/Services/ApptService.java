@@ -10,8 +10,10 @@ import org.springframework.web.server.ResponseStatusException;
 import tn.spring.appointment.Enums.ApptStatus;
 import tn.spring.appointment.Models.Appointment;
 import tn.spring.appointment.Models.Availability;
+import tn.spring.appointment.Models.DiscussionGroup;
 import tn.spring.appointment.Repositories.ApptRepository;
 import tn.spring.appointment.Repositories.AvailabilityRepository;
+import tn.spring.appointment.Repositories.GroupRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +28,8 @@ public class ApptService {
     private final ApptRepository apptRepository;
     private final AvailabilityRepository availabilityRepository;
     private final NotificationService notificationService;
+    private final GroupRepository groupRepository;
+
 
     public Appointment book(Appointment appt) {
         appt.setStatus(ApptStatus.PENDING);
@@ -116,4 +120,7 @@ public class ApptService {
         return saved;
     }
 
+    public List<DiscussionGroup> getGroupsByUserId(String userId) {
+        return groupRepository.findGroupsByMemberId(userId);
+    }
 }

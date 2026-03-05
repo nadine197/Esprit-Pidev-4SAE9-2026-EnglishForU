@@ -18,8 +18,10 @@ public class GroupController {
 
     @GetMapping("/groups/user/{userId}")
     public List<DiscussionGroup> getMyGroups(@PathVariable String userId) {
-        // Pour simplifier, on cherche si l'ID est tuteur ou étudiant
-        return repository.findByTutorIdOrStudentIdsContaining(userId, userId);
+        System.out.println("RECHERCHE DE GROUPES POUR L'ID : [" + userId + "]"); // <--- LOG CRUCIAL
+        List<DiscussionGroup> groups = repository.findGroupsByMemberId(userId);
+        System.out.println("NOMBRE DE GROUPES TROUVÉS : " + groups.size());
+        return groups;
     }
 
     @GetMapping("/groups/all") // Pour l'admin
