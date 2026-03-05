@@ -2,6 +2,7 @@ package tn.spring.gateway.Controllers.PackageMangmeent;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.gateway.Controllers.ProxyForwarder;
@@ -53,6 +54,11 @@ public class PaymentProxyController {
 
                                        HttpServletRequest req) {
         return proxy.forward(PAY_BASE + "/" + id + "/fail?reason=", HttpMethod.POST, null, req);
+    }
+
+    @GetMapping(value = "/{id}/voucher", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> voucher(@PathVariable Long id, HttpServletRequest req) {
+        return proxy.forwardBytes(PAY_BASE + "/" + id + "/voucher", HttpMethod.GET, null, req);
     }
 
     @GetMapping("/{id}")
