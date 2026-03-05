@@ -25,9 +25,11 @@ public class PaymentService  {
 
     private final PaymentRepository paymentRepo;
 
-    public PaymentService(PaymentRepository paymentRepo
-                          ) {
+    private final UserClient userClient;
+
+    public PaymentService(PaymentRepository paymentRepo, UserClient userClient) {
         this.paymentRepo = paymentRepo;
+        this.userClient = userClient;
     }
 
     public PaymentResponse create(CreatePaymentRequest req) {
@@ -35,6 +37,11 @@ public class PaymentService  {
         p.setStudentId(req.getStudentId());
         p.setTargetType(req.getTargetType());
         p.setTargetId(req.getTargetId());
+
+        // ✅ fetch and store student full name ONCE at creation
+        String fullName = userClient.fetchStudentFullName(req.getStudentId());
+        p.setStudentFullName(fullName != null ? fullName : "Student");
+
         p.setAmountOriginal(req.getAmountOriginal());
         p.setDiscountAmount(req.getDiscountAmount() != null ? req.getDiscountAmount() : BigDecimal.ZERO);
 
@@ -125,6 +132,7 @@ public class PaymentService  {
         r.setDiscountAmount(p.getDiscountAmount());
         r.setAmountFinal(p.getAmountFinal());
         r.setProviderRef(p.getProviderRef());
+        r.setStudentFullName(p.getStudentFullName());
         r.setStatus(p.getStatus());
         r.setPaymentMethod(p.getPaymentMethod());
         r.setCreatedAt(p.getCreatedAt());

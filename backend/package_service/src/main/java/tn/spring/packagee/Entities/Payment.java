@@ -10,6 +10,7 @@ import tn.spring.packagee.Enum.TargetType;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -28,8 +29,8 @@ public class Payment {
     private Long id;
 
     @Column(nullable = false)
-    private Long studentId;
-
+    private UUID studentId;
+    private String studentFullName;
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amountOriginal;
 

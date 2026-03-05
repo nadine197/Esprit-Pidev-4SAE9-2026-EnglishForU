@@ -8,13 +8,14 @@ import tn.spring.packagee.Enum.TargetType;
 
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Setter
 @Getter
 public class CreatePaymentRequest {
 
     @NotNull
-    private Long studentId;
+    private UUID studentId;
 
     @NotNull
     private TargetType targetType;
