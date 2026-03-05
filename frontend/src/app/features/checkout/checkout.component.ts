@@ -1,3 +1,4 @@
+import { FlouciService } from './../../flouci.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackageOfferService } from 'src/app/services/PackageService/package-offer.service';
@@ -50,7 +51,8 @@ constructor(
   private packageService: PackageOfferService,
   private paymentService: PaymentService,
   private promoService: PromoService,
-  private authService: AuthService
+  private authService: AuthService,
+  private flouciService: FlouciService
 ) {}
   ngOnInit(): void {
     this.packageId = Number(this.route.snapshot.paramMap.get('packageId'));
@@ -177,9 +179,9 @@ createPayment() {
         return;
       }
 
-      this.showProviderBox = true;
-      this.providerCheckoutUrl = paymentRes.checkoutUrl || null;
-      this.loadingPay = false;
+    this.showProviderBox = true;
+  this.providerCheckoutUrl = paymentRes.checkoutUrl || null;
+  this.loadingPay = false;
     },
     error: () => {
       this.error = 'Payment creation failed.';
@@ -188,16 +190,27 @@ createPayment() {
   });
 }
 
-  payNow() {
-    // If you have a redirect URL from backend, easiest:
-    if (this.providerCheckoutUrl) {
-      window.location.href = this.providerCheckoutUrl;
-      return;
-    }
+payNow() {
+  if (!this.paymentId || !this.selectedMethod) return;
 
-    // Otherwise, you will call your provider init endpoint here (Stripe session create, Flouci init)
-    // Then redirect to provider page. (Depends on your backend integration)
+  // FLOUCI flow
+  if (this.selectedMethod === 'FLOUCI') {
+    this.flouciService.create(this.amountFinal).subscribe({
+      next: (res) => {
+        // store flouci payment_id to confirm later (providerRef)
+        localStorage.setItem('flouci_payment_id', res.payment_id);
+        window.location.href = res.link; // ✅ redirect to Flouci checkout
+      },
+      error: () => (this.error = 'Flouci init failed.')
+    });
+    return;
   }
+
+  // STRIPE flow (your existing redirect)
+  if (this.providerCheckoutUrl) {
+    window.location.href = this.providerCheckoutUrl;
+  }
+}
 
 confirmPayment(providerRef?: string) {
   if (!this.paymentId || !this.selectedMethod) return;
