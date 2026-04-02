@@ -15,27 +15,35 @@
       <form *ngIf="!loading" [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="space-y-6">
 
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">Event Title</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Event Title <span class="text-red-500">*</span></label>
           <input formControlName="title" type="text" placeholder="Enter event title"
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+                 [class.border-red-500]="isFieldInvalid('title')"
+                 class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+          <p *ngIf="fieldError('title')" class="text-xs text-red-500 mt-1">{{ fieldError('title') }}</p>
         </div>
 
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">Description</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Description <span class="text-red-500">*</span></label>
           <textarea formControlName="description" rows="4" placeholder="Describe the event..."
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] resize-none"></textarea>
+                    [class.border-red-500]="isFieldInvalid('description')"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] resize-none"></textarea>
+          <p *ngIf="fieldError('description')" class="text-xs text-red-500 mt-1">{{ fieldError('description') }}</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Date & Time</label>
-            <input formControlName="eventDate" type="datetime-local"
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">Date & Time <span class="text-red-500">*</span></label>
+            <input formControlName="eventDate" type="datetime-local" [min]="minDateTime"
+                   [class.border-red-500]="isFieldInvalid('eventDate')"
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+            <p *ngIf="fieldError('eventDate')" class="text-xs text-red-500 mt-1">{{ fieldError('eventDate') }}</p>
           </div>
           <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Location Name</label>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">Location Name <span class="text-red-500">*</span></label>
             <input formControlName="location" type="text" placeholder="Room 302, Campus..."
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+                   [class.border-red-500]="isFieldInvalid('location')"
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+            <p *ngIf="fieldError('location')" class="text-xs text-red-500 mt-1">{{ fieldError('location') }}</p>
           </div>
         </div>
 
@@ -58,24 +66,26 @@
             <label class="text-sm font-semibold text-slate-700">Registration Type</label>
             <div class="flex gap-2">
               <button type="button"
-                (click)="eventForm.patchValue({paid: false, price: null})"
-                [class]="!isPaid ? 'bg-[#0066FF] text-white' : 'bg-white text-slate-600 border border-slate-200'"
-                class="px-4 py-2 rounded-lg text-xs font-bold transition-all">
+                      (click)="eventForm.patchValue({paid: false, price: null})"
+                      [class]="!isPaid ? 'bg-[#0066FF] text-white' : 'bg-white text-slate-600 border border-slate-200'"
+                      class="px-4 py-2 rounded-lg text-xs font-bold transition-all">
                 🆓 Free
               </button>
               <button type="button"
-                (click)="eventForm.patchValue({paid: true})"
-                [class]="isPaid ? 'bg-emerald-600 text-white' : 'bg-white text-slate-600 border border-slate-200'"
-                class="px-4 py-2 rounded-lg text-xs font-bold transition-all">
+                      (click)="eventForm.patchValue({paid: true})"
+                      [class]="isPaid ? 'bg-emerald-600 text-white' : 'bg-white text-slate-600 border border-slate-200'"
+                      class="px-4 py-2 rounded-lg text-xs font-bold transition-all">
                 💳 Paid
               </button>
             </div>
           </div>
 
           <div *ngIf="isPaid">
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Ticket Price (TND)</label>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">Ticket Price (TND) <span class="text-red-500">*</span></label>
             <input formControlName="price" type="number" min="0.5" step="0.5" placeholder="e.g. 10.00"
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"/>
+                   [class.border-red-500]="isFieldInvalid('price')"
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"/>
+            <p *ngIf="fieldError('price')" class="text-xs text-red-500 mt-1">{{ fieldError('price') }}</p>
           </div>
 
           <div>
@@ -84,7 +94,9 @@
               <span class="text-xs text-slate-400 font-normal ml-1">(leave blank for unlimited)</span>
             </label>
             <input formControlName="maxParticipants" type="number" min="1" step="1" placeholder="e.g. 50"
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+                   [class.border-red-500]="isFieldInvalid('maxParticipants')"
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+            <p *ngIf="fieldError('maxParticipants')" class="text-xs text-red-500 mt-1">{{ fieldError('maxParticipants') }}</p>
           </div>
         </div>
 
@@ -92,19 +104,19 @@
           <label class="block text-sm font-semibold text-slate-700 mb-2">Event Image (optional)</label>
           <div class="flex gap-2 mb-3">
             <button type="button" (click)="imageMode='url'"
-              [class]="imageMode==='url' ? 'bg-[#0066FF] text-white' : 'bg-slate-100 text-slate-600'"
-              class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">Paste URL</button>
+                    [class]="imageMode==='url' ? 'bg-[#0066FF] text-white' : 'bg-slate-100 text-slate-600'"
+                    class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">Paste URL</button>
             <button type="button" (click)="imageMode='upload'"
-              [class]="imageMode==='upload' ? 'bg-[#0066FF] text-white' : 'bg-slate-100 text-slate-600'"
-              class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">Upload Image</button>
+                    [class]="imageMode==='upload' ? 'bg-[#0066FF] text-white' : 'bg-slate-100 text-slate-600'"
+                    class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">Upload Image</button>
           </div>
           <input *ngIf="imageMode==='url'" formControlName="imageUrl" type="text"
-            placeholder="https://example.com/event-image.jpg"
-            class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
+                 placeholder="https://example.com/event-image.jpg"
+                 class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"/>
           <div *ngIf="imageMode==='upload'" class="relative">
             <input type="file" accept="image/*" (change)="onFileSelected($event)" class="hidden" #fileInput/>
             <button type="button" (click)="fileInput.click()" [disabled]="uploading"
-              class="w-full px-4 py-6 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#0066FF] text-sm text-slate-500 hover:text-[#0066FF] transition-all flex flex-col items-center gap-2">
+                    class="w-full px-4 py-6 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#0066FF] text-sm text-slate-500 hover:text-[#0066FF] transition-all flex flex-col items-center gap-2">
               <svg *ngIf="!uploading" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               <div *ngIf="uploading" class="animate-spin rounded-full h-6 w-6 border-b-2 border-[#0066FF]"></div>
               <span>{{ uploading ? 'Uploading...' : 'Click to upload an image' }}</span>
@@ -117,16 +129,19 @@
           <img [src]="eventForm.value.imageUrl" class="w-full h-full object-cover" alt="Preview">
         </div>
 
+        <div *ngIf="submitAttempted && eventForm.invalid" class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600">
+          Please fix the errors above before submitting.
+        </div>
+
         <div class="flex gap-3 pt-2">
-          <button type="submit" [disabled]="saving || eventForm.invalid"
-            class="bg-[#0066FF] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-blue-600 transition-all disabled:opacity-50">
+          <button type="submit" [disabled]="saving"
+                  class="bg-[#0066FF] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-blue-600 transition-all disabled:opacity-50">
             {{ saving ? 'Saving...' : (isEditMode ? 'Update Event' : 'Create Event') }}
           </button>
           <button type="button" (click)="goBack()"
-            class="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-slate-200">Cancel</button>
+                  class="bg-slate-100 text-slate-600 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-slate-200">Cancel</button>
         </div>
       </form>
     </div>
   </div>
 </div>
-
