@@ -9,6 +9,7 @@ import tn.spring.user.Enums.UserRole;
 import tn.spring.user.Models.Student;
 import tn.spring.user.Models.Tutor;
 import tn.spring.user.Models.User;
+import tn.spring.user.Models.UserPublicDTO;
 import tn.spring.user.Services.UserService;
 
 import java.util.List;
@@ -89,5 +90,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getById(id));
     }
 
-
+    @GetMapping("/public/by-email")
+    public ResponseEntity<UserPublicDTO> getPublicByEmail(@RequestParam String email) {
+        User u = userService.getByEmail(email);
+        return ResponseEntity.ok(new UserPublicDTO(u.getName(), u.getLastName(), u.getId()));
+    }
 }
