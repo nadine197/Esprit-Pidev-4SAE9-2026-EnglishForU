@@ -6,12 +6,13 @@ This Docker setup includes:
 - **PostgreSQL**: Database server (Port 5432)
 - **Eureka Server**: Service discovery (Port 8761)
 - **User Management**: User service with authentication (Port 8081)
+- **Gateway**: API proxy/routing service (Port 8090)
 
 ## Prerequisites
 
 - Docker Desktop installed and running
 - At least 4GB RAM allocated to Docker
-- Ports 5432, 8761, and 8081 available
+- Ports 5432, 8761, 8081, and 8090 available
 
 ## Quick Start
 
@@ -39,6 +40,7 @@ docker-compose -f docker-compose.dev.yml up --build
 
 - **Eureka Dashboard**: http://localhost:8761
 - **User Management API**: http://localhost:8081
+- **Gateway API**: http://localhost:8090
 - **PostgreSQL**: localhost:5432
   - Database: `GestionUserPI`
   - Username: `postgres`
@@ -60,9 +62,11 @@ docker-compose logs -f
 
 # View specific service logs
 docker-compose logs -f user-management
+docker-compose logs -f gateway
 
 # Restart a specific service
 docker-compose restart user-management
+docker-compose restart gateway
 ```
 
 ### Build Commands
@@ -73,6 +77,16 @@ docker-compose build --no-cache
 
 # Rebuild specific service
 docker-compose build eureka-server
+docker-compose build gateway
+```
+
+## Smoke Check
+
+From the repository root:
+
+```powershell
+cd ..
+powershell -ExecutionPolicy Bypass -File ./scripts/smoke-check.ps1
 ```
 
 ### Database Commands
@@ -137,6 +151,7 @@ All services are connected via the `englishforu-network` bridge network, allowin
 
 - **Eureka Server**: Checks every 30s (starts after 60s)
 - **User Management**: Checks every 30s (starts after 120s)
+- **Gateway**: Checks every 30s (starts after 60s)
 - **PostgreSQL**: Checks every 10s
 
 ## Volume Management

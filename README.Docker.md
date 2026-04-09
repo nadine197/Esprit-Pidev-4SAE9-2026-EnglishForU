@@ -8,6 +8,7 @@ This Docker setup includes the complete EnglishForU application:
 - **PostgreSQL**: Database server (Port 5432)
 - **Eureka Server**: Service discovery (Port 8761)
 - **User Management**: User service with authentication (Port 8081)
+- **Gateway**: API proxy/routing service (Port 8090)
 
 ### Frontend
 - **Angular Application**: SPA with Tailwind CSS (Port 4200)
@@ -16,7 +17,7 @@ This Docker setup includes the complete EnglishForU application:
 
 - Docker Desktop installed and running
 - At least 4GB RAM allocated to Docker
-- Ports 4200, 5432, 8761, and 8081 available
+- Ports 4200, 5432, 8761, 8081, and 8090 available
 
 ## Quick Start
 
@@ -49,6 +50,7 @@ docker-compose up --build
 ## Access Points
 
 - **Frontend Application**: http://localhost:4200
+- **Gateway API**: http://localhost:8090
 - **Eureka Dashboard**: http://localhost:8761
 - **User Management API**: http://localhost:8081
 - **PostgreSQL**: localhost:5432
@@ -75,7 +77,8 @@ The services start in the following order:
 1. PostgreSQL (waits for health check)
 2. Eureka Server (waits for health check)
 3. User Management (depends on PostgreSQL and Eureka)
-4. Frontend (depends on User Management)
+4. Gateway (depends on Eureka and User Management)
+5. Frontend (depends on Gateway)
 
 ## Common Commands
 
@@ -91,6 +94,7 @@ docker-compose logs -f
 
 # Specific service
 docker-compose logs -f frontend
+docker-compose logs -f gateway
 docker-compose logs -f user-management
 docker-compose logs -f eureka-server
 docker-compose logs -f postgres
@@ -109,7 +113,13 @@ docker-compose down -v
 ### Restart Specific Service
 ```powershell
 docker-compose restart frontend
+docker-compose restart gateway
 docker-compose restart user-management
+```
+
+### Run Smoke Check
+```powershell
+powershell -ExecutionPolicy Bypass -File ./scripts/smoke-check.ps1
 ```
 
 ### Rebuild Without Cache
@@ -177,7 +187,8 @@ docker-compose up --build
 
 All services communicate through the `englishforu-network` bridge network:
 - Services can reference each other by service name
-- Frontend → `http://user-management:8081`
+- Frontend → `http://gateway:8090`
+- Gateway → `http://user-management:8081`
 - User Management → `http://eureka-server:8761`
 - User Management → `postgresql://postgres:5432`
 
@@ -201,6 +212,7 @@ GOOGLE_CLIENT_ID=your_google_client_id
 FRONTEND_PORT=4200
 BACKEND_PORT=8081
 EUREKA_PORT=8761
+GATEWAY_PORT=8090
 POSTGRES_PORT=5432
 ```
 
@@ -224,6 +236,7 @@ Minimum recommended resources:
 Individual service memory limits:
 - Frontend: ~256MB
 - User Management: ~512MB
+- Gateway: ~256MB
 - Eureka Server: ~256MB
 - PostgreSQL: ~256MB
 
@@ -233,6 +246,7 @@ All services include health checks:
 - **PostgreSQL**: Checks every 10s
 - **Eureka**: Checks every 30s (starts after 60s)
 - **User Management**: Checks every 30s (starts after 120s)
+- **Gateway**: Checks every 30s (starts after 60s)
 
 ## Volumes
 
