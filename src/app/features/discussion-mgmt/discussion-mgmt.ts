@@ -16,11 +16,12 @@ export class DiscussionMgmtComponent implements OnInit {
   isEditMode = false;
   editingGroupId: string | null = null;
 
+  // On utilise désormais les EMAILS pour identifier les membres
   newGroup = {
     groupName: '',
-    tutorId: '',
+    tutorEmail: '', 
     tutorName: '',
-    studentIds: [] as string[]
+    studentEmails: [] as string[] 
   };
 
   constructor(
@@ -29,7 +30,6 @@ export class DiscussionMgmtComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // 1. Récupérer l'utilisateur connecté
     const userJson = localStorage.getItem('user');
     if (userJson) {
       this.currentUser = JSON.parse(userJson);
@@ -39,7 +39,8 @@ export class DiscussionMgmtComponent implements OnInit {
     this.loadUsers();
   }
 
-  // Charge les groupes (Tous pour Admin, filtrés pour les autres)
+  // --- CHARGEMENT DES DONNÉES ---
+
   loadGroups() {
     if (!this.currentUser) return;
 
@@ -49,14 +50,14 @@ export class DiscussionMgmtComponent implements OnInit {
         error: (err) => console.error("Erreur chargement groupes", err)
       });
     } else {
-      this.discussionService.getMyGroups(this.currentUser.id).subscribe({
+      // FIX : On filtre par EMAIL car l'ID est manquant dans le localStorage
+      this.discussionService.getMyGroups(this.currentUser.email).subscribe({
         next: (data: any) => this.groups = data.content ? data.content : data,
         error: (err) => console.error("Erreur chargement mes groupes", err)
       });
     }
   }
 
-  // Charge les tuteurs et étudiants pour le modal de création
   loadUsers() {
     this.userService.getAllTutors().subscribe({
       next: (res: any) => this.tutors = res.content ? res.content : res,
@@ -83,56 +84,47 @@ export class DiscussionMgmtComponent implements OnInit {
     this.editingGroupId = group.id;
     this.newGroup = {
       groupName: group.groupName,
-      tutorId: group.tutorId,
+      tutorEmail: group.tutorEmail,
       tutorName: group.tutorName,
-      studentIds: [...group.studentIds] 
+      studentEmails: [...group.studentEmails] 
     };
     this.showModal = true;
   }
 
   resetForm() {
-    this.newGroup = { groupName: '', tutorId: '', tutorName: '', studentIds: [] };
+    this.newGroup = { groupName: '', tutorEmail: '', tutorName: '', studentEmails: [] };
   }
 
   // --- ACTIONS FORMULAIRE ---
 
-  toggleStudent(studentId: string) {
-    const index = this.newGroup.studentIds.indexOf(studentId);
+  toggleStudent(student: any) {
+    const email = student.email;
+    const index = this.newGroup.studentEmails.indexOf(email);
     if (index > -1) {
-      this.newGroup.studentIds.splice(index, 1);
+      this.newGroup.studentEmails.splice(index, 1);
     } else {
-      this.newGroup.studentIds.push(studentId);
+      this.newGroup.studentEmails.push(email);
     }
   }
 
-  isStudentSelected(studentId: string): boolean {
-    return this.newGroup.studentIds.includes(studentId);
+  isStudentSelected(student: any): boolean {
+    return this.newGroup.studentEmails.includes(student.email);
   }
 
   onSaveGroup() {
-    const selectedTutor = this.tutors.find(t => t.id === this.newGroup.tutorId);
+    const selectedTutor = this.tutors.find(t => t.email === this.newGroup.tutorEmail);
     if (selectedTutor) {
       this.newGroup.tutorName = selectedTutor.name + ' ' + selectedTutor.lastName;
+      // newGroup.tutorEmail est déjà rempli par le [(ngModel)] du select
     }
 
-    if (this.isEditMode && this.editingGroupId) {
-      this.discussionService.updateGroup(this.editingGroupId, this.newGroup).subscribe({
-        next: () => {
-          this.loadGroups();
-          this.showModal = false;
-        }
-      });
-    } else {
-      this.discussionService.createGroup(this.newGroup).subscribe({
-        next: () => {
-          this.loadGroups();
-          this.showModal = false;
-          this.resetForm();
-        }
-      });
-    }
-  }
-
+    this.discussionService.createGroup(this.newGroup).subscribe({
+      next: () => {
+        this.loadGroups();
+        this.showModal = false;
+      }
+    });
+}
   onDelete(id: string) {
     if (confirm("Permanently delete this group?")) {
       this.discussionService.deleteGroup(id).subscribe(() => this.loadGroups());

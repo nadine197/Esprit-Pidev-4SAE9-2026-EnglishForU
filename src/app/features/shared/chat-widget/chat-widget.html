@@ -1,24 +1,126 @@
-<!-- Bouton Flottant -->
-<button (click)="toggleChat()" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-xl z-50">
-  {{ isOpen ? '×' : '💬' }}
-</button>
+<!-- 1. BOUTON FLOTTANT + NOTIFICATION (Fixé en Bas Droite) -->
+<div class="fixed bottom-6 right-6 z-[10000] flex flex-col items-end">
+  <div *ngIf="unreadCount > 0" 
+       class="absolute -top-2 -right-1 bg-red-600 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-lg animate-bounce z-[10001]">
+    {{ unreadCount }}
+  </div>
+  <button (click)="toggleChat()" 
+          class="w-14 h-14 bg-[#0066FF] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all active:scale-95">
+    <span *ngIf="!isOpen" class="text-2xl">💬</span>
+    <span *ngIf="isOpen" class="text-xl font-bold">×</span>
+  </button>
+</div>
 
-<!-- Fenêtre de Chat -->
-<div *ngIf="isOpen" class="fixed bottom-24 right-6 w-72 h-96 bg-white shadow-2xl rounded-2xl border border-slate-200 z-50 flex flex-col overflow-hidden">
-  <div class="bg-slate-900 p-4 text-white font-bold">My Discussions</div>
+<!-- 2. LA FENÊTRE DE CHAT (Verrouillée à Droite) -->
+<div *ngIf="isOpen" 
+     class="fixed bottom-24 right-6 left-auto w-[340px] h-[520px] bg-white shadow-2xl rounded-[30px] border border-slate-100 z-[9999] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
   
-  <div class="flex-1 overflow-y-auto p-2">
-    <!-- Changement de myGroups vers groups ici -->
-    <div *ngFor="let g of groups" class="p-3 hover:bg-slate-50 rounded-xl cursor-pointer border-b border-slate-50 flex items-center gap-3">
-      <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-black">
-        {{ g.groupName.substring(0,1).toUpperCase() }}
+  <!-- VUE 1 : LISTE DES GROUPES -->
+  <div *ngIf="!selectedGroup" class="flex flex-col h-full">
+    <div class="bg-slate-900 p-6 text-white shrink-0 font-bold text-lg">My Discussions</div>
+    <div class="flex-1 overflow-y-auto p-3 bg-slate-50/50">
+      <div *ngFor="let g of groups" (click)="selectGroup(g)" 
+           class="p-4 bg-white rounded-2xl mb-2 cursor-pointer shadow-sm flex items-center gap-3 border border-transparent hover:border-[#0066FF] transition-all">
+        <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xs shrink-0">
+          {{ g.groupName.substring(0,1).toUpperCase() }}
+        </div>
+        <div class="font-bold text-slate-700 truncate">{{ g.groupName }}</div>
       </div>
-      <span class="text-sm font-bold text-slate-700">{{ g.groupName }}</span>
+      <div *ngIf="groups.length === 0" class="text-center py-10 text-slate-400 text-xs font-bold italic">No groups assigned yet.</div>
     </div>
-    
-    <!-- Changement de myGroups vers groups ici -->
-    <div *ngIf="groups.length === 0" class="text-center mt-10 text-slate-400 text-xs">
-      No groups assigned yet.
+  </div>
+
+  <!-- VUE 2 : LA CONVERSATION -->
+  <div *ngIf="selectedGroup" class="flex flex-col h-full bg-white">
+    <!-- Header -->
+    <div class="bg-slate-900 p-4 text-white flex items-center gap-3 shrink-0">
+      <button (click)="goBack()" class="hover:text-blue-400 transition-colors text-lg">←</button>
+      <div class="flex flex-col">
+        <span class="text-sm font-bold truncate">{{selectedGroup.groupName}}</span>
+        <span class="text-[9px] text-green-400 font-bold uppercase tracking-widest">Live chat</span>
+      </div>
+    </div>
+
+    <!-- ZONE DES MESSAGES -->
+    <div #scrollMe class="flex-1 overflow-y-auto p-4 space-y-8 bg-slate-50/30 overflow-x-hidden">
+      <div *ngFor="let m of messages" class="flex w-full items-start gap-2"
+           [class.flex-row-reverse]="m.senderId === currentUser.email">
+        
+        <div class="max-w-[75%] flex flex-col" [class.items-end]="m.senderId === currentUser.email">
+          <!-- Nom + Actions -->
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] text-slate-400 font-black uppercase">{{ m.senderName }}</span>
+            <div class="flex gap-1">
+              <button (click)="reactToMessage(m, '❤️')" class="text-[10px] grayscale hover:grayscale-0">❤️</button>
+              <button (click)="setupReply(m)" class="text-[10px] grayscale hover:grayscale-0">↩️</button>
+              <button *ngIf="m.senderId === currentUser.email" (click)="setupEdit(m)" class="text-[10px] grayscale hover:grayscale-0">✏️</button>
+              <button *ngIf="m.senderId === currentUser.email" (click)="onDeleteMsg(m)" class="text-[10px] text-red-400 grayscale hover:grayscale-0">🗑️</button>
+            </div>
+          </div>
+          
+          <div *ngIf="m.replyToId" class="bg-slate-200/80 p-2 rounded-t-xl border-l-2 border-[#0066FF] text-[9px] w-full truncate italic">
+            <b>{{ m.replyToUser }}</b>: {{ m.replyToText }}
+          </div>
+
+          <div class="relative">
+            <div [class.bg-[#0066FF]]="m.senderId === currentUser.email"
+                 [class.text-white]="m.senderId === currentUser.email"
+                 [class.rounded-tr-none]="m.senderId === currentUser.email"
+                 [class.bg-white]="m.senderId !== currentUser.email"
+                 class="p-3 rounded-2xl text-xs font-bold shadow-sm border border-slate-100 bg-white">
+              
+              <!-- Affichage fichier si présent -->
+              <div *ngIf="m.fileUrl" class="mb-2 p-2 bg-black/5 rounded-lg border border-black/5 flex items-center gap-2 text-[10px]">
+                 <span>📁</span>
+                 <a [href]="m.fileUrl" target="_blank" class="underline text-blue-600 truncate">{{ m.fileName }}</a>
+              </div>
+              {{ m.content }}
+            </div>
+            <!-- Réaction Badge -->
+            <div *ngIf="m.reaction" class="absolute -bottom-2 bg-white shadow-md rounded-full px-1.5 border text-[10px]"
+                 [class.right-1]="m.senderId === currentUser.email" [class.left-1]="m.senderId !== currentUser.email">
+              {{ m.reaction }}
+            </div>
+          </div>
+          <span class="text-[7px] text-slate-300 mt-2 uppercase font-bold">{{ m.timestamp | date:'HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZONE DE SAISIE UNIQUE -->
+    <div class="border-t bg-white shrink-0">
+      <!-- Typing indicator -->
+      <div *ngIf="typingUser" class="px-4 py-1 text-[9px] text-blue-500 font-bold italic animate-pulse">
+        {{ typingUser }} is typing...
+      </div>
+
+      <!-- Barre Reply/Edit -->
+      <div *ngIf="replyingTo || isEditing" class="p-2 flex justify-between items-center border-b" 
+           [class.bg-blue-50]="replyingTo" [class.bg-amber-50]="isEditing">
+        <p class="text-[9px] font-black uppercase pl-2" [class.text-blue-600]="replyingTo" [class.text-amber-600]="isEditing">
+          {{ replyingTo ? 'Replying to ' + replyingTo.senderName : 'Editing Message' }}
+        </p>
+        <button (click)="replyingTo ? cancelReply() : cancelEdit()" class="text-slate-400 px-2 text-lg">×</button>
+      </div>
+
+      <!-- Inputs -->
+      <div class="p-3 flex gap-2 items-center">
+        <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none">
+        
+       <!-- Dans chat-widget.html -->
+<input [(ngModel)]="newMessage" 
+       (input)="onTyping()" 
+       (keyup.enter)="sendMsg()" 
+       placeholder="Write a message..." 
+       class="flex-1 text-xs ...">
+       
+        <button (click)="sendMsg()" [disabled]="!newMessage.trim()" class="text-[#0066FF]">
+          <svg *ngIf="!isEditing" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+          <span *ngIf="isEditing" class="text-[10px] font-black uppercase pr-2">SAVE</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

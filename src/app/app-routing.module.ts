@@ -14,6 +14,7 @@ import { BookTestComponent } from './features/visitor/book-test/book-test';
 import { AppointmentMgmtComponent } from './features/Appointment/appointment-mgmt/appointment-mgmt';
 import { TakeTestComponent } from './features/visitor/take-test/take-test.component';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
+import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget'; // Vérifiez votre chemin
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -30,6 +31,8 @@ const routes: Routes = [
       { path: 'users/:role',component: UserListComponent },
       { path: 'appointments', component: AppointmentMgmtComponent },
       { path: 'discussions', component: DiscussionMgmtComponent }, 
+      { path: 'chat', component: ChatWidgetComponent }, 
+
       
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

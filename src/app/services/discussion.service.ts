@@ -30,4 +30,10 @@ export class DiscussionService {
 deleteGroup(id: string): Observable<any> {
   return this.http.delete(`${this.apiUrl}/groups/${id}`);
 }
+
+// Ajoute cette méthode dans DiscussionService
+getMyGroupsByEmail(email: string): Observable<any> {
+  // On appelle ton endpoint Gateway (8090)
+  return this.http.get<any[]>(`${this.apiUrl}/groups/user/${email}`);
+}
 }
