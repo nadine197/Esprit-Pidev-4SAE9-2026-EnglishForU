@@ -1,6 +1,7 @@
 package tn.spring.gateway.Controllers.PackageMangmeent;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +12,12 @@ import tn.spring.gateway.Controllers.ProxyForwarder;
 public class StripeProxyController {
 
     private final ProxyForwarder proxy;
-    private static final String STRIPE_BASE = "http://localhost:8085/api/stripe";
+    private final String packageServiceBaseUrl;
 
-    public StripeProxyController(ProxyForwarder proxy) {
+    public StripeProxyController(ProxyForwarder proxy,
+                                 @Value("${services.package.base-url:http://localhost:8085}") String packageServiceBaseUrl) {
         this.proxy = proxy;
+        this.packageServiceBaseUrl = packageServiceBaseUrl;
     }
 
     @PostMapping("/create-checkout-session")
@@ -22,7 +25,7 @@ public class StripeProxyController {
             @RequestBody Object body,   HttpServletRequest req) {
 
         return proxy.forward(
-                STRIPE_BASE + "/create-checkout-session" ,
+            packageServiceBaseUrl + "/api/stripe/create-checkout-session" ,
                 HttpMethod.POST,
                 body,
                 req

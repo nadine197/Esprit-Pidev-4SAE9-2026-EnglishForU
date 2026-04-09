@@ -52,6 +52,25 @@ services:
       - englishforu-network
     restart: unless-stopped
 
+  gateway:
+    build:
+      context: ./Gateway
+      dockerfile: Dockerfile
+    container_name: englishforu-gateway-dev
+    ports:
+      - "8090:8090"
+    environment:
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SERVICES_USER_BASE_URL: http://user-management:8081
+      SERVICES_PACKAGE_BASE_URL: http://package-management:8085
+      SERVICES_APPOINTMENT_BASE_URL: http://appointment-service:8087
+    depends_on:
+      - eureka-server
+      - user-management
+    networks:
+      - englishforu-network
+    restart: unless-stopped
+
 volumes:
   postgres_dev_data:
     driver: local

@@ -60,6 +60,31 @@ services:
       - englishforu-network
     restart: unless-stopped
 
+  gateway:
+    build:
+      context: ./Gateway
+      dockerfile: Dockerfile
+    container_name: englishforu-gateway
+    ports:
+      - "8090:8090"
+    environment:
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SERVICES_USER_BASE_URL: http://user-management:8081
+      SERVICES_PACKAGE_BASE_URL: http://package-management:8085
+      SERVICES_APPOINTMENT_BASE_URL: http://appointment-service:8087
+    depends_on:
+      - eureka-server
+      - user-management
+    networks:
+      - englishforu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
 volumes:
   postgres_data:
     driver: local

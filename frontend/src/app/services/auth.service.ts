@@ -15,12 +15,10 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${environment.gatewayUrl}/api/auth`; 
-
   constructor(private http: HttpClient) { }
 
   login(credentials: any): Observable<any> {
-  return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+  return this.http.post<any>(`${this.resolveBaseUrl()}/api/auth/login`, credentials).pipe(
     tap((res: any) => {
       if (res && res.token) {
         localStorage.setItem('token', res.token);
@@ -49,6 +47,15 @@ getUser() {
   }
 
   signup(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register-client`, userData);
+    return this.http.post(`${this.resolveBaseUrl()}/api/auth/register-client`, userData);
+  }
+
+  private resolveBaseUrl(): string {
+    const gateway = environment.gatewayUrl?.trim();
+    if (environment.useDirectBackend) {
+      return environment.backendUrl;
+    }
+
+    return gateway || environment.backendUrl;
   }
 }

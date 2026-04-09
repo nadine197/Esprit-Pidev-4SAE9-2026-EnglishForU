@@ -3,6 +3,7 @@ package tn.spring.gateway.Controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -30,12 +31,22 @@ public class ProxyForwarder {
 
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<byte[]> response =
-                restTemplate.exchange(url, method, entity, byte[].class);
+        try {
+            ResponseEntity<byte[]> response =
+                    restTemplate.exchange(url, method, entity, byte[].class);
 
-        HttpHeaders out = new HttpHeaders();
-        out.putAll(response.getHeaders());
-        return new ResponseEntity<>(response.getBody(), out, response.getStatusCode());
+            HttpHeaders out = new HttpHeaders();
+            out.putAll(response.getHeaders());
+            return new ResponseEntity<>(response.getBody(), out, response.getStatusCode());
+        } catch (HttpStatusCodeException ex) {
+            HttpHeaders out = new HttpHeaders();
+            if (ex.getResponseHeaders() != null) {
+                out.putAll(ex.getResponseHeaders());
+            }
+            return new ResponseEntity<>(ex.getResponseBodyAsByteArray(), out, ex.getStatusCode());
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new byte[0], HttpStatus.BAD_GATEWAY);
+        }
     }
     public ResponseEntity<String> forward(String url,
                                           HttpMethod method,
@@ -62,14 +73,29 @@ public class ProxyForwarder {
 
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> response =
-                restTemplate.exchange(url, method, entity, String.class);
+        try {
+            ResponseEntity<String> response =
+                    restTemplate.exchange(url, method, entity, String.class);
 
-        HttpHeaders out = new HttpHeaders();
-        List<String> cookies = response.getHeaders().get(HttpHeaders.SET_COOKIE);
-        if (cookies != null) {
-            out.put(HttpHeaders.SET_COOKIE, cookies);
+            HttpHeaders out = new HttpHeaders();
+            List<String> cookies = response.getHeaders().get(HttpHeaders.SET_COOKIE);
+            if (cookies != null) {
+                out.put(HttpHeaders.SET_COOKIE, cookies);
+            }
+            return new ResponseEntity<>(response.getBody(), out, response.getStatusCode());
+        } catch (HttpStatusCodeException ex) {
+            HttpHeaders out = new HttpHeaders();
+            if (ex.getResponseHeaders() != null) {
+                List<String> cookies = ex.getResponseHeaders().get(HttpHeaders.SET_COOKIE);
+                if (cookies != null) {
+                    out.put(HttpHeaders.SET_COOKIE, cookies);
+                }
+            }
+            return new ResponseEntity<>(ex.getResponseBodyAsString(), out, ex.getStatusCode());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("{\"message\":\"UPSTREAM_UNAVAILABLE\"}");
         }
-        return new ResponseEntity<>(response.getBody(), out, response.getStatusCode());
     }
 }
