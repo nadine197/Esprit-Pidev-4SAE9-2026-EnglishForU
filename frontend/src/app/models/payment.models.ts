@@ -1,6 +1,5 @@
 export interface CreatePaymentRequest {
   studentEmail: string;     // ✅ instead of studentId
-  targetType: TargetType;
   targetId: number;
   amountOriginal: number;
   discountAmount?: number;
@@ -9,7 +8,6 @@ export interface CreatePaymentRequest {
 export type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
 
 export type PaymentMethod = 'CASH' | 'STRIPE' | 'FLOUCI';
-export type TargetType = 'PACKAGE'| 'EVENT'; // add more later
 export interface ConfirmPaymentRequest {
   provider: string;
   providerRef: string;
@@ -19,7 +17,7 @@ export interface ConfirmPaymentRequest {
 export interface PaymentResponse {
   id: number;
   studentId: number;
-  targetType: TargetType;
+  targetName: string;
   targetId: number;
   studentFullName?: string;
   amountOriginal: number;

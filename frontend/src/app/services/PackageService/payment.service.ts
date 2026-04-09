@@ -63,7 +63,7 @@ downloadVoucher(paymentId: number) {
   }
 
   // list by student
-  getPaymentsByStudent(studentId: number): Observable<any[]> {
+  getPaymentsByStudent(studentId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/student/${studentId}`, { headers: this.getHeaders() });
   }
 }

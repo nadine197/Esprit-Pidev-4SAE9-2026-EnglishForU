@@ -83,11 +83,7 @@ export class PaymentManagementComponent implements OnInit {
     });
   }
 
-  // ✅ helpers for UI
-  getPackageNameByPayment(p: PaymentResponse): string {
-    if (p.targetType !== 'PACKAGE') return '—';
-    return this.packagesMap.get(p.targetId) || `Package #${p.targetId}`;
-  }
+
 
   // ✅ filtering client-side
   applyFilters() {
@@ -105,16 +101,12 @@ export class PaymentManagementComponent implements OnInit {
         p.paymentMethod === provider ||
         (p.provider ? p.provider === provider : false);
 
-      // package filter: only payments that target PACKAGE with id
-      const okPackage =
-        !pkgId ||
-        (p.targetType === 'PACKAGE' && p.targetId === Number(pkgId));
 
       // search student name (works once backend sends studentFullName)
       const fullName = (p.studentFullName || '').toLowerCase();
       const okSearch = !q || fullName.includes(q) || String(p.studentId).includes(q);
 
-      return okStatus && okProvider && okPackage && okSearch;
+      return okStatus && okProvider  && okSearch;
     });
 
     this.page = 1;

@@ -8,6 +8,7 @@ import { PaymentService } from 'src/app/services/PackageService/payment.service'
 import { PromoService } from 'src/app/services/PackageService/promo.service';
 import { ApplyPromoRequest, ApplyPromoResponse } from 'src/app/models/promo.models';
 import { AuthService } from 'src/app/services/auth.service';
+import { StripeService } from 'src/app/services/PackageService/stripe.service';
 
 @Component({
   selector: 'app-checkout',
@@ -52,7 +53,8 @@ constructor(
   private paymentService: PaymentService,
   private promoService: PromoService,
   private authService: AuthService,
-  private flouciService: FlouciService
+  private flouciService: FlouciService,
+  private stripeService: StripeService
 ) {}
   ngOnInit(): void {
     this.packageId = Number(this.route.snapshot.paramMap.get('packageId'));
@@ -160,7 +162,6 @@ createPayment() {
 
   const payload: CreatePaymentRequest = {
     studentEmail: user.email,     // ✅ email from auth
-    targetType: 'PACKAGE',
     targetId: this.pkg.id,
     amountOriginal: this.amountOriginal,
     discountAmount: this.discountAmount,
@@ -193,23 +194,29 @@ createPayment() {
 payNow() {
   if (!this.paymentId || !this.selectedMethod) return;
 
-  // FLOUCI flow
+  // ✅ FLOUCI (keep as is)
   if (this.selectedMethod === 'FLOUCI') {
     this.flouciService.create(this.amountFinal).subscribe({
       next: (res) => {
-        // store flouci payment_id to confirm later (providerRef)
         localStorage.setItem('flouci_payment_id', res.payment_id);
-        window.location.href = res.link; // ✅ redirect to Flouci checkout
+        window.location.href = res.link;
       },
       error: () => (this.error = 'Flouci init failed.')
     });
     return;
   }
 
-  // STRIPE flow (your existing redirect)
-  if (this.providerCheckoutUrl) {
-    window.location.href = this.providerCheckoutUrl;
-  }
+if (this.selectedMethod === 'STRIPE') {
+  this.stripeService.createCheckoutSession(
+    this.paymentId!,
+    this.amountFinal,
+    this.pkg!.name
+  ).subscribe({
+    next: (res) => {
+      window.location.href = res.url;
+    }
+  });
+}
 }
 
 confirmPayment(providerRef?: string) {
