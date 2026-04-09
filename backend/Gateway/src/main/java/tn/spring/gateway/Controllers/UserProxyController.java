@@ -74,4 +74,9 @@ public class UserProxyController {
     public ResponseEntity<String> getById(@PathVariable String id, HttpServletRequest req) {
         return proxy.forward(USER_USERS_BASE + "/" + id, HttpMethod.GET, null, req);
     }
+
+    @GetMapping("/role/{role}")
+    public ResponseEntity<String> getUsersByRole(@PathVariable String role, HttpServletRequest req) {
+        return proxy.forward(USER_USERS_BASE + "/role/" + role, HttpMethod.GET, null, req);
+    }
 }
