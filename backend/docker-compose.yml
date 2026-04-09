@@ -70,14 +70,43 @@ services:
       SERVICES_USER_BASE_URL: http://user-management:8081
       SERVICES_PACKAGE_BASE_URL: http://package-management:8085
       SERVICES_APPOINTMENT_BASE_URL: http://appointment-service:8087
+      SERVICES_DISCUSSION_BASE_URL: http://discussion-service:8088
     depends_on:
       - eureka-server
       - user-management
+      - discussion-service
     networks:
       - englishforu-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  discussion-service:
+    build:
+      context: ./discussion-service
+      dockerfile: Dockerfile
+    container_name: englishforu-discussion-service
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/GestionUserPI
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: inception722
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - englishforu-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8088/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 3

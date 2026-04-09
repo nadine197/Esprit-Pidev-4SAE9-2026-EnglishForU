@@ -15,12 +15,14 @@ import { AdminModule } from './features/admin/admin-module';
 import { TutorModule } from './features/tutor/tutor-module';
 import { StudentModule } from './features/student/student.module';
 import { HelpdeskBoardComponent } from './features/helpdesk/board/helpdesk-board';
+import { DiscussionFeedComponent } from './features/discussions/feed/discussion-feed';
 
 @NgModule({
   declarations: [
     AppComponent,
     CoursesComponent,
-    HelpdeskBoardComponent
+    HelpdeskBoardComponent,
+    DiscussionFeedComponent
   ],
   imports: [
     BrowserModule,

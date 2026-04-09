@@ -12,6 +12,7 @@ export class NavbarComponent implements OnInit {
 
   // Ajouté pour corriger l'erreur navLinks
   navLinks = [
+    { label: "Community", path: "/community/feed", fragment: '' },
     { label: "Courses", path: "/courses", fragment: '' },
     { label: "Pricing", path: "/", fragment: "pricing" },
     { label: "Testimonials", path: "/", fragment: "testimonials" },

@@ -3,56 +3,108 @@ package tn.spring.gateway.Controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/discussions")
 public class DiscussionProxyController {
     private final ProxyForwarder proxy;
-    private final String appointmentServiceBaseUrl;
+    private final String discussionServiceBaseUrl;
 
     public DiscussionProxyController(ProxyForwarder proxy,
-                                     @Value("${services.appointment.base-url:http://localhost:8087}") String appointmentServiceBaseUrl) {
+                                     @Value("${services.discussion.base-url:http://localhost:8088}") String discussionServiceBaseUrl) {
         this.proxy = proxy;
-        this.appointmentServiceBaseUrl = appointmentServiceBaseUrl;
+        this.discussionServiceBaseUrl = discussionServiceBaseUrl;
     }
 
+    @GetMapping("/feed")
+    public ResponseEntity<String> feed(@RequestParam(required = false) String scope,
+                                       @RequestParam(required = false) String level,
+                                       @RequestParam(required = false) String courseId,
+                                       @RequestParam(required = false) String viewerLevel,
+                                       HttpServletRequest req) {
+        StringBuilder url = new StringBuilder(discussionServiceBaseUrl + "/api/discussions/feed");
 
-    @PostMapping("/groups")
-    public ResponseEntity<String> createGroup(@RequestBody Map<String, Object> body, HttpServletRequest req) {
-        return proxy.forward(appointmentServiceBaseUrl + "/api/discussions/groups", HttpMethod.POST, body, req);
+        boolean hasQuery = false;
+        hasQuery = appendQueryParam(url, hasQuery, "scope", scope);
+        hasQuery = appendQueryParam(url, hasQuery, "level", level);
+        hasQuery = appendQueryParam(url, hasQuery, "courseId", courseId);
+        appendQueryParam(url, hasQuery, "viewerLevel", viewerLevel);
+
+        return proxy.forward(url.toString(), HttpMethod.GET, null, req);
     }
 
-    @GetMapping("/groups/user/{userId}")
-    public ResponseEntity<String> getMyGroups(@PathVariable String userId, HttpServletRequest req) {
-        return proxy.forward(appointmentServiceBaseUrl + "/api/discussions/groups/user/" + userId, HttpMethod.GET, null, req);
+    @PostMapping("/posts")
+    public ResponseEntity<String> createPost(@RequestBody Map<String, Object> body, HttpServletRequest req) {
+        return proxy.forward(discussionServiceBaseUrl + "/api/discussions/posts", HttpMethod.POST, body, req);
     }
 
-    @GetMapping("/groups/all")
-    public ResponseEntity<String> getAllGroups(HttpServletRequest req) {
-        return proxy.forward(appointmentServiceBaseUrl + "/api/discussions/groups/all", HttpMethod.GET, null, req);
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<String> getPost(@PathVariable Long postId,
+                                          @RequestParam(required = false) String viewerLevel,
+                                          HttpServletRequest req) {
+        String url = discussionServiceBaseUrl + "/api/discussions/posts/" + postId;
+        if (viewerLevel != null && !viewerLevel.isBlank()) {
+            url += "?viewerLevel=" + UriUtils.encode(viewerLevel, StandardCharsets.UTF_8);
+        }
+        return proxy.forward(url, HttpMethod.GET, null, req);
     }
 
-    @PutMapping("/groups/{id}")
-    public ResponseEntity<String> updateGroup(@PathVariable String id, @RequestBody Map<String, Object> body, HttpServletRequest req) {
-        return proxy.forward(appointmentServiceBaseUrl + "/api/discussions/groups/" + id, HttpMethod.PUT, body, req);
+    @PostMapping("/posts/{postId}/comments")
+    public ResponseEntity<String> addComment(@PathVariable Long postId,
+                                             @RequestParam(required = false) String viewerLevel,
+                                             @RequestBody Map<String, Object> body,
+                                             HttpServletRequest req) {
+        String url = discussionServiceBaseUrl + "/api/discussions/posts/" + postId + "/comments";
+        if (viewerLevel != null && !viewerLevel.isBlank()) {
+            url += "?viewerLevel=" + UriUtils.encode(viewerLevel, StandardCharsets.UTF_8);
+        }
+        return proxy.forward(url, HttpMethod.POST, body, req);
     }
 
-    @DeleteMapping("/groups/{id}")
-    public ResponseEntity<String> deleteGroup(@PathVariable String id, HttpServletRequest req) {
-        return proxy.forward(appointmentServiceBaseUrl + "/api/discussions/groups/" + id, HttpMethod.DELETE, null, req);
+    @PostMapping("/posts/{postId}/reactions")
+    public ResponseEntity<String> addReaction(@PathVariable Long postId,
+                                              @RequestParam(required = false) String viewerLevel,
+                                              @RequestBody Map<String, Object> body,
+                                              HttpServletRequest req) {
+        String url = discussionServiceBaseUrl + "/api/discussions/posts/" + postId + "/reactions";
+        if (viewerLevel != null && !viewerLevel.isBlank()) {
+            url += "?viewerLevel=" + UriUtils.encode(viewerLevel, StandardCharsets.UTF_8);
+        }
+        return proxy.forward(url, HttpMethod.POST, body, req);
     }
 
-    // Dans DiscussionProxyController.java (Projet GATEWAY - 8090)
-
-    @GetMapping("/groups/{groupId}/messages")
-    public ResponseEntity<String> getHistory(@PathVariable String groupId, HttpServletRequest req) {
-        String backendUrl = appointmentServiceBaseUrl + "/api/discussions/groups/" + groupId + "/messages";
-
-        return proxy.forward(backendUrl, HttpMethod.GET, null, req);
+    @GetMapping(value = "/media/{fileName:.+}", produces = MediaType.ALL_VALUE)
+    public ResponseEntity<byte[]> media(@PathVariable String fileName, HttpServletRequest req) {
+        String encodedFileName = UriUtils.encodePathSegment(fileName, StandardCharsets.UTF_8);
+        String url = discussionServiceBaseUrl + "/api/discussions/media/" + encodedFileName;
+        return proxy.forwardBytes(url, HttpMethod.GET, null, req);
     }
 
+    private boolean appendQueryParam(StringBuilder url,
+                                     boolean hasQuery,
+                                     String key,
+                                     String value) {
+        if (value == null || value.isBlank()) {
+            return hasQuery;
+        }
+
+        if (!hasQuery) {
+            url.append('?');
+        } else {
+            url.append('&');
+        }
+
+        url.append(key)
+                .append('=')
+                .append(UriUtils.encode(value, StandardCharsets.UTF_8));
+
+        return true;
+    }
 }

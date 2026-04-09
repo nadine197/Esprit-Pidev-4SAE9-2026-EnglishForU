@@ -12,6 +12,7 @@ import { TutorDashboardComponent } from './features/tutor/dashboard/tutor-dashbo
 import { TutorLayoutComponent } from './features/tutor/layout/tutor-layout';
 import { StudentHomeComponent } from './features/student/student-home/student-home';
 import { HelpdeskBoardComponent } from './features/helpdesk/board/helpdesk-board';
+import { DiscussionFeedComponent } from './features/discussions/feed/discussion-feed';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -49,6 +50,11 @@ const routes: Routes = [
     component: HelpdeskBoardComponent,
     
     data: { roles: ['HELP_DESK'] }
+  },
+  {
+    path: 'community/feed',
+    component: DiscussionFeedComponent,
+    canActivate: [authGuard]
   },
   { path: '', redirectTo: 'main', pathMatch: 'full' }
 ];
