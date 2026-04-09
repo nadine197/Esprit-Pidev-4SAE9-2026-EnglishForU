@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AuthService } from '../../../services/auth.service';
-import { ReportCategory, ReportSeverity, ReportStatus, ReportTicket, ReportsService, UpdateHelpdeskReportPayload } from '../../../services/reports.service';
-import { Subject, interval, Subscription } from 'rxjs';
+import { ReportActivity, ReportCategory, ReportComment, ReportSeverity, ReportStatus, ReportTicket, ReportsService, UpdateHelpdeskReportPayload } from '../../../services/reports.service';
+import { Subject, forkJoin, interval, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 export interface ReportWithAge extends ReportTicket {
@@ -56,6 +56,13 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
   modalErrorMessage = '';
   activeTicket: ReportWithAge | null = null;
   editDraft: ReportEditDraft = this.emptyDraft();
+  reportComments: ReportComment[] = [];
+  reportActivity: ReportActivity[] = [];
+  isTimelineLoading = false;
+  commentDraft = '';
+  requestInfoDraft = '';
+  isSendingComment = false;
+  isSendingRequestInfo = false;
 
   currentUser: any = null;
   private destroy$ = new Subject<void>();
@@ -232,15 +239,25 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
       appVersion: report.appVersion ?? ''
     };
     this.modalErrorMessage = '';
+    this.commentDraft = '';
+    this.requestInfoDraft = '';
     this.isModalOpen = true;
+    this.loadReportTimeline(report.id);
   }
 
   closeTicketModal(): void {
     this.isModalOpen = false;
     this.isSavingModal = false;
+    this.isTimelineLoading = false;
+    this.isSendingComment = false;
+    this.isSendingRequestInfo = false;
     this.modalErrorMessage = '';
     this.activeTicket = null;
     this.editDraft = this.emptyDraft();
+    this.reportComments = [];
+    this.reportActivity = [];
+    this.commentDraft = '';
+    this.requestInfoDraft = '';
   }
 
   saveTicketChanges(): void {
@@ -279,6 +296,7 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.activeTicket = updatedTicket;
         this.updateReportAges();
         this.isSavingModal = false;
+        this.loadReportTimeline(updatedTicket.id);
       },
       error: (error) => {
         const backendMessage = error?.error?.message;
@@ -299,6 +317,7 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.replaceReport(updatedTicket);
         this.activeTicket = updatedTicket;
         this.updateReportAges();
+        this.loadReportTimeline(updatedTicket.id);
       }
     });
   }
@@ -314,6 +333,65 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.replaceReport(updatedTicket);
         this.activeTicket = updatedTicket;
         this.updateReportAges();
+        this.loadReportTimeline(updatedTicket.id);
+      }
+    });
+  }
+
+  addCommentFromModal(): void {
+    if (!this.activeTicket || this.isSendingComment) {
+      return;
+    }
+
+    const message = this.commentDraft.trim();
+    if (!message) {
+      this.modalErrorMessage = 'Comment message cannot be empty.';
+      return;
+    }
+
+    this.modalErrorMessage = '';
+    this.isSendingComment = true;
+
+    this.reportsService.addReportComment(this.activeTicket.id, { message }).subscribe({
+      next: () => {
+        this.commentDraft = '';
+        this.isSendingComment = false;
+        this.loadReportTimeline(this.activeTicket!.id);
+      },
+      error: (error) => {
+        this.modalErrorMessage = error?.error?.message || 'Failed to add comment.';
+        this.isSendingComment = false;
+      }
+    });
+  }
+
+  requestInfoFromModal(): void {
+    if (!this.activeTicket || this.isSendingRequestInfo) {
+      return;
+    }
+
+    const requestInfoMessage = this.requestInfoDraft.trim();
+    if (!requestInfoMessage) {
+      this.modalErrorMessage = 'Request information message cannot be empty.';
+      return;
+    }
+
+    this.modalErrorMessage = '';
+    this.isSendingRequestInfo = true;
+
+    this.reportsService.updateHelpdeskReport(this.activeTicket.id, { requestInfoMessage }).subscribe({
+      next: (updated) => {
+        const updatedTicket = updated as ReportWithAge;
+        this.replaceReport(updatedTicket);
+        this.activeTicket = updatedTicket;
+        this.updateReportAges();
+        this.requestInfoDraft = '';
+        this.isSendingRequestInfo = false;
+        this.loadReportTimeline(updatedTicket.id);
+      },
+      error: (error) => {
+        this.modalErrorMessage = error?.error?.message || 'Failed to request additional information.';
+        this.isSendingRequestInfo = false;
       }
     });
   }
@@ -460,6 +538,50 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
 
   private replaceReport(updated: ReportTicket): void {
     this.reports = this.reports.map((report) => report.id === updated.id ? { ...updated as ReportWithAge } : report);
+  }
+
+  private loadReportTimeline(reportId: number): void {
+    this.isTimelineLoading = true;
+
+    forkJoin({
+      comments: this.reportsService.getReportComments(reportId),
+      activity: this.reportsService.getReportActivity(reportId)
+    }).subscribe({
+      next: ({ comments, activity }) => {
+        this.reportComments = comments;
+        this.reportActivity = activity;
+        this.isTimelineLoading = false;
+      },
+      error: () => {
+        this.reportComments = [];
+        this.reportActivity = [];
+        this.isTimelineLoading = false;
+      }
+    });
+  }
+
+  getActivityLabel(type: ReportActivity['type']): string {
+    switch (type) {
+      case 'REPORT_CREATED':
+        return 'Ticket created';
+      case 'STATUS_CHANGED':
+        return 'Status changed';
+      case 'ASSIGNED':
+        return 'Assigned';
+      case 'UNASSIGNED':
+        return 'Unassigned';
+      case 'COMMENT_ADDED':
+        return 'Comment added';
+      case 'REQUEST_INFO':
+        return 'Request info';
+      default:
+        return type;
+    }
+  }
+
+  getUserDisplayName(name?: string | null, lastName?: string | null, fallback?: string | null): string {
+    const fullName = `${name ?? ''} ${lastName ?? ''}`.trim();
+    return fullName || fallback || 'Unknown user';
   }
 
   private emptyDraft(): ReportEditDraft {

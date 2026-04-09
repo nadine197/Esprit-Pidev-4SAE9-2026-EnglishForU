@@ -23,6 +23,7 @@ import tn.spring.user.Repositories.UserRepos;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -53,6 +54,7 @@ class ReportFeatureIntegrationTest {
     private User reporter;
     private User helpDeskA;
     private User helpDeskB;
+        private User outsider;
 
     @BeforeEach
     void setup() {
@@ -85,6 +87,15 @@ class ReportFeatureIntegrationTest {
                 .password("encoded")
                 .active(true)
                 .role(UserRole.HELP_DESK)
+                .build());
+
+        outsider = userRepos.save(User.builder()
+                .name("Other")
+                .lastName("Student")
+                .email("other.student@englishforu.local")
+                .password("encoded")
+                .active(true)
+                .role(UserRole.STUDENT)
                 .build());
     }
 
@@ -146,5 +157,102 @@ class ReportFeatureIntegrationTest {
 
         Report updated = reportRepo.findById(report.getId()).orElseThrow();
         assertThat(updated.getStatus()).isEqualTo(ReportStatus.IN_PROGRESS);
+    }
+
+    @Test
+    void invalidStatusTransitionReturnsBadRequest() throws Exception {
+        Report report = reportRepo.save(Report.builder()
+                .title("Cannot upload assignment")
+                .category(ReportCategory.BUG)
+                .severity(ReportSeverity.HIGH)
+                .description("Upload fails immediately")
+                .status(ReportStatus.NEW)
+                .createdByUser(reporter)
+                .build());
+
+        Map<String, Object> payload = Map.of("status", "DONE");
+
+        mockMvc.perform(patch("/api/helpdesk/reports/{id}", report.getId())
+                        .with(user(helpDeskA.getEmail()).authorities(new SimpleGrantedAuthority("HELP_DESK")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void commentEndpointsPersistCommentAndExposeActivityTrail() throws Exception {
+        Report report = reportRepo.save(Report.builder()
+                .title("Lesson page bug")
+                .category(ReportCategory.BUG)
+                .severity(ReportSeverity.MEDIUM)
+                .description("Lesson page freezes")
+                .status(ReportStatus.NEW)
+                .createdByUser(reporter)
+                .build());
+
+        Map<String, Object> commentPayload = Map.of("message", "Can you share your browser version?");
+
+        mockMvc.perform(post("/api/helpdesk/reports/{id}/comments", report.getId())
+                        .with(user(helpDeskA.getEmail()).authorities(new SimpleGrantedAuthority("HELP_DESK")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentPayload)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Can you share your browser version?"));
+
+        mockMvc.perform(get("/api/reports/{id}/comments", report.getId())
+                        .with(user(reporter.getEmail()).authorities(new SimpleGrantedAuthority("STUDENT"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].message").value("Can you share your browser version?"));
+
+        mockMvc.perform(get("/api/helpdesk/reports/{id}/activity", report.getId())
+                        .with(user(helpDeskA.getEmail()).authorities(new SimpleGrantedAuthority("HELP_DESK"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].type").value("COMMENT_ADDED"));
+    }
+
+    @Test
+    void requestInfoMessageCreatesReporterNotification() throws Exception {
+        Report report = reportRepo.save(Report.builder()
+                .title("Course reload issue")
+                .category(ReportCategory.ISSUE)
+                .severity(ReportSeverity.MEDIUM)
+                .description("Course list refreshes repeatedly")
+                .status(ReportStatus.TRIAGED)
+                .createdByUser(reporter)
+                .build());
+
+        Map<String, Object> payload = Map.of("requestInfoMessage", "Please share a screenshot and exact timestamp");
+
+        mockMvc.perform(patch("/api/helpdesk/reports/{id}", report.getId())
+                        .with(user(helpDeskA.getEmail()).authorities(new SimpleGrantedAuthority("HELP_DESK")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/reports/{id}/comments", report.getId())
+                        .with(user(reporter.getEmail()).authorities(new SimpleGrantedAuthority("STUDENT"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].message").value("Please share a screenshot and exact timestamp"));
+
+        assertThat(notificationRepo.findByRecipientUserOrderByCreatedAtDesc(reporter)).hasSize(1);
+    }
+
+    @Test
+    void nonOwnerNonStaffCannotReadReportDetails() throws Exception {
+        Report report = reportRepo.save(Report.builder()
+                .title("Grammar checker issue")
+                .category(ReportCategory.BUG)
+                .severity(ReportSeverity.LOW)
+                .description("Minor rendering issue")
+                .status(ReportStatus.NEW)
+                .createdByUser(reporter)
+                .build());
+
+        mockMvc.perform(get("/api/reports/{id}", report.getId())
+                        .with(user(outsider.getEmail()).authorities(new SimpleGrantedAuthority("STUDENT"))))
+                .andExpect(status().isForbidden());
     }
 }

@@ -6,6 +6,13 @@ import { environment } from '../../environments/environment';
 export type ReportCategory = 'BUG' | 'ISSUE' | 'FEATURE_REQUEST';
 export type ReportSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export type ReportStatus = 'NEW' | 'TRIAGED' | 'IN_PROGRESS' | 'DONE' | 'CLOSED';
+export type ReportActivityType =
+  | 'REPORT_CREATED'
+  | 'STATUS_CHANGED'
+  | 'ASSIGNED'
+  | 'UNASSIGNED'
+  | 'COMMENT_ADDED'
+  | 'REQUEST_INFO';
 
 export interface ReportUserSummary {
   id: string;
@@ -32,6 +39,29 @@ export interface ReportTicket {
   pageUrl?: string | null;
   userAgent?: string | null;
   appVersion?: string | null;
+}
+
+export interface ReportComment {
+  id: number;
+  reportId: number;
+  message: string;
+  createdAt: string;
+  author: ReportUserSummary;
+}
+
+export interface ReportActivity {
+  id: number;
+  reportId: number;
+  type: ReportActivityType;
+  fromStatus?: ReportStatus | null;
+  toStatus?: ReportStatus | null;
+  details?: string | null;
+  createdAt: string;
+  actor?: ReportUserSummary | null;
+}
+
+export interface AddReportCommentPayload {
+  message: string;
 }
 
 export interface CreateReportPayload {
@@ -62,6 +92,7 @@ export interface UpdateHelpdeskReportPayload {
   assignedToUserId?: string;
   assignToMe?: boolean;
   unassign?: boolean;
+  requestInfoMessage?: string;
 }
 
 @Injectable({
@@ -97,6 +128,30 @@ export class ReportsService {
 
   updateHelpdeskReport(id: number, payload: UpdateHelpdeskReportPayload): Observable<ReportTicket> {
     return this.http.patch<ReportTicket>(`${this.resolveBaseUrl()}/api/helpdesk/reports/${id}`, payload, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getReportById(id: number): Observable<ReportTicket> {
+    return this.http.get<ReportTicket>(`${this.resolveBaseUrl()}/api/reports/${id}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getReportComments(id: number): Observable<ReportComment[]> {
+    return this.http.get<ReportComment[]>(`${this.resolveBaseUrl()}/api/reports/${id}/comments`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  addReportComment(id: number, payload: AddReportCommentPayload): Observable<ReportComment> {
+    return this.http.post<ReportComment>(`${this.resolveBaseUrl()}/api/reports/${id}/comments`, payload, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getReportActivity(id: number): Observable<ReportActivity[]> {
+    return this.http.get<ReportActivity[]>(`${this.resolveBaseUrl()}/api/reports/${id}/activity`, {
       headers: this.getHeaders()
     });
   }

@@ -193,6 +193,76 @@
             <button type="button" class="secondary-btn" (click)="assignToMeFromModal()">Assign to me</button>
             <button type="button" class="secondary-btn muted" (click)="unassignFromModal()">Unassign</button>
           </div>
+
+          <div class="request-info-box">
+            <label class="field-label">Request More Info</label>
+            <textarea
+              class="modal-textarea small"
+              [(ngModel)]="requestInfoDraft"
+              placeholder="Ask the reporter for extra context..."
+            ></textarea>
+            <button
+              type="button"
+              class="secondary-btn"
+              [disabled]="isSendingRequestInfo"
+              (click)="requestInfoFromModal()"
+            >
+              {{ isSendingRequestInfo ? 'Sending...' : 'Send Request' }}
+            </button>
+          </div>
+
+          <section class="timeline-section">
+            <div class="timeline-header">
+              <h3>Comments</h3>
+            </div>
+
+            <div class="comment-composer">
+              <textarea
+                class="modal-textarea small"
+                [(ngModel)]="commentDraft"
+                placeholder="Add a comment for the ticket thread..."
+              ></textarea>
+              <button
+                type="button"
+                class="primary-btn"
+                [disabled]="isSendingComment"
+                (click)="addCommentFromModal()"
+              >
+                {{ isSendingComment ? 'Posting...' : 'Post Comment' }}
+              </button>
+            </div>
+
+            <div *ngIf="isTimelineLoading" class="timeline-loading">Loading timeline...</div>
+
+            <div class="timeline-list" *ngIf="!isTimelineLoading">
+              <p class="timeline-empty" *ngIf="reportComments.length === 0">No comments yet.</p>
+              <article class="timeline-item" *ngFor="let comment of reportComments">
+                <header>
+                  <strong>{{ getUserDisplayName(comment.author.name, comment.author.lastName, comment.author.email) }}</strong>
+                  <time>{{ comment.createdAt | date:'short' }}</time>
+                </header>
+                <p>{{ comment.message }}</p>
+              </article>
+            </div>
+
+            <div class="timeline-header activity-title">
+              <h3>Activity</h3>
+            </div>
+
+            <div class="timeline-list" *ngIf="!isTimelineLoading">
+              <p class="timeline-empty" *ngIf="reportActivity.length === 0">No activity yet.</p>
+              <article class="timeline-item" *ngFor="let activity of reportActivity">
+                <header>
+                  <strong>{{ getActivityLabel(activity.type) }}</strong>
+                  <time>{{ activity.createdAt | date:'short' }}</time>
+                </header>
+                <p>{{ activity.details || 'No details provided.' }}</p>
+                <small *ngIf="activity.actor">
+                  by {{ getUserDisplayName(activity.actor.name, activity.actor.lastName, activity.actor.email) }}
+                </small>
+              </article>
+            </div>
+          </section>
         </aside>
       </div>
 

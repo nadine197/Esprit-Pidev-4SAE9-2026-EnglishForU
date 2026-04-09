@@ -38,4 +38,26 @@ public class HelpdeskReportProxyController {
                                          HttpServletRequest req) {
         return proxy.forward(userServiceBaseUrl + "/api/helpdesk/reports/" + id, HttpMethod.PATCH, body, req);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<String> byId(@PathVariable Long id, HttpServletRequest req) {
+        return proxy.forward(userServiceBaseUrl + "/api/helpdesk/reports/" + id, HttpMethod.GET, null, req);
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<String> listComments(@PathVariable Long id, HttpServletRequest req) {
+        return proxy.forward(userServiceBaseUrl + "/api/helpdesk/reports/" + id + "/comments", HttpMethod.GET, null, req);
+    }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<String> addComment(@PathVariable Long id,
+                                             @RequestBody Map<String, Object> body,
+                                             HttpServletRequest req) {
+        return proxy.forward(userServiceBaseUrl + "/api/helpdesk/reports/" + id + "/comments", HttpMethod.POST, body, req);
+    }
+
+    @GetMapping("/{id}/activity")
+    public ResponseEntity<String> activity(@PathVariable Long id, HttpServletRequest req) {
+        return proxy.forward(userServiceBaseUrl + "/api/helpdesk/reports/" + id + "/activity", HttpMethod.GET, null, req);
+    }
 }

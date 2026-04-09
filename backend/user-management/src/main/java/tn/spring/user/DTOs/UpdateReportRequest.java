@@ -24,4 +24,5 @@ public class UpdateReportRequest {
     private UUID assignedToUserId;
     private Boolean unassign;
     private Boolean assignToMe;
+    private String requestInfoMessage;
 }

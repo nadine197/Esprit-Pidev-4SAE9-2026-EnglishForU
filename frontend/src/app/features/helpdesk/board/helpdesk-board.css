@@ -545,6 +545,51 @@
   gap: 0.5rem;
 }
 
+.timeline-section {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comment-composer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.timeline-loading,
+.timeline-empty {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 170px;
+  overflow: auto;
+}
+
+.timeline-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.timeline-item p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #334155;
+}
+
 .ticket-modal-footer {
   display: flex;
   justify-content: space-between;
