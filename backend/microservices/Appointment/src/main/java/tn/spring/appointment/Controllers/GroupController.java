@@ -5,28 +5,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.appointment.Models.DiscussionGroup;
 import tn.spring.appointment.Repositories.GroupRepository;
-import tn.spring.appointment.Services.GroupService;
-
 import java.util.List;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/discussions")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class GroupController {
+
     private final GroupRepository repository;
 
-    @GetMapping("/groups/user/{userId}")
-    public List<DiscussionGroup> getMyGroups(@PathVariable String userId) {
-        System.out.println("RECHERCHE DE GROUPES POUR L'ID : [" + userId + "]"); // <--- LOG CRUCIAL
-        List<DiscussionGroup> groups = repository.findGroupsByMemberId(userId);
-        System.out.println("NOMBRE DE GROUPES TROUVÉS : " + groups.size());
-        return groups;
+    // --- CETTE MÉTHODE EST CELLE UTILISÉE PAR SAMIRA ET LES TUTEURS ---
+    @GetMapping("/groups/user/{email}")
+    public ResponseEntity<List<DiscussionGroup>> getMyGroups(@PathVariable String email) {
+        System.out.println("Recherche des groupes pour l'email : " + email);
+
+        // On utilise la méthode qui existe dans le Repository
+        List<DiscussionGroup> groups = repository.findByTutorEmailOrStudentEmailsContaining(email, email);
+
+        System.out.println("Groupes trouvés : " + groups.size());
+        return ResponseEntity.ok(groups);
     }
 
-    @GetMapping("/groups/all") // Pour l'admin
+    @GetMapping("/groups/all")
     public List<DiscussionGroup> getAll() {
         return repository.findAll();
+    }
+
+    @PostMapping("/groups")
+    public DiscussionGroup create(@RequestBody DiscussionGroup group) {
+        group.setCreatedAt(LocalDateTime.now());
+        return repository.save(group);
     }
 
     @PutMapping("/groups/{id}")
@@ -35,9 +46,9 @@ public class GroupController {
                 .orElseThrow(() -> new RuntimeException("Group not found"));
 
         group.setGroupName(groupDetails.getGroupName());
-        group.setTutorId(groupDetails.getTutorId());
+        group.setTutorEmail(groupDetails.getTutorEmail());
         group.setTutorName(groupDetails.getTutorName());
-        group.setStudentIds(groupDetails.getStudentIds());
+        group.setStudentEmails(groupDetails.getStudentEmails());
 
         return repository.save(group);
     }
@@ -45,10 +56,5 @@ public class GroupController {
     @DeleteMapping("/groups/{id}")
     public void delete(@PathVariable UUID id) {
         repository.deleteById(id);
-    }
-
-    @PostMapping("/groups")
-    public DiscussionGroup create(@RequestBody DiscussionGroup group) {
-        return repository.save(group);
     }
 }

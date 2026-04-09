@@ -12,13 +12,12 @@ public class DiscussionGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-
     private String groupName;
-    private String tutorId;
+    private String tutorEmail; // Email du tuteur
     private String tutorName;
 
     @ElementCollection
-    private List<String> studentIds;
+    private List<String> studentEmails; // Liste des emails des étudiants
 
     private LocalDateTime createdAt;
 }
