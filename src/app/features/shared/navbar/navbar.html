@@ -19,7 +19,11 @@
       <!-- 1. SHOW THIS IF NOT LOGGED IN -->
       <ng-container *ngIf="!isLoggedIn">
         <a routerLink="/login" class="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg no-underline">Log in</a>
+<<<<<<< HEAD
         <a routerLink="/signup" class="bg-[#0066FF] text-white px-5 py-2.5 text-sm font-bold rounded-lg hover:bg-blue-600 transition-all no-underline">
+=======
+        <a routerLink="/register" class="bg-[#0066FF] text-white px-5 py-2.5 text-sm font-bold rounded-lg hover:bg-blue-600 transition-all no-underline">
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
           Get Started
         </a>
       </ng-container>
@@ -28,8 +32,13 @@
       <ng-container *ngIf="isLoggedIn">
         <div class="flex items-center gap-4">
           <div class="text-right hidden sm:block">
+<<<<<<< HEAD
             <p class="text-sm font-bold text-slate-900 leading-none mb-1">{{currentUser?.name}}</p>
             <span class="text-[10px] font-black uppercase text-[#0066FF] tracking-widest bg-blue-50 px-2 py-0.5 rounded">Student</span>
+=======
+            <p class="text-sm font-bold text-slate-900 leading-none mb-1">{{currentUser?.name}} {{currentUser?.lastName}}</p>
+            <span class="text-[10px] font-black uppercase text-[#0066FF] tracking-widest bg-blue-50 px-2 py-0.5 rounded">{{currentUser?.role}}</span>
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
           </div>
           <button (click)="logout()" class="p-2 bg-slate-50 text-slate-400 hover:text-red-500 rounded-full transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -38,4 +47,8 @@
       </ng-container>
     </div>
   </div>
+<<<<<<< HEAD
 </header>
+=======
+</header>
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)

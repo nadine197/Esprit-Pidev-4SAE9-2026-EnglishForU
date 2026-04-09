@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+<<<<<<< HEAD
 import { CourseService } from 'src/app/services/course.service';
 import { Course } from 'src/app/features/courses/models/courses';
+=======
+
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html'
@@ -19,6 +23,7 @@ export class DashboardComponent implements OnInit {
     { name: 'John Doe', email: 'john@example.com', role: 'STUDENT', status: 'Blocked', date: '2026-02-17' },
     { name: 'Ahmed Tutor', email: 'ahmed@lingua.com', role: 'TUTOR', status: 'Active', date: '2026-02-16' }
   ];
+<<<<<<< HEAD
   courses: Course[] = [];
   totalCourses = 0;
   loading = true;
@@ -64,3 +69,17 @@ export class DashboardComponent implements OnInit {
     console.log('Editing user:', user.name);
   }
 }
+=======
+
+  constructor() { }
+
+  ngOnInit(): void {
+    console.log('Admin Dashboard Initialized');
+  }
+
+  // Placeholder for action buttons
+  editUser(user: any) {
+    console.log('Editing user:', user.name);
+  }
+}
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)

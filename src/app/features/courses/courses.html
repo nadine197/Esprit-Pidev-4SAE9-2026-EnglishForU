@@ -1,5 +1,8 @@
 <div class="min-h-screen bg-slate-50">
+<<<<<<< HEAD
   <!-- Re-using your shared components -->
+=======
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
   <app-navbar></app-navbar>
 
   <!-- Hero Header -->
@@ -34,9 +37,15 @@
         <div class="p-8 flex flex-1 flex-col">
           <!-- Level Badge -->
           <div class="flex items-center gap-2 mb-4">
+<<<<<<< HEAD
             <span class="bg-blue-50 text-[#0066FF] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-blue-100">
               {{course.level}}
             </span>
+=======
+            <!-- <span class="bg-blue-50 text-[#0066FF] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-blue-100">
+              {{course.level}}
+            </span> -->
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
             <span class="text-slate-400 text-xs font-medium">{{course.duration}}</span>
           </div>
 
@@ -45,6 +54,7 @@
           </h3>
           
           <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-1">
+<<<<<<< HEAD
             {{course.desc}}
           </p>
 
@@ -54,6 +64,18 @@
             <button class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#0066FF] transition-all">
               View Course
             </button>
+=======
+            {{course.description}}
+          </p>
+
+          <div class="pt-6 border-t border-slate-50 flex items-center justify-between">
+            <div></div>
+<button 
+  (click)="goToDetails(course.courseid)"
+  class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#0066FF] transition-all">
+  View Course
+</button>
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
           </div>
         </div>
       </div>
@@ -63,12 +85,18 @@
   <!-- CTA Section: Placement Test -->
   <section class="container mx-auto px-4 py-20">
     <div class="bg-slate-900 rounded-[40px] p-12 text-center text-white relative overflow-hidden">
+<<<<<<< HEAD
       <!-- Decor circle -->
       <div class="absolute -top-20 -right-20 w-64 h-64 bg-[#0066FF] rounded-full blur-[100px] opacity-20"></div>
       
       <h2 class="text-3xl md:text-4xl font-bold mb-4 relative z-10">Not sure which level is right for you?</h2>
       <p class="text-slate-400 mb-8 relative z-10 max-w-lg mx-auto">Take our 15-minute online placement test and get an immediate recommendation.</p>
       
+=======
+      <div class="absolute -top-20 -right-20 w-64 h-64 bg-[#0066FF] rounded-full blur-[100px] opacity-20"></div>
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 relative z-10">Not sure which level is right for you?</h2>
+      <p class="text-slate-400 mb-8 relative z-10 max-w-lg mx-auto">Take our 15-minute online placement test and get an immediate recommendation.</p>
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
       <button class="bg-[#0066FF] text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-all relative z-10">
         Start Free Test
       </button>

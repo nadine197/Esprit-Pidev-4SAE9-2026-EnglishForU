@@ -1,0 +1,263 @@
+<section class="space-y-8">
+  <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#0066FF]">Quiz Management</p>
+      <h1 class="text-3xl font-black text-slate-900">Organize Course Quizzes</h1>
+      <p class="mt-2 max-w-2xl text-sm text-slate-500">
+        Search courses by name, sort them the way you need, and jump directly into quiz creation and editing.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <button
+        type="button"
+        (click)="toggleStatsPanel()"
+        [disabled]="loading || !coursesWithQuizzesCount"
+        class="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-3 text-sm font-bold text-[#0066FF] transition-all hover:border-blue-200 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {{ showStatsPanel ? 'Hide Quiz Stats' : 'Show Quiz Stats' }}
+      </button>
+      <button
+        type="button"
+        (click)="showAllQuizzes()"
+        class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-all hover:bg-slate-700"
+      >
+        Show All Quizzes
+      </button>
+      <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Total Courses</p>
+        <p class="mt-1 text-2xl font-black text-slate-900">{{ courses.length }}</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Visible Results</p>
+        <p class="mt-1 text-2xl font-black text-slate-900">{{ filteredCourses.length }}</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Quiz-Ready Courses</p>
+        <p class="mt-1 text-2xl font-black text-slate-900">{{ coursesWithQuizzesCount }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="grid gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(220px,0.8fr)_auto] lg:items-end">
+      <label class="block">
+        <span class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Search By Name</span>
+        <div class="relative">
+          <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </span>
+          <input
+            type="search"
+            [value]="searchQuery"
+            (input)="onSearchChange($event)"
+            placeholder="Search courses by title"
+            class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-12 pr-4 text-sm text-slate-700 outline-none transition-all focus:border-[#0066FF] focus:bg-white focus:ring-4 focus:ring-blue-100"
+          />
+        </div>
+      </label>
+
+      <label class="block">
+        <span class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Sort By</span>
+        <select
+          [value]="selectedSort"
+          (change)="onSortChange($event)"
+          class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-700 outline-none transition-all focus:border-[#0066FF] focus:bg-white focus:ring-4 focus:ring-blue-100"
+        >
+          <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </label>
+
+      <button
+        type="button"
+        (click)="resetFilters()"
+        [disabled]="!hasActiveFilters"
+        class="h-12 rounded-2xl border border-slate-200 px-5 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Reset
+      </button>
+    </div>
+
+    <div class="mt-5 flex flex-wrap items-center gap-3 text-sm text-slate-500">
+      <span class="rounded-full bg-slate-100 px-3 py-2 font-semibold">
+        Showing {{ filteredCourses.length }} of {{ courses.length }} courses
+      </span>
+      <span *ngIf="searchQuery.trim()" class="rounded-full bg-blue-50 px-3 py-2 font-semibold text-[#0066FF]">
+        Search: "{{ searchQuery.trim() }}"
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="rounded-[28px] border border-slate-200 bg-white px-6 py-10 text-center text-slate-500 shadow-sm">
+    Loading courses...
+  </div>
+
+  <section
+    *ngIf="showStatsPanel && !loading && !errorMessage"
+    class="overflow-hidden rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(96,165,250,0.18),_transparent_32%),linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] p-6 shadow-sm md:p-7"
+  >
+    <div class="grid gap-6 xl:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.7fr)]">
+      <div class="space-y-5">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[0.24em] text-[#0066FF]">Performance Window</p>
+          <h2 class="mt-2 text-3xl font-black text-slate-900">Most Active Quiz Tracks</h2>
+          <p class="mt-3 text-sm leading-6 text-slate-500">
+            A live snapshot of the visible courses with the highest quiz volume. Bars show each course share inside the current view.
+          </p>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+          <div class="rounded-[24px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+            <p class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Visible Quiz Volume</p>
+            <p class="mt-2 text-3xl font-black text-slate-900">{{ visibleQuizCount }}</p>
+            <p class="mt-2 text-sm text-slate-500">Total quizzes across the courses in your current filter.</p>
+          </div>
+
+          <div class="rounded-[24px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+            <p class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Courses With Quizzes</p>
+            <p class="mt-2 text-3xl font-black text-slate-900">{{ rankedCourseStats.length }}</p>
+            <p class="mt-2 text-sm text-slate-500">Top visible courses ranked by their quiz count.</p>
+          </div>
+        </div>
+
+        <div *ngIf="leadingCourseStat" class="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+          <p class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Leading Course</p>
+          <div class="mt-4 flex items-start gap-4">
+            <div
+              class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-lg font-black text-white"
+              [style.background]="leadingCourseStat.gradient"
+              [style.boxShadow]="'0 18px 36px ' + leadingCourseStat.shadowColor"
+            >
+              {{ leadingCourseStat.rank }}
+            </div>
+            <div>
+              <h3 class="text-lg font-black text-slate-900">{{ leadingCourseStat.title }}</h3>
+              <p class="mt-2 text-sm text-slate-500">
+                Course #{{ leadingCourseStat.courseId }} currently carries {{ leadingCourseStat.quizCount }} quizzes,
+                which is {{ leadingCourseStat.percentage }}% of the visible quiz load.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <div class="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Vertical Quiz Chart</p>
+            <h3 class="mt-2 text-2xl font-black text-slate-900">Course Quiz Distribution</h3>
+          </div>
+          <p class="text-sm font-medium text-slate-500">Top {{ rankedCourseStats.length || 0 }} visible courses</p>
+        </div>
+
+        <div *ngIf="rankedCourseStats.length; else noStatsState">
+          <div class="flex min-h-[360px] items-end gap-4 overflow-x-auto pb-2 pt-4">
+            <article
+              *ngFor="let stat of rankedCourseStats; trackBy: trackByStatCourseId"
+              class="flex min-w-[120px] flex-1 flex-col items-center"
+            >
+              <span
+                class="mb-3 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.16em]"
+                [style.background]="stat.badgeBackground"
+                [style.color]="stat.color"
+              >
+                {{ stat.percentage }}%
+              </span>
+
+              <div
+                class="relative flex w-full items-end justify-center rounded-t-[28px] px-3 pb-5 pt-6 transition-all"
+                [style.height.px]="stat.barHeight"
+                [style.background]="stat.gradient"
+                [style.boxShadow]="'0 22px 40px ' + stat.shadowColor"
+              >
+                <div class="absolute inset-x-3 top-3 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.16em] text-white/75">
+                  <span>#{{ stat.rank }}</span>
+                  <span>{{ stat.quizCount }}</span>
+                </div>
+
+                <div class="rounded-full bg-white/20 px-3 py-2 text-center text-sm font-black text-white backdrop-blur-sm">
+                  {{ stat.quizCount }} Quizzes
+                </div>
+              </div>
+
+              <div class="mt-4 text-center">
+                <p class="text-sm font-black text-slate-900">{{ stat.shortTitle }}</p>
+                <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Course #{{ stat.courseId }}</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <ng-template #noStatsState>
+          <div class="rounded-[24px] border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
+            <h4 class="text-xl font-black text-slate-900">No quiz activity for this filter</h4>
+            <p class="mt-2 text-sm text-slate-500">
+              Broaden the search or clear the filters to reveal the course quiz stats.
+            </p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="!loading && errorMessage" class="rounded-[28px] border border-red-200 bg-red-50 px-6 py-5 text-sm font-medium text-red-700">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && !courses.length" class="rounded-[28px] border border-slate-200 bg-white px-6 py-10 text-center text-slate-500 shadow-sm">
+    No courses found yet.
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && courses.length && !filteredCourses.length" class="rounded-[28px] border border-slate-200 bg-white px-6 py-10 text-center shadow-sm">
+    <h2 class="text-xl font-bold text-slate-900">No courses match your filters</h2>
+    <p class="mt-2 text-sm text-slate-500">Try another name or reset the sorting and search options.</p>
+    <button
+      type="button"
+      (click)="resetFilters()"
+      class="mt-5 inline-flex items-center justify-center rounded-2xl bg-[#0066FF] px-5 py-3 text-sm font-bold text-white transition-all hover:bg-blue-600"
+    >
+      Clear Filters
+    </button>
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && filteredCourses.length" class="grid gap-6 xl:grid-cols-2">
+    <article
+      *ngFor="let course of filteredCourses; trackBy: trackByCourseId"
+      class="rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+    >
+      <div class="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900">{{ course.title }}</h2>
+          <p class="mt-3 text-sm leading-6 text-slate-500">{{ course.description }}</p>
+        </div>
+        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl font-black text-[#0066FF]">
+          Q
+        </div>
+      </div>
+
+      <div class="mb-6 flex flex-wrap gap-3 text-xs font-bold uppercase tracking-wide text-slate-500">
+        <span class="rounded-full bg-slate-100 px-3 py-2">{{ course.durationLabel }}</span>
+        <span class="rounded-full bg-slate-100 px-3 py-2">Course #{{ course.courseid }}</span>
+        <span class="rounded-full bg-blue-50 px-3 py-2 text-[#0066FF]">{{ course.quizCount }} Quiz{{ course.quizCount === 1 ? '' : 'zes' }}</span>
+      </div>
+
+      <div class="flex items-center justify-between gap-4 border-t border-slate-100 pt-5">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Next Step</p>
+          <p class="mt-1 text-sm font-medium text-slate-600">Open this course and manage its quizzes</p>
+        </div>
+
+        <button
+          type="button"
+          (click)="manageCourseQuizzes(course.courseid)"
+          class="inline-flex items-center justify-center rounded-2xl bg-[#0066FF] px-5 py-3 text-sm font-bold text-white transition-all hover:bg-blue-600"
+        >
+          Manage Quizzes
+        </button>
+      </div>
+    </article>
+  </div>
+</section>
