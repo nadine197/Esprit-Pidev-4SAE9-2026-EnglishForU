@@ -8,6 +8,7 @@ import tn.spring.user.DTOs.NotificationResponse;
 import tn.spring.user.Services.NotificationService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -19,6 +20,12 @@ public class NotificationController {
     @GetMapping
     public ResponseEntity<List<NotificationResponse>> getNotifications(Authentication authentication) {
         return ResponseEntity.ok(notificationService.getMyNotifications(authentication.getName()));
+    }
+
+    @GetMapping("/unread-count")
+    public ResponseEntity<Map<String, Long>> getUnreadCount(Authentication authentication) {
+        long unreadCount = notificationService.getUnreadCount(authentication.getName());
+        return ResponseEntity.ok(Map.of("unreadCount", unreadCount));
     }
 
     @PostMapping("/{id}/read")

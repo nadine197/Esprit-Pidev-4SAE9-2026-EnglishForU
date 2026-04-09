@@ -24,6 +24,11 @@ public class NotificationProxyController {
         return proxy.forward(userServiceBaseUrl + "/api/notifications", HttpMethod.GET, null, req);
     }
 
+    @GetMapping("/unread-count")
+    public ResponseEntity<String> unreadCount(HttpServletRequest req) {
+        return proxy.forward(userServiceBaseUrl + "/api/notifications/unread-count", HttpMethod.GET, null, req);
+    }
+
     @PostMapping("/{id}/read")
     public ResponseEntity<String> markRead(@PathVariable Long id, HttpServletRequest req) {
         return proxy.forward(userServiceBaseUrl + "/api/notifications/" + id + "/read", HttpMethod.POST, null, req);

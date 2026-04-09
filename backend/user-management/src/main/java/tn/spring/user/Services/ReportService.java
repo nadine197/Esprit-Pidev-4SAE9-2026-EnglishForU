@@ -6,15 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import tn.spring.user.DTOs.CreateReportRequest;
+import tn.spring.user.DTOs.NotificationPublishRequest;
 import tn.spring.user.DTOs.ReportResponse;
 import tn.spring.user.DTOs.UpdateReportRequest;
 import tn.spring.user.Enums.NotificationType;
 import tn.spring.user.Enums.ReportStatus;
 import tn.spring.user.Enums.UserRole;
-import tn.spring.user.Models.Notification;
 import tn.spring.user.Models.Report;
 import tn.spring.user.Models.User;
-import tn.spring.user.Repositories.NotificationRepo;
 import tn.spring.user.Repositories.ReportRepo;
 import tn.spring.user.Repositories.UserRepos;
 
@@ -27,7 +26,7 @@ import java.util.UUID;
 public class ReportService {
 
     private final ReportRepo reportRepo;
-    private final NotificationRepo notificationRepo;
+    private final NotificationPublisher notificationPublisher;
     private final UserRepos userRepos;
 
     public ReportResponse createReport(CreateReportRequest request, String currentUserEmail) {
@@ -143,23 +142,15 @@ public class ReportService {
     }
 
     private void createHelpDeskNotifications(Report report, User reporter) {
-        List<User> helpDeskUsers = userRepos.findByRole(UserRole.HELP_DESK);
-        if (helpDeskUsers.isEmpty()) {
-            return;
-        }
+        NotificationPublishRequest notificationRequest = NotificationPublishRequest.builder()
+                .type(NotificationType.REPORT_CREATED)
+                .title("New report submitted")
+                .message("" + reporter.getName() + " " + reporter.getLastName() + " reported: " + report.getTitle())
+                .link("/helpdesk/board?ticketId=" + report.getId())
+                .reportId(report.getId())
+                .build();
 
-        List<Notification> notifications = helpDeskUsers.stream()
-                .map(helpDeskUser -> Notification.builder()
-                        .recipientUser(helpDeskUser)
-                        .report(report)
-                        .type(NotificationType.REPORT_CREATED)
-                        .title("New report submitted")
-                        .message("" + reporter.getName() + " " + reporter.getLastName() + " reported: " + report.getTitle())
-                        .link("/helpdesk/board?ticketId=" + report.getId())
-                        .build())
-                .toList();
-
-        notificationRepo.saveAll(notifications);
+        notificationPublisher.publishToRole(UserRole.HELP_DESK, notificationRequest);
     }
 
     private User findUserByEmail(String email) {

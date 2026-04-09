@@ -3,7 +3,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export type NotificationType = 'REPORT_CREATED';
+export type NotificationType =
+  | 'REPORT_CREATED'
+  | 'REPORT_ASSIGNED'
+  | 'REPORT_STATUS_CHANGED'
+  | 'REPORT_COMMENT_ADDED'
+  | 'DISCUSSION_POST_CREATED'
+  | 'DISCUSSION_COMMENT_ADDED'
+  | 'DISCUSSION_REACTION_ADDED'
+  | 'SYSTEM_ALERT';
 
 export interface AppNotification {
   id: number;
@@ -32,6 +40,12 @@ export class NotificationsService {
 
   markRead(id: number): Observable<AppNotification> {
     return this.http.post<AppNotification>(`${this.resolveBaseUrl()}/api/notifications/${id}/read`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
+  unreadCount(): Observable<{ unreadCount: number }> {
+    return this.http.get<{ unreadCount: number }>(`${this.resolveBaseUrl()}/api/notifications/unread-count`, {
       headers: this.getHeaders()
     });
   }
