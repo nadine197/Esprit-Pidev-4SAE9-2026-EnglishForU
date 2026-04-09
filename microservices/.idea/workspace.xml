@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="515ab16b-ac31-47f0-80b6-8c3d658ba3a6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Course/src/main/java/tn/spring/course/CourseRestApi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Event/src/main/java/tn/spring/event/EventRestApi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Group/src/main/java/tn/spring/group/GroupRestApi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification/src/main/java/tn/spring/notification/NotificationRestApi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Package/src/main/java/tn/spring/packagee/PackageRestApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/src/main/java/com/esprit/eureka/EurekaApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../eureka/src/test/java/com/esprit/eureka/EurekaApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/microservices.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/microservices.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Atelier-dev MS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/src/main/java/esprit/job/JobApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/src/main/java/esprit/job/JobRESTApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Job/src/test/java/esprit/Job/JobApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/Database/Data/Candidat.mv.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/Database/Data/Candidat.trace.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/src/main/java/esprit/candidat/Candidat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/src/main/java/esprit/candidat/CandidatApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/src/main/java/esprit/candidat/CandidatRESTApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/src/main/java/esprit/candidat/CandidatRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/src/main/java/esprit/candidat/CandidatService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidat/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/src/main/java/com/esprit/microservices/job/Job.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/src/main/java/com/esprit/microservices/job/JobApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/src/main/java/com/esprit/microservices/job/JobRESTApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/src/main/java/com/esprit/microservices/job/JobRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/src/main/java/com/esprit/microservices/job/JobService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/src/test/java/com/esprit/microservices/job/JobApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\php-8.2.12\php.exe" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="39oMtIyIukWuTrN5h6tcQprTLI4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.CourseApplication.executor": "Run",
+    "Spring Boot.EurekaApplication.executor": "Run",
+    "Spring Boot.EventApplication.executor": "Run",
+    "Spring Boot.GroupApplication.executor": "Run",
+    "Spring Boot.NotificationApplication.executor": "Run",
+    "Spring Boot.PackageApplication.executor": "Run",
+    "Spring Boot.UserApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/nadin/Projet microservice/backEnd/microservices",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.NotificationApplication">
+    <configuration name="CourseApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Course" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.course.CourseApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eureka" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.eureka.EurekaApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EventApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Event" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.event.EventApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GroupApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Group" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.group.GroupApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Notification" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.notification.NotificationApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PackageApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Package" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.packagee.PackageApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="User" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.user.UserApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.19416.15" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.19416.15" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="515ab16b-ac31-47f0-80b6-8c3d658ba3a6" name="Changes" comment="" />
+      <created>1771358182823</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1771358182823</updated>
+      <workItem from="1771358183872" duration="3376000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
