@@ -22,9 +22,9 @@ INSERT INTO users (
     email, last_name, name, password, phone, prefix, role
 )
 VALUES
-    ('00000000-0000-0000-0000-000000000101', TRUE, 'Tunisia', '4000', 'Sousse', 'Rue des Formateurs 10', 'Sousse', 'teacher.demo@demo.englishforu.local', 'Ben Salah', 'Teacher', '$2a$10$7EqJtq98hPqEX7fNZaFWoO5j4vYX0fOkHn84qxdjQ671O5jM90oS.', '+21650000101', '+216', 'TUTOR'),
-    ('00000000-0000-0000-0000-000000000102', TRUE, 'Tunisia', '1002', 'Tunis', 'Rue de l''Etudiant 22', 'Tunis', 'student.demo@demo.englishforu.local', 'Jebali', 'Student', '$2a$10$7EqJtq98hPqEX7fNZaFWoO5j4vYX0fOkHn84qxdjQ671O5jM90oS.', '+21650000102', '+216', 'STUDENT'),
-    ('00000000-0000-0000-0000-000000000103', TRUE, 'Tunisia', '2035', 'Ariana', 'Rue Support 8', 'Ariana', 'helpdesk.demo@demo.englishforu.local', 'Trabelsi', 'Helpdesk', '$2a$10$7EqJtq98hPqEX7fNZaFWoO5j4vYX0fOkHn84qxdjQ671O5jM90oS.', '+21650000103', '+216', 'HELP_DESK');
+    ('00000000-0000-0000-0000-000000000101', TRUE, 'Tunisia', '4000', 'Sousse', 'Rue des Formateurs 10', 'Sousse', 'maria.abbassi@englishforu.local', 'Abbassi', 'Maria', '$2a$12$A7vkWeFdFE0N1Lsd1JZMkew48axS0A1PUjOmByahENE3r6SslSGee', '+21650000101', '+216', 'TUTOR'),
+    ('00000000-0000-0000-0000-000000000102', TRUE, 'Tunisia', '1002', 'Tunis', 'Rue de l''Etudiant 22', 'Tunis', 'youssef.benali@englishforu.local', 'Benali', 'Youssef', '$2a$12$A7vkWeFdFE0N1Lsd1JZMkew48axS0A1PUjOmByahENE3r6SslSGee', '+21650000102', '+216', 'STUDENT'),
+    ('00000000-0000-0000-0000-000000000103', TRUE, 'Tunisia', '2035', 'Ariana', 'Rue Support 8', 'Ariana', 'amel.gharsalli@englishforu.local', 'Gharsalli', 'Amel', '$2a$12$A7vkWeFdFE0N1Lsd1JZMkew48axS0A1PUjOmByahENE3r6SslSGee', '+21650000103', '+216', 'HELP_DESK');
 
 INSERT INTO tutor (id, availability_status, experience_years, rating, verified)
 VALUES
@@ -41,29 +41,33 @@ INSERT INTO discussion_posts (
     created_at, updated_at
 )
 VALUES
-    ('B1', 'TEXT', 'Demo thread: I keep confusing present perfect and past simple. Any fast way to remember?', NULL, NULL, 'student.demo@demo.englishforu.local', 'STUDENT', 'B1', NULL, 'B1', NOW() - INTERVAL '8 hours', NOW() - INTERVAL '7 hours 40 minutes'),
-    ('B1', 'TEXT', 'Demo thread: Pronunciation tip of the day - practice TH with short daily recordings.', NULL, NULL, 'teacher.demo@demo.englishforu.local', 'TUTOR', 'C1', NULL, 'B1', NOW() - INTERVAL '7 hours', NOW() - INTERVAL '6 hours 45 minutes'),
-    ('B2', 'IMAGE', 'Demo media post: Whiteboard snapshot from writing workshop.', 'https://picsum.photos/seed/efu-demo-whiteboard/1200/800', NULL, 'teacher.demo@demo.englishforu.local', 'TUTOR', 'C1', NULL, 'B2', NOW() - INTERVAL '6 hours', NOW() - INTERVAL '5 hours 40 minutes'),
-    ('B2', 'IMAGE', 'Demo media post: PDF checklist for essay structure.', 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', NULL, 'teacher.demo@demo.englishforu.local', 'TUTOR', 'C1', NULL, 'B2', NOW() - INTERVAL '5 hours', NOW() - INTERVAL '4 hours 45 minutes'),
-    ('ALL_LEVELS', 'QUIZ', 'Demo quiz: Pick the grammatically correct sentence.', NULL, '{"question":"Which sentence is correct?","choices":["She go to class every day.","She goes to class every day.","She going to class every day."],"answer":"She goes to class every day."}', 'teacher.demo@demo.englishforu.local', 'TUTOR', 'C1', NULL, NULL, NOW() - INTERVAL '4 hours', NOW() - INTERVAL '3 hours 30 minutes'),
-    ('B1', 'TEXT', 'Demo thread: Reporting flow feedback - submit worked smoothly and help desk replied fast.', NULL, NULL, 'student.demo@demo.englishforu.local', 'STUDENT', 'B1', NULL, 'B1', NOW() - INTERVAL '2 hours', NOW() - INTERVAL '90 minutes');
+    ('B1', 'TEXT', 'I always mix up present perfect and past simple. Any tips to remember the difference?', NULL, NULL, 'youssef.benali@englishforu.local', 'STUDENT', 'B1', NULL, 'B1', NOW() - INTERVAL '8 hours', NOW() - INTERVAL '7 hours 40 minutes'),
+    ('B1', 'TEXT', 'Today''s pronunciation tip: Practice the "th" sound with daily voice recordings.', NULL, NULL, 'maria.abbassi@englishforu.local', 'TUTOR', 'C1', NULL, 'B1', NOW() - INTERVAL '7 hours', NOW() - INTERVAL '6 hours 45 minutes'),
+    ('B2', 'IMAGE', 'Whiteboard snapshot from our writing workshop.', 'https://picsum.photos/seed/efu-whiteboard/1200/800', NULL, 'maria.abbassi@englishforu.local', 'TUTOR', 'C1', NULL, 'B2', NOW() - INTERVAL '6 hours', NOW() - INTERVAL '5 hours 40 minutes'),
+    ('B2', 'IMAGE', 'Essay structure checklist (PDF attached).', 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', NULL, 'maria.abbassi@englishforu.local', 'TUTOR', 'C1', NULL, 'B2', NOW() - INTERVAL '5 hours', NOW() - INTERVAL '4 hours 45 minutes'),
+    ('ALL_LEVELS', 'QUIZ', 'Which sentence is correct?', NULL, '{"question":"Which sentence is correct?","choices":["She go to class every day.","She goes to class every day.","She going to class every day."],"answer":"She goes to class every day."}', 'maria.abbassi@englishforu.local', 'TUTOR', 'C1', NULL, NULL, NOW() - INTERVAL '4 hours', NOW() - INTERVAL '3 hours 30 minutes'),
+    ('B1', 'TEXT', 'The new reporting flow worked smoothly and support replied quickly.', NULL, NULL, 'youssef.benali@englishforu.local', 'STUDENT', 'B1', NULL, 'B1', NOW() - INTERVAL '2 hours', NOW() - INTERVAL '90 minutes'),
+    ('B2', 'TEXT', 'Can someone explain the difference between "since" and "for" in time expressions?', NULL, NULL, 'youssef.benali@englishforu.local', 'STUDENT', 'B2', NULL, 'B2', NOW() - INTERVAL '1 hour', NOW() - INTERVAL '50 minutes'),
+    ('ALL_LEVELS', 'TEXT', 'What are your favorite English podcasts for improving listening skills?', NULL, NULL, 'maria.abbassi@englishforu.local', 'TUTOR', 'C1', NULL, NULL, NOW() - INTERVAL '45 minutes', NOW() - INTERVAL '40 minutes'),
+    ('B1', 'IMAGE', 'Photo from our last group project session!', 'https://picsum.photos/seed/efu-group/1200/800', NULL, 'youssef.benali@englishforu.local', 'STUDENT', 'B1', NULL, 'B1', NOW() - INTERVAL '30 minutes', NOW() - INTERVAL '25 minutes'),
+    ('ALL_LEVELS', 'QUIZ', 'Choose the correct phrasal verb.', NULL, '{"question":"Choose the correct phrasal verb:","choices":["turn up","turn in","turn over"],"answer":"turn in"}', 'maria.abbassi@englishforu.local', 'TUTOR', 'C1', NULL, NULL, NOW() - INTERVAL '20 minutes', NOW() - INTERVAL '15 minutes');
 
 INSERT INTO discussion_comments (post_id, author_email, message, created_at)
 VALUES
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo thread: I keep confusing present perfect and past simple. Any fast way to remember?' LIMIT 1), 'teacher.demo@demo.englishforu.local', 'Use this rule: present perfect links past action to now, past simple is fully finished.', NOW() - INTERVAL '7 hours 20 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo thread: I keep confusing present perfect and past simple. Any fast way to remember?' LIMIT 1), 'helpdesk.demo@demo.englishforu.local', 'Great question. We also turned this into a FAQ idea.', NOW() - INTERVAL '6 hours 50 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo media post: PDF checklist for essay structure.' LIMIT 1), 'student.demo@demo.englishforu.local', 'This PDF checklist helped me organize my paragraphs better.', NOW() - INTERVAL '4 hours 20 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo quiz: Pick the grammatically correct sentence.' LIMIT 1), 'student.demo@demo.englishforu.local', 'I answered correctly on second try. Useful quiz.', NOW() - INTERVAL '3 hours 5 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo thread: Reporting flow feedback - submit worked smoothly and help desk replied fast.' LIMIT 1), 'helpdesk.demo@demo.englishforu.local', 'Thanks for the feedback. We are improving triage timing even more.', NOW() - INTERVAL '70 minutes');
+    ((SELECT id FROM discussion_posts WHERE content = 'I always mix up present perfect and past simple. Any tips to remember the difference?' LIMIT 1), 'maria.abbassi@englishforu.local', 'Use this rule: present perfect links past action to now, past simple is fully finished.', NOW() - INTERVAL '7 hours 20 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'I always mix up present perfect and past simple. Any tips to remember the difference?' LIMIT 1), 'amel.gharsalli@englishforu.local', 'Great question. We also turned this into a FAQ idea.', NOW() - INTERVAL '6 hours 50 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'Essay structure checklist (PDF attached).' LIMIT 1), 'youssef.benali@englishforu.local', 'This PDF checklist helped me organize my paragraphs better.', NOW() - INTERVAL '4 hours 20 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'Which sentence is correct?' LIMIT 1), 'youssef.benali@englishforu.local', 'I answered correctly on second try. Useful quiz.', NOW() - INTERVAL '3 hours 5 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'The new reporting flow worked smoothly and support replied quickly.' LIMIT 1), 'amel.gharsalli@englishforu.local', 'Thanks for the feedback. We are improving triage timing even more.', NOW() - INTERVAL '70 minutes');
 
 INSERT INTO discussion_reactions (post_id, author_email, type, created_at, updated_at)
 VALUES
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo thread: I keep confusing present perfect and past simple. Any fast way to remember?' LIMIT 1), 'teacher.demo@demo.englishforu.local', 'INSIGHTFUL', NOW() - INTERVAL '7 hours 10 minutes', NOW() - INTERVAL '7 hours 10 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo thread: Pronunciation tip of the day - practice TH with short daily recordings.' LIMIT 1), 'student.demo@demo.englishforu.local', 'LOVE', NOW() - INTERVAL '6 hours 20 minutes', NOW() - INTERVAL '6 hours 20 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo media post: Whiteboard snapshot from writing workshop.' LIMIT 1), 'student.demo@demo.englishforu.local', 'CLAP', NOW() - INTERVAL '5 hours 10 minutes', NOW() - INTERVAL '5 hours 10 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo media post: PDF checklist for essay structure.' LIMIT 1), 'helpdesk.demo@demo.englishforu.local', 'LIKE', NOW() - INTERVAL '4 hours 10 minutes', NOW() - INTERVAL '4 hours 10 minutes'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo quiz: Pick the grammatically correct sentence.' LIMIT 1), 'helpdesk.demo@demo.englishforu.local', 'CLAP', NOW() - INTERVAL '3 hours', NOW() - INTERVAL '3 hours'),
-    ((SELECT id FROM discussion_posts WHERE content = 'Demo thread: Reporting flow feedback - submit worked smoothly and help desk replied fast.' LIMIT 1), 'teacher.demo@demo.englishforu.local', 'LOVE', NOW() - INTERVAL '65 minutes', NOW() - INTERVAL '65 minutes');
+    ((SELECT id FROM discussion_posts WHERE content = 'I always mix up present perfect and past simple. Any tips to remember the difference?' LIMIT 1), 'maria.abbassi@englishforu.local', 'INSIGHTFUL', NOW() - INTERVAL '7 hours 10 minutes', NOW() - INTERVAL '7 hours 10 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'Today''s pronunciation tip: Practice the "th" sound with daily voice recordings.' LIMIT 1), 'youssef.benali@englishforu.local', 'LOVE', NOW() - INTERVAL '6 hours 20 minutes', NOW() - INTERVAL '6 hours 20 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'Whiteboard snapshot from our writing workshop.' LIMIT 1), 'youssef.benali@englishforu.local', 'CLAP', NOW() - INTERVAL '5 hours 10 minutes', NOW() - INTERVAL '5 hours 10 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'Essay structure checklist (PDF attached).' LIMIT 1), 'amel.gharsalli@englishforu.local', 'LIKE', NOW() - INTERVAL '4 hours 10 minutes', NOW() - INTERVAL '4 hours 10 minutes'),
+    ((SELECT id FROM discussion_posts WHERE content = 'Which sentence is correct?' LIMIT 1), 'amel.gharsalli@englishforu.local', 'CLAP', NOW() - INTERVAL '3 hours', NOW() - INTERVAL '3 hours'),
+    ((SELECT id FROM discussion_posts WHERE content = 'The new reporting flow worked smoothly and support replied quickly.' LIMIT 1), 'maria.abbassi@englishforu.local', 'LOVE', NOW() - INTERVAL '65 minutes', NOW() - INTERVAL '65 minutes');
 
 -- Reported bugs by real app users (student + teacher).
 INSERT INTO reports (
