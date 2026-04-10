@@ -13,7 +13,7 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   notifications: AppNotification[] = [];
   unreadCount = 0;
   dropdownOpen = false;
-  isHelpDesk = false;
+  isLoading = false;
 
   toastMessage = '';
   private pollSub?: Subscription;
@@ -26,12 +26,11 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const user = this.authService.getUser();
-    this.isHelpDesk = user?.role === 'HELP_DESK';
-
-    if (!this.isHelpDesk) {
+    if (!this.authService.isLoggedIn()) {
       return;
     }
+
+    this.isLoading = true;
 
     this.pollSub = interval(30000)
       .pipe(
@@ -39,15 +38,22 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
         switchMap(() => this.notificationsService.list())
       )
       .subscribe((notifications) => {
+        this.isLoading = false;
         const previousUnread = this.unreadCount;
         this.notifications = notifications;
         this.unreadCount = notifications.filter((notification) => !notification.read).length;
 
         if (this.initialized && this.unreadCount > previousUnread) {
-          this.showToast('New report notification received');
+          this.showToast('You have new notifications.');
         }
 
         this.initialized = true;
+      }, () => {
+        this.isLoading = false;
+        if (!this.initialized) {
+          this.notifications = [];
+          this.unreadCount = 0;
+        }
       });
   }
 
@@ -68,6 +74,15 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
     }
 
     this.dropdownOpen = false;
+    const link = (notification.link || '').trim();
+
+    if (link) {
+      this.router.navigateByUrl(link).catch(() => {
+        this.router.navigate(['/main']);
+      });
+      return;
+    }
+
     this.router.navigate(['/helpdesk/board'], {
       queryParams: notification.reportId ? { ticketId: notification.reportId } : {}
     });

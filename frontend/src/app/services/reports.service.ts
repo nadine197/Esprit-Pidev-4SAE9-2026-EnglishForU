@@ -150,8 +150,26 @@ export class ReportsService {
     });
   }
 
+  addHelpdeskReportComment(id: number, payload: AddReportCommentPayload): Observable<ReportComment> {
+    return this.http.post<ReportComment>(`${this.resolveBaseUrl()}/api/helpdesk/reports/${id}/comments`, payload, {
+      headers: this.getHeaders()
+    });
+  }
+
   getReportActivity(id: number): Observable<ReportActivity[]> {
     return this.http.get<ReportActivity[]>(`${this.resolveBaseUrl()}/api/reports/${id}/activity`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getHelpdeskReportComments(id: number): Observable<ReportComment[]> {
+    return this.http.get<ReportComment[]>(`${this.resolveBaseUrl()}/api/helpdesk/reports/${id}/comments`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getHelpdeskReportActivity(id: number): Observable<ReportActivity[]> {
+    return this.http.get<ReportActivity[]>(`${this.resolveBaseUrl()}/api/helpdesk/reports/${id}/activity`, {
       headers: this.getHeaders()
     });
   }

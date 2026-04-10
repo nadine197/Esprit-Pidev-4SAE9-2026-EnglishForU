@@ -1,10 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.html'
 })
-export class  MainComponent {
+export class MainComponent implements OnInit {
+  currentUser: any = null;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.currentUser = this.authService.getUser();
+  }
+
+  getUserDisplayName(): string {
+    const firstName = (this.currentUser?.name || '').toString().trim();
+    const lastName = (this.currentUser?.lastName || '').toString().trim();
+    return `${firstName} ${lastName}`.trim() || firstName;
+  }
+
   features = [
     { title: 'Expert-Led Courses', desc: 'Comprehensive English programs designed by certified instructors.', icon: 'book' },
     { title: 'Assessments & Quizzes', desc: 'Track your progress with regular evaluations and mock tests.', icon: 'check' },

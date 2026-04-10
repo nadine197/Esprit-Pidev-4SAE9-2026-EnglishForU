@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -9,7 +9,7 @@ import { CreateReportPayload, ReportCategory, ReportSeverity, ReportsService } f
   templateUrl: './report-issue.html',
   styleUrls: ['./report-issue.css']
 })
-export class ReportIssueComponent {
+export class ReportIssueComponent implements OnDestroy {
   isOpen = false;
   isSubmitting = false;
   toastMessage = '';
@@ -36,13 +36,19 @@ export class ReportIssueComponent {
     });
   }
 
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
+
   openModal(): void {
     this.isOpen = true;
+    document.body.style.overflow = 'hidden';
   }
 
   closeModal(): void {
     if (!this.isSubmitting) {
       this.isOpen = false;
+      document.body.style.overflow = '';
     }
   }
 
@@ -72,6 +78,7 @@ export class ReportIssueComponent {
       next: () => {
         this.isSubmitting = false;
         this.isOpen = false;
+        document.body.style.overflow = '';
         this.reportForm.reset({
           title: '',
           category: 'BUG',
@@ -88,6 +95,46 @@ export class ReportIssueComponent {
         this.showToast('Failed to submit report. Please try again.', 'error');
       }
     });
+  }
+
+  getTitleLength(): number {
+    return (this.reportForm.get('title')?.value || '').length;
+  }
+
+  getDescriptionLength(): number {
+    return (this.reportForm.get('description')?.value || '').length;
+  }
+
+  getCategoryHint(): string {
+    const category = this.reportForm.get('category')?.value as ReportCategory;
+
+    if (category === 'BUG') {
+      return 'Use this when something is broken, crashing, or behaving incorrectly.';
+    }
+
+    if (category === 'FEATURE_REQUEST') {
+      return 'Use this when you want a new feature or enhancement added.';
+    }
+
+    return 'Use this for platform problems that are not direct code bugs.';
+  }
+
+  getSeverityHint(): string {
+    const severity = this.reportForm.get('severity')?.value as ReportSeverity;
+
+    if (severity === 'CRITICAL') {
+      return 'Critical issues block major workflows or affect many users.';
+    }
+
+    if (severity === 'HIGH') {
+      return 'High severity issues have major impact but may have a workaround.';
+    }
+
+    if (severity === 'MEDIUM') {
+      return 'Medium severity issues are noticeable but not blocking.';
+    }
+
+    return 'Low severity is for minor or cosmetic issues.';
   }
 
   private showToast(message: string, type: 'success' | 'error'): void {

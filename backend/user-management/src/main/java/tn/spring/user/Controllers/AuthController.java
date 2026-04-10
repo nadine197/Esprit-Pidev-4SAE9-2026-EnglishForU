@@ -1,5 +1,6 @@
 package tn.spring.user.Controllers;
 
+import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class AuthController {
 
 
     @PostMapping("/register-client")
-    public ResponseEntity<AuthenticationResponse> registerClient(@RequestBody RegisterClientRequest request) {
+    public ResponseEntity<AuthenticationResponse> registerClient(@Valid @RequestBody RegisterClientRequest request) {
 
         return ResponseEntity.ok(authenticationService.registerStudent(request));
     }

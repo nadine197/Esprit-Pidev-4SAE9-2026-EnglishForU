@@ -1,9 +1,11 @@
+<app-navbar></app-navbar>
+
 <div class="helpdesk-container">
   <!-- Header -->
   <div class="helpdesk-header">
     <div>
       <h1 class="helpdesk-title">Helpdesk Ticket Board</h1>
-      <p class="helpdesk-subtitle">Drag and drop tickets to change status • Flags show ticket age</p>
+      <p class="helpdesk-subtitle">Drag and drop tickets to change status • Flags show ticket age • Jump into Threads to collaborate with learners</p>
     </div>
 
     <div class="helpdesk-controls">
@@ -23,6 +25,10 @@
       <button type="button" class="refresh-btn" (click)="loadReports()">
         <span>↻</span> Refresh
       </button>
+
+      <a routerLink="/community/feed" class="refresh-btn no-underline">
+        Join Threads
+      </a>
     </div>
   </div>
 

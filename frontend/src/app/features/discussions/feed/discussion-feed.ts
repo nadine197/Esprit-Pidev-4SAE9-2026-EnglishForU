@@ -8,20 +8,24 @@ import {
   DiscussionPostType,
   DiscussionReactionType,
   DiscussionScope,
+  DiscussionUserPublicProfile,
   DiscussionsService
 } from '../../../services/discussions.service';
 
-type AudienceRole = '' | 'STUDENT' | 'TUTOR' | 'HELP_DESK' | 'ADMIN' | 'SUPER_ADMIN';
-
 interface PostComposerModel {
-  courseId: string;
+  targetLevel: string;
   type: DiscussionPostType;
   content: string;
   imagePath: string;
-  quizPayload: string;
-  targetRole: AudienceRole;
-  targetLevel: string;
-  authorLevel: string;
+  quizQuestion: string;
+  quizOptions: string[];
+  quizCorrectOptionIndex: number | null;
+}
+
+interface QuizDetails {
+  question: string;
+  choices: string[];
+  answer: string;
 }
 
 @Component({
@@ -31,21 +35,21 @@ interface PostComposerModel {
 })
 export class DiscussionFeedComponent implements OnInit, OnDestroy {
   readonly scopeOptions: DiscussionScope[] = ['ALL', 'MINE', 'OTHERS'];
-  readonly postTypeOptions: DiscussionPostType[] = ['TEXT', 'QUIZ', 'IMAGE'];
-  readonly audienceRoleOptions: AudienceRole[] = ['', 'STUDENT', 'TUTOR', 'HELP_DESK', 'ADMIN', 'SUPER_ADMIN'];
+  readonly postTypeOptions: DiscussionPostType[] = ['TEXT', 'IMAGE', 'QUIZ'];
+  readonly levelOptions: string[] = ['ALL_LEVELS', 'A1', 'A2', 'B1', 'B2', 'C1'];
+  readonly viewerLevelOptions: string[] = ['A1', 'A2', 'B1', 'B2', 'C1'];
   readonly reactionOptions: Array<{ type: DiscussionReactionType; label: string }> = [
-    { type: 'LIKE', label: 'Like' },
-    { type: 'LOVE', label: 'Love' },
-    { type: 'CLAP', label: 'Clap' },
-    { type: 'INSIGHTFUL', label: 'Insightful' }
+    { type: 'LIKE', label: 'Like 👍' },
+    { type: 'LOVE', label: 'Love ❤️' },
+    { type: 'CLAP', label: 'Clap 👏' },
+    { type: 'INSIGHTFUL', label: 'Insightful 💡' }
   ];
 
   currentUser: Record<string, unknown> | null = null;
 
   filters: DiscussionFeedFilters = {
     scope: 'ALL',
-    courseId: '',
-    level: '',
+    level: 'ALL_LEVELS',
     viewerLevel: ''
   };
 
@@ -59,8 +63,11 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
   sendingComment: Record<number, boolean> = {};
   reactingToPost: Record<number, boolean> = {};
   postErrors: Record<number, string> = {};
+  selectedQuizAnswers: Record<number, string> = {};
 
   mediaPreviewUrls: Record<number, string> = {};
+  authorProfiles: Record<string, DiscussionUserPublicProfile> = {};
+  private profileLookupInFlight: Record<string, boolean> = {};
 
   isLoadingFeed = false;
   isSubmittingPost = false;
@@ -79,7 +86,6 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
 
     if (inferredLevel) {
       this.filters.viewerLevel = inferredLevel;
-      this.composer.authorLevel = inferredLevel;
     }
 
     this.loadFeed();
@@ -93,11 +99,18 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     this.isLoadingFeed = true;
     this.feedErrorMessage = '';
 
-    this.discussionsService.getFeed(this.filters).subscribe({
+    const requestFilters: DiscussionFeedFilters = {
+      scope: this.filters.scope,
+      level: this.getOptionalLevel(this.filters.level) || undefined,
+      viewerLevel: this.normalizeOptional(this.filters.viewerLevel) || undefined
+    };
+
+    this.discussionsService.getFeed(requestFilters).subscribe({
       next: (posts) => {
         this.posts = posts;
         this.isLoadingFeed = false;
         this.attachMediaPreviews(posts);
+        this.ensureAuthorProfilesForPosts(posts);
       },
       error: (error) => {
         this.feedErrorMessage = error?.error?.message || 'Failed to load discussion feed.';
@@ -141,6 +154,17 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
       this.selectedImageFile = null;
       this.composer.imagePath = '';
     }
+
+    if (this.composer.type !== 'QUIZ') {
+      this.composer.quizQuestion = '';
+      this.composer.quizOptions = ['', ''];
+      this.composer.quizCorrectOptionIndex = null;
+    }
+  }
+
+  setComposerType(type: DiscussionPostType): void {
+    this.composer.type = type;
+    this.onComposerTypeChange();
   }
 
   onImageFileSelected(event: Event): void {
@@ -155,6 +179,39 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
 
   clearSelectedImage(): void {
     this.selectedImageFile = null;
+  }
+
+  addQuizOption(): void {
+    if (this.composer.quizOptions.length >= 6) {
+      return;
+    }
+
+    this.composer.quizOptions = [...this.composer.quizOptions, ''];
+  }
+
+  removeQuizOption(index: number): void {
+    if (this.composer.quizOptions.length <= 2) {
+      return;
+    }
+
+    this.composer.quizOptions = this.composer.quizOptions.filter((_, optionIndex) => optionIndex !== index);
+
+    if (this.composer.quizCorrectOptionIndex === index) {
+      this.composer.quizCorrectOptionIndex = null;
+      return;
+    }
+
+    if ((this.composer.quizCorrectOptionIndex ?? -1) > index) {
+      this.composer.quizCorrectOptionIndex = (this.composer.quizCorrectOptionIndex ?? 0) - 1;
+    }
+  }
+
+  setCorrectQuizOption(index: number): void {
+    this.composer.quizCorrectOptionIndex = index;
+  }
+
+  getQuizOptionLabel(index: number): string {
+    return String.fromCharCode(65 + index);
   }
 
   toggleThread(postId: number): void {
@@ -254,17 +311,106 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
   }
 
   getAuthorLabel(email: string): string {
-    const normalizedEmail = this.normalizeOptional(email);
+    const normalizedEmail = this.normalizeEmail(email);
     if (!normalizedEmail) {
       return 'Anonymous learner';
     }
 
-    const [namePart] = normalizedEmail.split('@');
-    if (!namePart) {
-      return normalizedEmail;
+    const profile = this.authorProfiles[normalizedEmail];
+    if (profile) {
+      const fullName = `${profile.name || ''} ${profile.lastName || ''}`.trim();
+      if (fullName) {
+        return fullName;
+      }
     }
 
-    return namePart.replace(/[._-]+/g, ' ').trim();
+    return this.buildNameFromEmail(normalizedEmail);
+  }
+
+  getAuthorInitials(email: string): string {
+    const displayName = this.getAuthorLabel(email);
+    return this.extractInitials(displayName);
+  }
+
+  getThreadToggleLabel(postId: number): string {
+    return this.isThreadOpen(postId) ? 'Hide Thread' : 'Show Thread To Comment';
+  }
+
+  getLevelLabel(level: string | null | undefined): string {
+    const normalized = this.normalizeOptional(level);
+    if (!normalized || normalized.toUpperCase() === 'ALL_LEVELS') {
+      return 'All Levels';
+    }
+
+    return normalized.toUpperCase();
+  }
+
+  selectQuizAnswer(postId: number, choice: string): void {
+    this.selectedQuizAnswers[postId] = choice;
+  }
+
+  hasAnsweredQuiz(postId: number): boolean {
+    return !!this.selectedQuizAnswers[postId];
+  }
+
+  getQuizChoiceClass(postId: number, quiz: QuizDetails, choice: string): string {
+    const selected = this.selectedQuizAnswers[postId];
+    if (!selected) {
+      return 'quiz-choice quiz-choice--idle';
+    }
+
+    if (choice === quiz.answer) {
+      return 'quiz-choice quiz-choice--correct';
+    }
+
+    if (choice === selected && selected !== quiz.answer) {
+      return 'quiz-choice quiz-choice--wrong';
+    }
+
+    return 'quiz-choice quiz-choice--dimmed';
+  }
+
+  getQuizFeedback(postId: number, quiz: QuizDetails): string {
+    const selected = this.selectedQuizAnswers[postId];
+    if (!selected) {
+      return 'Select an answer to reveal the correction.';
+    }
+
+    if (selected === quiz.answer) {
+      return 'Correct answer. Great job!';
+    }
+
+    return `Not quite. Correct answer: ${quiz.answer}`;
+  }
+
+  getQuizDetails(post: DiscussionPost): QuizDetails | null {
+    const rawPayload = this.normalizeOptional(post.quizPayload);
+    if (!rawPayload) {
+      return null;
+    }
+
+    try {
+      const parsed = JSON.parse(rawPayload);
+      const question = typeof parsed?.question === 'string' ? parsed.question.trim() : '';
+      const choices = Array.isArray(parsed?.choices)
+        ? parsed.choices
+            .filter((choice: unknown): choice is string => typeof choice === 'string' && !!choice.trim())
+            .map((choice: string) => choice.trim())
+        : [];
+      const answer = typeof parsed?.answer === 'string' ? parsed.answer.trim() : '';
+
+      if (!question || choices.length < 2) {
+        return null;
+      }
+
+      return { question, choices, answer };
+    } catch {
+      return null;
+    }
+  }
+
+  trackByIndex(index: number): number {
+    return index;
   }
 
   trackByPostId(index: number, post: DiscussionPost): number {
@@ -284,6 +430,7 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
         this.postDetails[postId] = post;
         this.syncPostInFeed(post);
         this.attachMediaPreviews([post]);
+        this.ensureAuthorProfilesForPosts([post]);
         this.loadingThread[postId] = false;
       },
       error: (error) => {
@@ -294,6 +441,8 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
   }
 
   private mergeCreatedComment(postId: number, createdComment: DiscussionComment): void {
+    this.ensureAuthorProfilesForEmails([createdComment.authorEmail]);
+
     const existing = this.postDetails[postId];
     if (existing) {
       const updatedComments = [...(existing.comments || []), createdComment];
@@ -326,19 +475,14 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
   }
 
   private buildCreatePostPayload(): CreateDiscussionPostPayload | null {
-    const courseId = this.normalizeOptional(this.composer.courseId);
+    const selectedLevel = this.normalizeOptional(this.composer.targetLevel)?.toUpperCase();
+    const targetLevel = this.getOptionalLevel(selectedLevel);
+    const courseId = targetLevel || 'ALL_LEVELS';
     const type = this.composer.type;
     const content = this.normalizeOptional(this.composer.content);
-    const quizPayload = this.normalizeOptional(this.composer.quizPayload);
     const imagePath = this.normalizeOptional(this.composer.imagePath);
-    const targetRole = this.normalizeOptional(this.composer.targetRole);
-    const targetLevel = this.normalizeOptional(this.composer.targetLevel);
-    const authorLevel = this.normalizeOptional(this.composer.authorLevel);
-
-    if (!courseId) {
-      this.createErrorMessage = 'Course ID is required.';
-      return null;
-    }
+    const authorLevel = this.normalizeOptional(this.filters.viewerLevel);
+    const quizPayload = type === 'QUIZ' ? this.buildQuizPayload() : null;
 
     if (type === 'TEXT' && !content) {
       this.createErrorMessage = 'Text posts require a message.';
@@ -346,7 +490,6 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     }
 
     if (type === 'QUIZ' && !quizPayload) {
-      this.createErrorMessage = 'Quiz posts require quiz payload content.';
       return null;
     }
 
@@ -361,10 +504,43 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
       content: content || undefined,
       quizPayload: quizPayload || undefined,
       imagePath: imagePath || undefined,
-      targetRole: targetRole || undefined,
       targetLevel: targetLevel || undefined,
       authorLevel: authorLevel || undefined
     };
+  }
+
+  private buildQuizPayload(): string | null {
+    const question = this.normalizeOptional(this.composer.quizQuestion);
+    if (!question) {
+      this.createErrorMessage = 'Quiz posts require a question.';
+      return null;
+    }
+
+    const normalizedOptions = this.composer.quizOptions.map((option) => option.trim());
+    const filledOptions = normalizedOptions.filter((option) => !!option);
+
+    if (filledOptions.length < 2) {
+      this.createErrorMessage = 'Please provide at least two quiz options.';
+      return null;
+    }
+
+    const correctIndex = this.composer.quizCorrectOptionIndex;
+    if (correctIndex === null || correctIndex < 0 || correctIndex >= normalizedOptions.length) {
+      this.createErrorMessage = 'Please select the correct quiz answer.';
+      return null;
+    }
+
+    const answer = normalizedOptions[correctIndex];
+    if (!answer) {
+      this.createErrorMessage = 'The selected correct answer cannot be empty.';
+      return null;
+    }
+
+    return JSON.stringify({
+      question,
+      choices: filledOptions,
+      answer
+    });
   }
 
   private uploadImageForCreatedPost(createdPost: DiscussionPost, file: File): void {
@@ -382,13 +558,9 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
   private finalizeCreatedPost(post: DiscussionPost): void {
     this.posts = [post, ...this.posts];
     this.attachMediaPreviews([post]);
+    this.ensureAuthorProfilesForPosts([post]);
     this.composer = this.emptyComposer();
     this.selectedImageFile = null;
-
-    const inferredLevel = this.inferUserLevel(this.currentUser);
-    if (inferredLevel) {
-      this.composer.authorLevel = inferredLevel;
-    }
 
     this.isSubmittingPost = false;
   }
@@ -429,16 +601,60 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     });
   }
 
+  private ensureAuthorProfilesForPosts(posts: DiscussionPost[]): void {
+    const collectedEmails = new Set<string>();
+
+    posts.forEach((post) => {
+      const postAuthor = this.normalizeEmail(post.authorEmail);
+      if (postAuthor) {
+        collectedEmails.add(postAuthor);
+      }
+
+      (post.comments || []).forEach((comment) => {
+        const commentAuthor = this.normalizeEmail(comment.authorEmail);
+        if (commentAuthor) {
+          collectedEmails.add(commentAuthor);
+        }
+      });
+    });
+
+    this.ensureAuthorProfilesForEmails(Array.from(collectedEmails));
+  }
+
+  private ensureAuthorProfilesForEmails(emails: string[]): void {
+    emails.forEach((email) => {
+      const normalized = this.normalizeEmail(email);
+      if (!normalized) {
+        return;
+      }
+
+      if (this.authorProfiles[normalized] || this.profileLookupInFlight[normalized]) {
+        return;
+      }
+
+      this.profileLookupInFlight[normalized] = true;
+
+      this.discussionsService.getPublicUserByEmail(normalized).subscribe({
+        next: (profile) => {
+          this.authorProfiles[normalized] = profile;
+          delete this.profileLookupInFlight[normalized];
+        },
+        error: () => {
+          delete this.profileLookupInFlight[normalized];
+        }
+      });
+    });
+  }
+
   private emptyComposer(): PostComposerModel {
     return {
-      courseId: '',
+      targetLevel: 'ALL_LEVELS',
       type: 'TEXT',
       content: '',
       imagePath: '',
-      quizPayload: '',
-      targetRole: '',
-      targetLevel: '',
-      authorLevel: ''
+      quizQuestion: '',
+      quizOptions: ['', ''],
+      quizCorrectOptionIndex: null
     };
   }
 
@@ -457,6 +673,51 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     }
 
     return '';
+  }
+
+  private getOptionalLevel(level: unknown): string | null {
+    const normalized = this.normalizeOptional(level)?.toUpperCase();
+    if (!normalized || normalized === 'ALL_LEVELS') {
+      return null;
+    }
+
+    return normalized;
+  }
+
+  private buildNameFromEmail(email: string): string {
+    const [namePart] = email.split('@');
+    if (!namePart) {
+      return email;
+    }
+
+    return namePart
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(' ');
+  }
+
+  private extractInitials(name: string): string {
+    const segments = name
+      .split(/\s+/)
+      .map((segment) => segment.trim())
+      .filter(Boolean);
+
+    if (segments.length === 0) {
+      return 'NA';
+    }
+
+    const first = segments[0].charAt(0).toUpperCase();
+    const second = segments.length > 1
+      ? segments[1].charAt(0).toUpperCase()
+      : (segments[0].charAt(1) || '').toUpperCase();
+
+    return `${first}${second}`.trim();
+  }
+
+  private normalizeEmail(value: unknown): string | null {
+    const normalized = this.normalizeOptional(value);
+    return normalized ? normalized.toLowerCase() : null;
   }
 
   private isAbsoluteUrl(path: string): boolean {

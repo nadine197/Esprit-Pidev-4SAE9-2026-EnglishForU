@@ -36,6 +36,13 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
   readonly statuses: ReportStatus[] = ['NEW', 'TRIAGED', 'IN_PROGRESS', 'DONE', 'CLOSED'];
   readonly categories: ReportCategory[] = ['BUG', 'ISSUE', 'FEATURE_REQUEST'];
   readonly severityFilters: Array<ReportSeverity | 'ALL'> = ['ALL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+  readonly allowedTransitions: Record<ReportStatus, ReportStatus[]> = {
+    NEW: ['TRIAGED', 'IN_PROGRESS', 'CLOSED'],
+    TRIAGED: ['IN_PROGRESS', 'DONE', 'CLOSED'],
+    IN_PROGRESS: ['DONE', 'CLOSED', 'TRIAGED'],
+    DONE: ['CLOSED', 'IN_PROGRESS'],
+    CLOSED: ['TRIAGED']
+  };
 
   // Thresholds in hours
   readonly WARNING_THRESHOLD = 24; // Show flag after 24 hours in NEW/TRIAGED
@@ -103,115 +110,15 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
     this.reportsService.getHelpdeskReports().subscribe({
       next: (reports) => {
         this.reports = reports as ReportWithAge[];
-        if (reports.length === 0) {
-          this.reports = this.createMockReports();
-        }
         this.updateReportAges();
         this.isLoading = false;
       },
-      error: () => {
-        this.errorMessage = 'Failed to load helpdesk tickets.';
-        this.reports = this.createMockReports();
-        this.updateReportAges();
+      error: (error) => {
+        this.errorMessage = error?.error?.message || 'Failed to load helpdesk tickets.';
+        this.reports = [];
         this.isLoading = false;
       }
     });
-  }
-
-  private createMockReports(): ReportWithAge[] {
-    const now = new Date();
-    const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-    const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const twoDaysAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
-    const threeDaysAgo = new Date(now.getTime() - 72 * 60 * 60 * 1000);
-
-    return [
-      {
-        id: 1,
-        title: 'Sample Bug Report',
-        category: 'BUG',
-        severity: 'HIGH',
-        status: 'NEW',
-        description: 'This is a sample bug report for demonstration purposes.',
-        shortDescription: 'Sample bug report',
-        createdAt: threeDaysAgo.toISOString(),
-        updatedAt: threeDaysAgo.toISOString(),
-        createdBy: { id: 'user1', name: 'John', lastName: 'Doe', email: 'john.doe@example.com' },
-        assignedTo: null,
-        ageInHours: 72
-      },
-      {
-        id: 2,
-        title: 'Login Page Performance Issue',
-        category: 'BUG',
-        severity: 'MEDIUM',
-        status: 'TRIAGED',
-        description: 'Login page takes too long to load',
-        shortDescription: 'Performance issue on login',
-        createdAt: twoDaysAgo.toISOString(),
-        updatedAt: twoDaysAgo.toISOString(),
-        createdBy: { id: 'user2', name: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com' },
-        assignedTo: { id: 'user3', name: 'Bob', lastName: 'Johnson', email: 'bob.johnson@example.com' },
-        ageInHours: 48
-      },
-      {
-        id: 3,
-        title: 'Missing Dark Mode Feature',
-        category: 'FEATURE_REQUEST',
-        severity: 'LOW',
-        status: 'IN_PROGRESS',
-        description: 'Add dark mode theme to the application',
-        shortDescription: 'Dark mode feature request',
-        createdAt: oneDayAgo.toISOString(),
-        updatedAt: oneDayAgo.toISOString(),
-        createdBy: { id: 'user4', name: 'Alice', lastName: 'Williams', email: 'alice.williams@example.com' },
-        assignedTo: { id: 'user3', name: 'Bob', lastName: 'Johnson', email: 'bob.johnson@example.com' },
-        ageInHours: 24
-      },
-      {
-        id: 4,
-        title: 'Database Connection Error',
-        category: 'BUG',
-        severity: 'CRITICAL',
-        status: 'NEW',
-        description: 'Database connection fails intermittently',
-        shortDescription: 'Critical database issue',
-        createdAt: twoHoursAgo.toISOString(),
-        updatedAt: twoHoursAgo.toISOString(),
-        createdBy: { id: 'user5', name: 'Charlie', lastName: 'Brown', email: 'charlie.brown@example.com' },
-        assignedTo: null,
-        ageInHours: 2
-      },
-      {
-        id: 5,
-        title: 'Typo in Help Section',
-        category: 'BUG',
-        severity: 'LOW',
-        status: 'DONE',
-        description: 'Minor typo found in help documentation',
-        shortDescription: 'Documentation typo',
-        createdAt: oneHourAgo.toISOString(),
-        updatedAt: oneHourAgo.toISOString(),
-        createdBy: { id: 'user6', name: 'David', lastName: 'Lee', email: 'david.lee@example.com' },
-        assignedTo: null,
-        ageInHours: 1
-      },
-      {
-        id: 6,
-        title: 'API Rate Limiting Implementation',
-        category: 'FEATURE_REQUEST',
-        severity: 'HIGH',
-        status: 'CLOSED',
-        description: 'Implement rate limiting for API endpoints',
-        shortDescription: 'API rate limiting',
-        createdAt: now.toISOString(),
-        updatedAt: now.toISOString(),
-        createdBy: { id: 'user7', name: 'Eva', lastName: 'Martinez', email: 'eva.martinez@example.com' },
-        assignedTo: null,
-        ageInHours: 0
-      }
-    ];
   }
 
   onSearchInput(event: Event): void {
@@ -272,6 +179,14 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (
+      this.activeTicket.status !== this.editDraft.status
+      && !this.isTransitionAllowed(this.activeTicket.status, this.editDraft.status)
+    ) {
+      this.modalErrorMessage = `Transition from ${this.activeTicket.status} to ${this.editDraft.status} is not allowed.`;
+      return;
+    }
+
     const payload: UpdateHelpdeskReportPayload = {
       title,
       description,
@@ -311,6 +226,7 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.modalErrorMessage = '';
     this.reportsService.updateHelpdeskReport(this.activeTicket.id, { assignToMe: true }).subscribe({
       next: (updated) => {
         const updatedTicket = updated as ReportWithAge;
@@ -318,6 +234,9 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.activeTicket = updatedTicket;
         this.updateReportAges();
         this.loadReportTimeline(updatedTicket.id);
+      },
+      error: (error) => {
+        this.modalErrorMessage = error?.error?.message || 'Failed to assign this ticket.';
       }
     });
   }
@@ -327,6 +246,7 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.modalErrorMessage = '';
     this.reportsService.updateHelpdeskReport(this.activeTicket.id, { unassign: true }).subscribe({
       next: (updated) => {
         const updatedTicket = updated as ReportWithAge;
@@ -334,6 +254,9 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.activeTicket = updatedTicket;
         this.updateReportAges();
         this.loadReportTimeline(updatedTicket.id);
+      },
+      error: (error) => {
+        this.modalErrorMessage = error?.error?.message || 'Failed to unassign this ticket.';
       }
     });
   }
@@ -352,7 +275,7 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
     this.modalErrorMessage = '';
     this.isSendingComment = true;
 
-    this.reportsService.addReportComment(this.activeTicket.id, { message }).subscribe({
+    this.reportsService.addHelpdeskReportComment(this.activeTicket.id, { message }).subscribe({
       next: () => {
         this.commentDraft = '';
         this.isSendingComment = false;
@@ -410,6 +333,12 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
 
   private updateReportStatus(report: ReportWithAge, newStatus: ReportStatus): void {
     const previousStatus = report.status;
+    if (!this.isTransitionAllowed(previousStatus, newStatus)) {
+      this.errorMessage = `Transition from ${previousStatus} to ${newStatus} is not allowed.`;
+      return;
+    }
+
+    this.errorMessage = '';
     report.status = newStatus;
 
     this.reportsService.updateHelpdeskReport(report.id, { status: newStatus }).subscribe({
@@ -417,8 +346,9 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.replaceReport(updated as ReportWithAge);
         this.updateReportAges();
       },
-      error: () => {
+      error: (error) => {
         report.status = previousStatus;
+        this.errorMessage = error?.error?.message || 'Unable to update ticket status.';
       }
     });
   }
@@ -433,8 +363,12 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
   }
 
   assignToMe(report: ReportWithAge): void {
+    this.errorMessage = '';
     this.reportsService.updateHelpdeskReport(report.id, { assignToMe: true }).subscribe({
-      next: (updated) => this.replaceReport(updated as ReportWithAge)
+      next: (updated) => this.replaceReport(updated as ReportWithAge),
+      error: (error) => {
+        this.errorMessage = error?.error?.message || 'Unable to assign this ticket.';
+      }
     });
   }
 
@@ -544,8 +478,8 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
     this.isTimelineLoading = true;
 
     forkJoin({
-      comments: this.reportsService.getReportComments(reportId),
-      activity: this.reportsService.getReportActivity(reportId)
+      comments: this.reportsService.getHelpdeskReportComments(reportId),
+      activity: this.reportsService.getHelpdeskReportActivity(reportId)
     }).subscribe({
       next: ({ comments, activity }) => {
         this.reportComments = comments;
@@ -558,6 +492,14 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.isTimelineLoading = false;
       }
     });
+  }
+
+  private isTransitionAllowed(current: ReportStatus, next: ReportStatus): boolean {
+    if (current === next) {
+      return true;
+    }
+
+    return this.allowedTransitions[current]?.includes(next) || false;
   }
 
   getActivityLabel(type: ReportActivity['type']): string {

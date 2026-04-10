@@ -24,6 +24,7 @@
           <input id="fullName" type="text" formControlName="fullName" placeholder="John Doe"
             class="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0066FF]"
           />
+          <p class="text-xs text-slate-500 ml-1">Enter first and last name.</p>
         </div>
 
         <!-- Email -->
@@ -36,25 +37,36 @@
 
         <!-- Phone Number -->
         <div class="space-y-1.5">
-          <label class="text-sm font-semibold text-slate-700 ml-1" for="phone">Phone Number</label>
-          <input id="phone" type="tel" formControlName="phone" placeholder="+1 (555) 000-0000"
-            class="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0066FF]"
-          />
+          <label class="text-sm font-semibold text-slate-700 ml-1">Phone Number</label>
+          <div class="grid grid-cols-[120px_minmax(0,1fr)] gap-2">
+            <input id="prefix" type="text" formControlName="prefix" placeholder="+216"
+              class="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0066FF]"
+            />
+            <input id="phone" type="tel" formControlName="phone" placeholder="55123456"
+              class="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0066FF]"
+            />
+          </div>
+          <p class="text-xs text-slate-500 ml-1">Use country prefix and digits only for phone.</p>
         </div>
 
         <!-- Role Selection -->
         <div class="space-y-2">
           <label class="text-sm font-semibold text-slate-700 ml-1">I am a</label>
-          <div class="grid grid-cols-2 gap-3">
-            <button type="button" (click)="setRole('student')"
-              [class]="selectedRole === 'student' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
+          <div class="grid grid-cols-3 gap-3">
+            <button type="button" (click)="setRole('STUDENT')"
+              [class]="selectedRole === 'STUDENT' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
               class="flex h-12 items-center justify-center rounded-xl border-2 font-medium transition-all">
               Student
             </button>
-            <button type="button" (click)="setRole('teacher')"
-              [class]="selectedRole === 'teacher' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
+            <button type="button" (click)="setRole('TUTOR')"
+              [class]="selectedRole === 'TUTOR' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
               class="flex h-12 items-center justify-center rounded-xl border-2 font-medium transition-all">
-              Teacher
+              Tutor
+            </button>
+            <button type="button" (click)="setRole('HELP_DESK')"
+              [class]="selectedRole === 'HELP_DESK' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
+              class="flex h-12 items-center justify-center rounded-xl border-2 font-medium transition-all text-xs">
+              Help Desk
             </button>
           </div>
         </div>
@@ -65,6 +77,7 @@
           <input id="password" type="password" formControlName="password" placeholder="••••••••"
             class="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0066FF]"
           />
+          <p class="text-xs text-slate-500 ml-1">Minimum 8 characters.</p>
         </div>
 
         <!-- Confirm Password -->
@@ -85,8 +98,12 @@
 
         <button type="submit" [disabled]="registerForm.invalid"
           class="w-full h-12 bg-[#0066FF] text-white rounded-xl font-bold text-base hover:bg-[#0052cc] transition-all active:scale-[0.98] disabled:opacity-50 shadow-md shadow-blue-500/20 mt-2">
-          Create Account
+          {{ loading ? 'Creating...' : 'Create Account' }}
         </button>
+
+        <p *ngIf="errorMessage" class="text-sm font-semibold text-red-600 text-center">
+          {{ errorMessage }}
+        </p>
       </form>
 
       <p class="mt-8 text-center text-sm text-slate-500 font-medium">

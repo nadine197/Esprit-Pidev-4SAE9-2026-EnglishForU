@@ -1,3 +1,50 @@
 :host {
-  display: block;
+  display: inline-block;
+  position: relative;
+}
+
+.notification-dropdown {
+  max-height: min(420px, 70vh);
+  overflow-y: auto;
+  animation: bell-dropdown-in 150ms ease;
+}
+
+.notification-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.unread-badge {
+  animation: bell-badge-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes bell-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bell-badge-pulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

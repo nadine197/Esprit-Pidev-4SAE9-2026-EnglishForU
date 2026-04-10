@@ -25,37 +25,31 @@
         </label>
 
         <label class="flex flex-col gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Course ID
-          <input
-            type="text"
-            class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
-            [(ngModel)]="filters.courseId"
-            name="feedCourseId"
-            placeholder="ENG-B1"
-          />
-        </label>
-
-        <label class="flex flex-col gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
           Level Filter
-          <input
-            type="text"
-            class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
+          <select
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 focus:border-blue-500 focus:outline-none"
             [(ngModel)]="filters.level"
             name="feedLevel"
-            placeholder="B1"
-          />
+          >
+            <option *ngFor="let level of levelOptions" [value]="level">{{ getLevelLabel(level) }}</option>
+          </select>
         </label>
 
         <label class="flex flex-col gap-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
           Viewer Level
-          <input
-            type="text"
-            class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
+          <select
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 focus:border-blue-500 focus:outline-none"
             [(ngModel)]="filters.viewerLevel"
             name="feedViewerLevel"
-            placeholder="B1"
-          />
+          >
+            <option value="">Auto (my level)</option>
+            <option *ngFor="let level of viewerLevelOptions" [value]="level">{{ level }}</option>
+          </select>
         </label>
+
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
+          Filter threads by CEFR level from A1 to C1, or keep everything visible with All Levels.
+        </div>
       </div>
 
       <div class="mt-4 flex justify-end">
@@ -77,69 +71,37 @@
     <section class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
       <article class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70 md:p-8">
         <h2 class="text-xl font-black text-slate-900">Start A Discussion</h2>
-        <p class="mt-2 text-sm text-slate-500">Publish a message to your class or to a target audience.</p>
+        <p class="mt-2 text-sm text-slate-500">Share a post just like a social feed: text, image, or quiz.</p>
 
         <div class="mt-6 space-y-4">
           <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Course ID
-            <input
-              type="text"
-              class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
-              [(ngModel)]="composer.courseId"
-              name="composerCourseId"
-              placeholder="ENG-B1"
-            />
-          </label>
-
-          <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Post Type
+            Target Level
             <select
-              class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
-              [(ngModel)]="composer.type"
-              (ngModelChange)="onComposerTypeChange()"
-              name="composerType"
+              class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 focus:border-blue-500 focus:outline-none"
+              [(ngModel)]="composer.targetLevel"
+              name="composerTargetLevel"
             >
-              <option *ngFor="let postType of postTypeOptions" [ngValue]="postType">{{ postType }}</option>
+              <option *ngFor="let level of levelOptions" [value]="level">{{ getLevelLabel(level) }}</option>
             </select>
           </label>
 
-          <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Author Level
-            <input
-              type="text"
-              class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
-              [(ngModel)]="composer.authorLevel"
-              name="composerAuthorLevel"
-              placeholder="B1"
-            />
-          </label>
-
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Target Role
-              <select
-                class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
-                [(ngModel)]="composer.targetRole"
-                name="composerTargetRole"
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Post Type</p>
+            <div class="mt-2 grid grid-cols-3 gap-2 rounded-2xl bg-slate-100 p-1">
+              <button
+                type="button"
+                *ngFor="let postType of postTypeOptions"
+                class="rounded-xl px-3 py-2 text-xs font-black uppercase tracking-wide transition"
+                [ngClass]="composer.type === postType ? 'bg-white text-[#0066FF] shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+                (click)="setComposerType(postType)"
               >
-                <option *ngFor="let role of audienceRoleOptions" [ngValue]="role">{{ role || 'All Roles' }}</option>
-              </select>
-            </label>
-
-            <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Target Level
-              <input
-                type="text"
-                class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
-                [(ngModel)]="composer.targetLevel"
-                name="composerTargetLevel"
-                placeholder="A2"
-              />
-            </label>
+                {{ postType }}
+              </button>
+            </div>
           </div>
 
           <label *ngIf="composer.type === 'TEXT'" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Text Content
+            Your Message
             <textarea
               rows="4"
               class="mt-1 w-full resize-y rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
@@ -149,16 +111,64 @@
             ></textarea>
           </label>
 
-          <label *ngIf="composer.type === 'QUIZ'" class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Quiz Payload
-            <textarea
-              rows="5"
-              class="mt-1 w-full resize-y rounded-xl border border-slate-200 px-3 py-2 font-mono text-xs text-slate-700 focus:border-blue-500 focus:outline-none"
-              [(ngModel)]="composer.quizPayload"
-              name="composerQuizPayload"
-              placeholder='{"question":"Choose the correct verb.","choices":["go","goes"],"answer":"goes"}'
-            ></textarea>
-          </label>
+          <div *ngIf="composer.type === 'QUIZ'" class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Quiz Question
+              <textarea
+                rows="3"
+                class="mt-1 w-full resize-y rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
+                [(ngModel)]="composer.quizQuestion"
+                name="composerQuizQuestion"
+                placeholder="Choose the correct sentence..."
+              ></textarea>
+            </label>
+
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Answer Options</p>
+              <div *ngFor="let option of composer.quizOptions; let idx = index; trackBy: trackByIndex" class="flex items-center gap-2">
+                <button
+                  type="button"
+                  class="h-8 w-8 shrink-0 rounded-full border text-[11px] font-black uppercase transition"
+                  [ngClass]="composer.quizCorrectOptionIndex === idx
+                    ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-blue-300 hover:text-blue-600'"
+                  (click)="setCorrectQuizOption(idx)"
+                  [attr.aria-label]="'Set option ' + getQuizOptionLabel(idx) + ' as correct answer'"
+                >
+                  {{ getQuizOptionLabel(idx) }}
+                </button>
+
+                <input
+                  type="text"
+                  class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
+                  [(ngModel)]="composer.quizOptions[idx]"
+                  [name]="'composerQuizOption' + idx"
+                  [placeholder]="'Option ' + getQuizOptionLabel(idx)"
+                />
+
+                <button
+                  *ngIf="composer.quizOptions.length > 2"
+                  type="button"
+                  class="rounded-lg border border-slate-200 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-slate-500 hover:border-red-200 hover:text-red-600"
+                  (click)="removeQuizOption(idx)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-3">
+              <button
+                type="button"
+                class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-slate-600 transition hover:border-blue-300 hover:text-blue-700"
+                (click)="addQuizOption()"
+                [disabled]="composer.quizOptions.length >= 6"
+              >
+                Add Option
+              </button>
+              <p class="text-[11px] font-medium text-slate-500">Tap A/B/C... to mark the correct answer.</p>
+            </div>
+          </div>
 
           <div *ngIf="composer.type === 'IMAGE'" class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -184,7 +194,7 @@
             </div>
 
             <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Or External Image Path/URL
+              Optional Image URL
               <input
                 type="text"
                 class="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-blue-500 focus:outline-none"
@@ -195,7 +205,7 @@
             </label>
 
             <p class="text-[11px] font-medium text-slate-500">
-              Provide a file upload or an image path. Uploaded files are stored as protected discussion media.
+              Add an upload or URL. Uploads are stored as protected discussion media.
             </p>
           </div>
         </div>
@@ -217,16 +227,21 @@
       <section class="space-y-4">
         <article
           *ngFor="let post of posts; trackBy: trackByPostId"
-          class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70"
+          class="post-card rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70"
         >
           <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p class="text-base font-black text-slate-900">{{ getAuthorLabel(post.authorEmail) }}</p>
-              <p class="mt-1 text-xs text-slate-500">
-                {{ post.authorEmail }}
-                <span class="mx-1">|</span>
-                {{ post.createdAt | date: 'medium' }}
-              </p>
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-sm font-black text-[#0066FF]">
+                {{ getAuthorInitials(post.authorEmail) }}
+              </div>
+              <div>
+                <p class="text-base font-black text-slate-900">{{ getAuthorLabel(post.authorEmail) }}</p>
+                <p class="mt-1 text-xs text-slate-500">
+                  {{ post.authorRole }}
+                  <span class="mx-1">|</span>
+                  {{ post.createdAt | date: 'medium' }}
+                </p>
+              </div>
             </div>
 
             <div class="flex flex-wrap gap-2">
@@ -234,13 +249,7 @@
                 {{ post.type }}
               </span>
               <span class="rounded-full bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-blue-700">
-                {{ post.courseId }}
-              </span>
-              <span *ngIf="post.targetRole" class="rounded-full bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-amber-700">
-                {{ post.targetRole }}
-              </span>
-              <span *ngIf="post.targetLevel" class="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700">
-                Level {{ post.targetLevel }}
+                {{ getLevelLabel(post.targetLevel || post.courseId) }}
               </span>
             </div>
           </header>
@@ -248,9 +257,33 @@
           <section class="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">
             <p *ngIf="post.type === 'TEXT'">{{ post.content }}</p>
 
-            <div *ngIf="post.type === 'QUIZ'" class="space-y-2">
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Quiz Payload</p>
-              <pre class="max-h-60 overflow-auto whitespace-pre-wrap rounded-xl bg-white p-3 text-xs text-slate-700">{{ post.quizPayload }}</pre>
+            <div *ngIf="post.type === 'QUIZ'" class="space-y-3">
+              <ng-container *ngIf="getQuizDetails(post) as quiz; else quizFallback">
+                <p class="text-sm font-semibold text-slate-800">{{ quiz.question }}</p>
+                <div class="space-y-2">
+                  <div
+                    *ngFor="let choice of quiz.choices; let idx = index; trackBy: trackByIndex"
+                    class="quiz-choice-wrap"
+                  >
+                    <button
+                      type="button"
+                      class="w-full"
+                      [ngClass]="getQuizChoiceClass(post.id, quiz, choice)"
+                      (click)="selectQuizAnswer(post.id, choice)"
+                    >
+                      <span class="quiz-choice-badge">{{ getQuizOptionLabel(idx) }}</span>
+                      <span>{{ choice }}</span>
+                    </button>
+                  </div>
+                </div>
+                <p class="text-xs font-semibold" [ngClass]="hasAnsweredQuiz(post.id) ? 'text-slate-700' : 'text-slate-500'">
+                  {{ getQuizFeedback(post.id, quiz) }}
+                </p>
+              </ng-container>
+
+              <ng-template #quizFallback>
+                <p class="text-xs font-medium text-slate-500">Quiz content is available but could not be rendered.</p>
+              </ng-template>
             </div>
 
             <div *ngIf="post.type === 'IMAGE'" class="space-y-3">
@@ -289,7 +322,7 @@
               class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-600 transition hover:border-blue-200 hover:text-blue-700"
               (click)="toggleThread(post.id)"
             >
-              {{ isThreadOpen(post.id) ? 'Hide Thread' : 'Open Thread' }}
+              {{ getThreadToggleLabel(post.id) }}
             </button>
           </div>
 
@@ -302,7 +335,7 @@
             {{ postErrors[post.id] }}
           </p>
 
-          <section *ngIf="isThreadOpen(post.id)" class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <section *ngIf="isThreadOpen(post.id)" class="thread-panel mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <p *ngIf="isThreadLoading(post.id)" class="text-sm font-medium text-slate-500">Loading thread...</p>
 
             <ng-container *ngIf="!isThreadLoading(post.id)">
@@ -311,8 +344,13 @@
                   *ngFor="let comment of getComments(post.id); trackBy: trackByCommentId"
                   class="rounded-xl bg-white px-4 py-3"
                 >
-                  <div class="flex items-center justify-between gap-3">
-                    <p class="text-xs font-black uppercase tracking-wide text-slate-700">{{ comment.authorEmail }}</p>
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                      <div class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-[11px] font-black text-slate-700">
+                        {{ getAuthorInitials(comment.authorEmail) }}
+                      </div>
+                      <p class="text-xs font-black uppercase tracking-wide text-slate-700">{{ getAuthorLabel(comment.authorEmail) }}</p>
+                    </div>
                     <time class="text-[11px] text-slate-400">{{ comment.createdAt | date: 'short' }}</time>
                   </div>
                   <p class="mt-2 text-sm text-slate-700">{{ comment.message }}</p>

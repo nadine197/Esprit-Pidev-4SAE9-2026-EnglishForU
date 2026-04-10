@@ -1,5 +1,6 @@
 package tn.spring.user.Filters;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // Liste des endpoints publics à ignorer
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/auth/**",
-            "/api/auth/**",
+            "/auth/",
+            "/api/auth/",
 
     };
     @Override
@@ -56,19 +57,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String login = jwtService.extractUsername(jwt);
+        try {
+            String login = jwtService.extractUsername(jwt);
 
-        if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsServiceimp.loadUserByUsername(login);
+            if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsServiceimp.loadUserByUsername(login);
 
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities()
-                        );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities()
+                            );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (JwtException ex) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"TOKEN_INVALID_OR_EXPIRED\"}");
+            return;
         }
 
         filterChain.doFilter(request, response);

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,10 +20,12 @@ import tn.spring.user.DTOs.AuthenticationRequest;
 import tn.spring.user.DTOs.AuthenticationResponse;
 import tn.spring.user.DTOs.GoogleAuthenticationRequest;
 import tn.spring.user.DTOs.RegisterClientRequest;
+import tn.spring.user.Enums.AvailableStatus;
 import tn.spring.user.Enums.UserRole;
 import tn.spring.user.Exceptions.BadRequestException;
 import tn.spring.user.Models.PasswordResetToken;
 import tn.spring.user.Models.Student;
+import tn.spring.user.Models.Tutor;
 import tn.spring.user.Models.User;
 import tn.spring.user.Repositories.PasswordResetTokenRepo;
 import tn.spring.user.Repositories.StudentRepos;
@@ -31,6 +34,7 @@ import tn.spring.user.Repositories.UserRepos;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -111,34 +115,64 @@ public class AuthService {
 
 
     public AuthenticationResponse registerStudent(RegisterClientRequest request) {
-        String password = passwordEncoder.encode(request.getPassword());
+        String normalizedEmail = normalizeRequired(request.getEmail(), "EMAIL_REQUIRED").toLowerCase(Locale.ROOT);
+        String normalizedName = normalizeRequired(request.getName(), "NAME_REQUIRED");
+        String normalizedLastName = normalizeRequired(request.getLastName(), "LAST_NAME_REQUIRED");
+        String normalizedPrefix = normalizeRequired(request.getPrefix(), "PREFIX_REQUIRED");
+        String normalizedPhone = normalizeRequired(request.getPhone(), "PHONE_REQUIRED").replaceAll("[\\s-]", "");
+        String password = passwordEncoder.encode(normalizeRequired(request.getPassword(), "PASSWORD_REQUIRED"));
+
+        String requestedRole = request.getRole() == null
+                ? UserRole.STUDENT.name()
+                : request.getRole().trim().toUpperCase(Locale.ROOT);
+
+        if (userRepos.findByEmailIgnoreCase(normalizedEmail).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "EMAIL_ALREADY_EXISTS");
+        }
+
+        if (userRepos.findByPrefixAndPhone(normalizedPrefix, normalizedPhone).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "PHONE_ALREADY_EXISTS");
+        }
 
         User user;
 
-        // On vérifie le rôle envoyé dans le JSON de Postman
-        if ("ADMIN".equalsIgnoreCase(request.getRole())) {
-            user = User.builder() // Simple User pour l'admin
-                    .role(UserRole.ADMIN)
-                    .build();
-        } else {
-            user = Student.builder() // Student pour les élèves
-                    .role(UserRole.STUDENT)
-                    .englishLevel("A1")
-                    .learningGoal("General")
-                    .dailyGoalMinutes(0)
-                    .build();
+        switch (requestedRole) {
+            case "ADMIN" -> user = User.builder()
+                .role(UserRole.ADMIN)
+                .build();
+            case "HELP_DESK" -> user = User.builder()
+                .role(UserRole.HELP_DESK)
+                .build();
+            case "TUTOR", "TEACHER" -> user = Tutor.builder()
+                .role(UserRole.TUTOR)
+                .verified(false)
+                .availability_status(AvailableStatus.UNAVAILABLE)
+                .experience_years(0)
+                .rating(0)
+                .build();
+            case "STUDENT" -> user = Student.builder()
+                .role(UserRole.STUDENT)
+                .englishLevel("A1")
+                .learningGoal("General")
+                .dailyGoalMinutes(0)
+                .build();
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "INVALID_REGISTER_ROLE");
         }
 
         // Champs communs
-        user.setEmail(request.getEmail());
+        user.setEmail(normalizedEmail);
         user.setPassword(password);
-        user.setName(request.getName());
-        user.setLastName(request.getLastName());
-        user.setPhone(request.getPhone());
-        user.setPrefix(request.getPrefix());
+        user.setName(normalizedName);
+        user.setLastName(normalizedLastName);
+        user.setPhone(normalizedPhone);
+        user.setPrefix(normalizedPrefix);
         user.setActive(true);
 
-        userRepos.save(user); // Utiliser userRepos au lieu de studentRepos pour la polyvalence
+        try {
+            userRepos.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "ACCOUNT_ALREADY_EXISTS");
+        }
 
         return AuthenticationResponse.builder()
                 .token(jwtService.generateAccessToken(user))
@@ -321,5 +355,13 @@ public class AuthService {
 
         // optional: revoke any other outstanding tokens
         passwordResetTokenRepo.revokeAllActiveByUserId(user.getId(), Instant.now());
+    }
+
+    private String normalizeRequired(String value, String errorCode) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorCode);
+        }
+
+        return value.trim();
     }
 }

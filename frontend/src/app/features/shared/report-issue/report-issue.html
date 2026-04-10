@@ -1,76 +1,83 @@
-<button
-  type="button"
-  (click)="openModal()"
-  class="fixed bottom-6 right-6 z-50 rounded-full bg-[#0066FF] px-5 py-3 text-sm font-bold text-white shadow-lg hover:bg-blue-600"
->
-  Report Issue
+<button type="button" (click)="openModal()" class="report-fab">
+  <span class="report-fab__icon">!</span>
+  <span>Report Issue</span>
 </button>
 
-<div *ngIf="isOpen" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4" (click)="closeModal()">
-  <div class="w-full max-w-2xl rounded-2xl bg-white p-6" (click)="$event.stopPropagation()">
-    <div class="mb-4 flex items-center justify-between">
-      <h2 class="text-xl font-bold text-slate-900">Report an Issue</h2>
-      <button type="button" class="text-slate-500 hover:text-slate-700" (click)="closeModal()">✕</button>
+<div *ngIf="isOpen" class="report-overlay" (click)="closeModal()">
+  <div class="report-modal" (click)="$event.stopPropagation()">
+    <div class="report-header">
+      <div>
+        <p class="report-kicker">Quality Center</p>
+        <h2>Report an issue</h2>
+        <p>
+          Help us improve EnglishForU by sharing the issue, impact, and reproduction details.
+        </p>
+      </div>
+      <button type="button" class="report-close" (click)="closeModal()" [disabled]="isSubmitting">✕</button>
     </div>
 
-    <form [formGroup]="reportForm" (ngSubmit)="submit()" class="space-y-4">
-      <div>
-        <label class="mb-1 block text-sm font-semibold text-slate-700">Title *</label>
-        <input formControlName="title" class="w-full rounded-lg border border-slate-300 p-2" />
-        <p *ngIf="reportForm.get('title')?.touched && reportForm.get('title')?.invalid" class="mt-1 text-xs text-red-600">
+    <form [formGroup]="reportForm" (ngSubmit)="submit()" class="report-form">
+      <section class="report-section">
+        <div class="report-label-row">
+          <label class="report-label" for="report-title">Title *</label>
+          <span class="report-counter">{{ getTitleLength() }}/180</span>
+        </div>
+        <input id="report-title" formControlName="title" class="report-input" placeholder="Short summary of the issue" />
+        <p *ngIf="reportForm.get('title')?.touched && reportForm.get('title')?.invalid" class="report-error">
           Title is required.
         </p>
-      </div>
+      </section>
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <section class="report-section report-grid-two">
         <div>
-          <label class="mb-1 block text-sm font-semibold text-slate-700">Category *</label>
-          <select formControlName="category" class="w-full rounded-lg border border-slate-300 p-2">
+          <label class="report-label" for="report-category">Category *</label>
+          <select id="report-category" formControlName="category" class="report-input">
             <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
           </select>
+          <p class="report-hint">{{ getCategoryHint() }}</p>
         </div>
 
         <div>
-          <label class="mb-1 block text-sm font-semibold text-slate-700">Severity *</label>
-          <select formControlName="severity" class="w-full rounded-lg border border-slate-300 p-2">
+          <label class="report-label" for="report-severity">Severity *</label>
+          <select id="report-severity" formControlName="severity" class="report-input">
             <option *ngFor="let severity of severities" [value]="severity">{{ severity }}</option>
           </select>
+          <p class="report-hint">{{ getSeverityHint() }}</p>
         </div>
-      </div>
+      </section>
 
-      <div>
-        <label class="mb-1 block text-sm font-semibold text-slate-700">Description *</label>
-        <textarea formControlName="description" rows="3" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
-        <p *ngIf="reportForm.get('description')?.touched && reportForm.get('description')?.invalid" class="mt-1 text-xs text-red-600">
+      <section class="report-section">
+        <div class="report-label-row">
+          <label class="report-label" for="report-description">Description *</label>
+          <span class="report-counter">{{ getDescriptionLength() }}</span>
+        </div>
+        <textarea id="report-description" formControlName="description" rows="4" class="report-input report-textarea" placeholder="What happened? Include impact and when it started."></textarea>
+        <p *ngIf="reportForm.get('description')?.touched && reportForm.get('description')?.invalid" class="report-error">
           Description is required.
         </p>
-      </div>
+      </section>
 
-      <div>
-        <label class="mb-1 block text-sm font-semibold text-slate-700">Steps to reproduce</label>
-        <textarea formControlName="stepsToReproduce" rows="2" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
-      </div>
+      <section class="report-section">
+        <label class="report-label" for="report-steps">Steps to reproduce</label>
+        <textarea id="report-steps" formControlName="stepsToReproduce" rows="3" class="report-input report-textarea" placeholder="1. Open page ...&#10;2. Click ...&#10;3. Observe ..."></textarea>
+      </section>
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <section class="report-section report-grid-two">
         <div>
-          <label class="mb-1 block text-sm font-semibold text-slate-700">Expected result</label>
-          <textarea formControlName="expectedResult" rows="2" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
+          <label class="report-label" for="report-expected">Expected result</label>
+          <textarea id="report-expected" formControlName="expectedResult" rows="3" class="report-input report-textarea" placeholder="What should have happened"></textarea>
         </div>
         <div>
-          <label class="mb-1 block text-sm font-semibold text-slate-700">Actual result</label>
-          <textarea formControlName="actualResult" rows="2" class="w-full rounded-lg border border-slate-300 p-2"></textarea>
+          <label class="report-label" for="report-actual">Actual result</label>
+          <textarea id="report-actual" formControlName="actualResult" rows="3" class="report-input report-textarea" placeholder="What happened instead"></textarea>
         </div>
-      </div>
+      </section>
 
-      <div class="flex justify-end gap-3 pt-2">
-        <button type="button" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold" (click)="closeModal()" [disabled]="isSubmitting">
+      <div class="report-footer">
+        <button type="button" class="report-btn report-btn--ghost" (click)="closeModal()" [disabled]="isSubmitting">
           Cancel
         </button>
-        <button
-          type="submit"
-          class="rounded-lg bg-[#0066FF] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
-          [disabled]="isSubmitting"
-        >
+        <button type="submit" class="report-btn report-btn--primary" [disabled]="isSubmitting">
           {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
         </button>
       </div>
@@ -78,7 +85,6 @@
   </div>
 </div>
 
-<div *ngIf="toastMessage" class="fixed bottom-20 right-6 z-[70] rounded-lg px-4 py-3 text-sm font-semibold text-white"
-     [ngClass]="toastType === 'success' ? 'bg-green-600' : 'bg-red-600'">
+<div *ngIf="toastMessage" class="report-toast" [ngClass]="toastType === 'success' ? 'report-toast--success' : 'report-toast--error'">
   {{ toastMessage }}
 </div>

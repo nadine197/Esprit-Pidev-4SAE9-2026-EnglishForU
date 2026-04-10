@@ -48,7 +48,7 @@ const routes: Routes = [
   {
     path: 'helpdesk/board',
     component: HelpdeskBoardComponent,
-    
+    canActivate: [authGuard],
     data: { roles: ['HELP_DESK'] }
   },
   {

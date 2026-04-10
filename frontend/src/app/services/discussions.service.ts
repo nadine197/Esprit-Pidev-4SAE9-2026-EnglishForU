@@ -23,6 +23,12 @@ export interface DiscussionReaction {
   createdAt: string;
 }
 
+export interface DiscussionUserPublicProfile {
+  id: string;
+  name: string;
+  lastName: string;
+}
+
 export interface DiscussionPost {
   id: number;
   courseId: string;
@@ -153,6 +159,18 @@ export class DiscussionsService {
       formData,
       {
         headers: this.getHeaders()
+      }
+    );
+  }
+
+  getPublicUserByEmail(email: string): Observable<DiscussionUserPublicProfile> {
+    const params = new HttpParams().set('email', email);
+
+    return this.http.get<DiscussionUserPublicProfile>(
+      `${this.resolveBaseUrl()}/api/users/public/by-email`,
+      {
+        headers: this.getHeaders(),
+        params
       }
     );
   }
