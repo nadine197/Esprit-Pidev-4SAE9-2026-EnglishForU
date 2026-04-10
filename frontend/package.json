@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "demo:validate": "powershell -ExecutionPolicy Bypass -File ../scripts/demo-validate.ps1",
+    "demo:seed": "powershell -ExecutionPolicy Bypass -File ../scripts/seed-demo-data.ps1"
   },
   "private": true,
   "dependencies": {

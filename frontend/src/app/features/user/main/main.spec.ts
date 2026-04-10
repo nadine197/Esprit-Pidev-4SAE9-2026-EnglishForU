@@ -1,18 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { Main } from './main';
+import { MainComponent } from './main';
+import { AuthService } from '../../../services/auth.service';
 
-describe('Main', () => {
-  let component: Main;
-  let fixture: ComponentFixture<Main>;
+describe('MainComponent', () => {
+  let component: MainComponent;
+  let fixture: ComponentFixture<MainComponent>;
+
+  const authServiceMock = {
+    getUser: jasmine.createSpy('getUser').and.returnValue(null)
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Main]
+      declarations: [MainComponent],
+      providers: [{ provide: AuthService, useValue: authServiceMock }],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Main);
+    fixture = TestBed.createComponent(MainComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
