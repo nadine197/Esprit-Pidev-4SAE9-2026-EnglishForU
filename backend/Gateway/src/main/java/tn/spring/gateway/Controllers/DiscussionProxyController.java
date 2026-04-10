@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -78,6 +79,14 @@ public class DiscussionProxyController {
             url += "?viewerLevel=" + UriUtils.encode(viewerLevel, StandardCharsets.UTF_8);
         }
         return proxy.forward(url, HttpMethod.POST, body, req);
+    }
+
+    @PostMapping(value = "/posts/{postId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadImage(@PathVariable Long postId,
+                                              @RequestPart("file") MultipartFile file,
+                                              HttpServletRequest req) {
+        String url = discussionServiceBaseUrl + "/api/discussions/posts/" + postId + "/image";
+        return proxy.forwardMultipart(url, HttpMethod.POST, "file", file, req);
     }
 
     @GetMapping(value = "/media/{fileName:.+}", produces = MediaType.ALL_VALUE)

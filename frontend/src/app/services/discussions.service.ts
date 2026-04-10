@@ -144,6 +144,19 @@ export class DiscussionsService {
     );
   }
 
+  uploadPostImage(postId: number, file: File): Observable<DiscussionPost> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<DiscussionPost>(
+      `${this.resolveBaseUrl()}/api/discussions/posts/${postId}/image`,
+      formData,
+      {
+        headers: this.getHeaders()
+      }
+    );
+  }
+
   loadMedia(fileName: string): Observable<Blob> {
     return this.http.get(
       `${this.resolveBaseUrl()}/api/discussions/media/${encodeURIComponent(fileName)}`,

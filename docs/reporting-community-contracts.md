@@ -21,8 +21,8 @@ This file is the source of truth for Feature 1 (reporting/helpdesk) and Feature 
 | Assign/unassign report | No | No | Yes | Yes | Yes |
 | Read own notifications | Yes | Yes | Yes | Yes | Yes |
 | Mark own notification as read | Yes | Yes | Yes | Yes | Yes |
-| Create discussion post | Planned | Planned | Planned | Planned | Planned |
-| Comment/reaction on discussion | Planned | Planned | Planned | Planned | Planned |
+| Create discussion post | Yes | Yes | Yes | Yes | Yes |
+| Comment/reaction on discussion | Yes | Yes | Yes | Yes | Yes |
 
 ## Report State Transitions
 
@@ -87,7 +87,7 @@ Notification APIs:
 
 Gateway mirrors under the same paths and forwards auth headers.
 
-## Feature 2 Planned HTTP Contracts
+## Feature 2 HTTP Contracts
 
 Discussion feed:
 

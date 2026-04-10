@@ -2,6 +2,7 @@ param(
     [string]$FrontendUrl = "http://localhost:4200",
     [string]$GatewayUrl = "http://localhost:8090",
     [string]$UserServiceUrl = "http://localhost:8081",
+    [string]$DiscussionServiceUrl = "http://localhost:8088",
     [string]$EurekaUrl = "http://localhost:8761"
 )
 
@@ -48,11 +49,13 @@ $checks = @(
     @{ Name = "Frontend"; Method = "GET"; Url = $FrontendUrl; Allowed = @(200) },
     @{ Name = "Eureka Health"; Method = "GET"; Url = "$EurekaUrl/actuator/health"; Allowed = @(200) },
     @{ Name = "User Service Health"; Method = "GET"; Url = "$UserServiceUrl/actuator/health"; Allowed = @(200) },
+    @{ Name = "Discussion Service Health"; Method = "GET"; Url = "$DiscussionServiceUrl/actuator/health"; Allowed = @(200) },
     @{ Name = "Gateway Health"; Method = "GET"; Url = "$GatewayUrl/actuator/health"; Allowed = @(200) },
     @{ Name = "Gateway Login Invalid Payload"; Method = "POST"; Url = "$GatewayUrl/api/auth/login"; Allowed = @(400,401); Body = "{}" },
     @{ Name = "Reports Mine Unauthenticated"; Method = "GET"; Url = "$GatewayUrl/api/reports/mine"; Allowed = @(401,403) },
     @{ Name = "Helpdesk Reports Unauthenticated"; Method = "GET"; Url = "$GatewayUrl/api/helpdesk/reports"; Allowed = @(401,403) },
-    @{ Name = "Notifications Unauthenticated"; Method = "GET"; Url = "$GatewayUrl/api/notifications"; Allowed = @(401,403) }
+    @{ Name = "Notifications Unauthenticated"; Method = "GET"; Url = "$GatewayUrl/api/notifications"; Allowed = @(401,403) },
+    @{ Name = "Discussion Feed Unauthenticated"; Method = "GET"; Url = "$GatewayUrl/api/discussions/feed"; Allowed = @(401,403) }
 )
 
 $failed = 0

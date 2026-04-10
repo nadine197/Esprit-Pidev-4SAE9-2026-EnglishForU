@@ -266,10 +266,6 @@ public class DiscussionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "TEXT_CONTENT_REQUIRED");
         }
 
-        if (request.getType() == DiscussionPostType.IMAGE && nullableTrim(request.getImagePath()) == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IMAGE_PATH_REQUIRED");
-        }
-
         if (request.getType() == DiscussionPostType.QUIZ && nullableTrim(request.getQuizPayload()) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "QUIZ_PAYLOAD_REQUIRED");
         }

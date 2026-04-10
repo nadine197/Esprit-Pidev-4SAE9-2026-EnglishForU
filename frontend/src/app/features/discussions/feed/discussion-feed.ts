@@ -66,6 +66,7 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
   isSubmittingPost = false;
   feedErrorMessage = '';
   createErrorMessage = '';
+  selectedImageFile: File | null = null;
 
   constructor(
     private discussionsService: DiscussionsService,
@@ -121,22 +122,39 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
 
     this.discussionsService.createPost(payload).subscribe({
       next: (createdPost) => {
-        this.posts = [createdPost, ...this.posts];
-        this.attachMediaPreviews([createdPost]);
-        this.composer = this.emptyComposer();
-
-        const inferredLevel = this.inferUserLevel(this.currentUser);
-        if (inferredLevel) {
-          this.composer.authorLevel = inferredLevel;
+        if (payload.type === 'IMAGE' && this.selectedImageFile) {
+          this.uploadImageForCreatedPost(createdPost, this.selectedImageFile);
+          return;
         }
 
-        this.isSubmittingPost = false;
+        this.finalizeCreatedPost(createdPost);
       },
       error: (error) => {
         this.createErrorMessage = error?.error?.message || 'Unable to publish post.';
         this.isSubmittingPost = false;
       }
     });
+  }
+
+  onComposerTypeChange(): void {
+    if (this.composer.type !== 'IMAGE') {
+      this.selectedImageFile = null;
+      this.composer.imagePath = '';
+    }
+  }
+
+  onImageFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files.length > 0 ? input.files[0] : null;
+
+    this.selectedImageFile = file;
+    if (file) {
+      this.composer.imagePath = '';
+    }
+  }
+
+  clearSelectedImage(): void {
+    this.selectedImageFile = null;
   }
 
   toggleThread(postId: number): void {
@@ -332,8 +350,8 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
       return null;
     }
 
-    if (type === 'IMAGE' && !imagePath) {
-      this.createErrorMessage = 'Image posts require an image path.';
+    if (type === 'IMAGE' && !imagePath && !this.selectedImageFile) {
+      this.createErrorMessage = 'Image posts require either an uploaded file or image path.';
       return null;
     }
 
@@ -347,6 +365,32 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
       targetLevel: targetLevel || undefined,
       authorLevel: authorLevel || undefined
     };
+  }
+
+  private uploadImageForCreatedPost(createdPost: DiscussionPost, file: File): void {
+    this.discussionsService.uploadPostImage(createdPost.id, file).subscribe({
+      next: (updatedPost) => {
+        this.finalizeCreatedPost(updatedPost);
+      },
+      error: (error) => {
+        this.createErrorMessage = error?.error?.message || 'Post created but image upload failed.';
+        this.finalizeCreatedPost(createdPost);
+      }
+    });
+  }
+
+  private finalizeCreatedPost(post: DiscussionPost): void {
+    this.posts = [post, ...this.posts];
+    this.attachMediaPreviews([post]);
+    this.composer = this.emptyComposer();
+    this.selectedImageFile = null;
+
+    const inferredLevel = this.inferUserLevel(this.currentUser);
+    if (inferredLevel) {
+      this.composer.authorLevel = inferredLevel;
+    }
+
+    this.isSubmittingPost = false;
   }
 
   private attachMediaPreviews(posts: DiscussionPost[]): void {

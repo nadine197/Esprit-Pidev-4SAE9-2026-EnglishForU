@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -141,6 +143,43 @@ class DiscussionFeatureIntegrationTest {
                         .param("viewerLevel", "B2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    void authorCanUploadImageForOwnPost() throws Exception {
+        String authorToken = bearer("student5@englishforu.local", "STUDENT");
+
+        Map<String, Object> createPayload = Map.of(
+                "courseId", "ENG-A2",
+                "type", "IMAGE",
+                "content", "Practice board visual aid",
+                "authorLevel", "A2"
+        );
+
+        String createResponse = mockMvc.perform(post("/api/discussions/posts")
+                        .header("Authorization", authorToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createPayload)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        long postId = objectMapper.readTree(createResponse).get("id").asLong();
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "chart.png",
+                MediaType.IMAGE_PNG_VALUE,
+                "fake-image-bytes".getBytes()
+        );
+
+        mockMvc.perform(multipart("/api/discussions/posts/{postId}/image", postId)
+                        .file(file)
+                        .header("Authorization", authorToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type").value("IMAGE"))
+                .andExpect(jsonPath("$.imagePath").isNotEmpty());
     }
 
     private String bearer(String email, String role) {
