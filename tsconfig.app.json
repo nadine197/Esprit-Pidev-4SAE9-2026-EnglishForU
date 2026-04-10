@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+=======
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
+<<<<<<< HEAD
     "types": ["google.maps"]
+=======
+    "types": []
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
   },
   "files": [
     "src/main.ts"

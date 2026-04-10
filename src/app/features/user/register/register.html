@@ -45,6 +45,7 @@
         <!-- Role Selection -->
         <div class="space-y-2">
           <label class="text-sm font-semibold text-slate-700 ml-1">I am a</label>
+<<<<<<< HEAD
           <div class="grid grid-cols-2 gap-3">
             <button type="button" (click)="setRole('student')"
               [class]="selectedRole === 'student' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
@@ -57,6 +58,21 @@
               Teacher
             </button>
           </div>
+=======
+         <div class="grid grid-cols-2 gap-3">
+  <button type="button" (click)="setRole('STUDENT')"
+          [class]="selectedRole === 'STUDENT' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
+          class="flex h-12 items-center justify-center rounded-xl border-2 font-medium transition-all">
+    Student
+  </button>
+
+  <button type="button" (click)="setRole('TUTOR')"
+          [class]="selectedRole === 'TUTOR' ? 'border-[#0066FF] bg-blue-50 text-[#0066FF]' : 'border-slate-200 text-slate-500'"
+          class="flex h-12 items-center justify-center rounded-xl border-2 font-medium transition-all">
+    Teacher
+  </button>
+</div>
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
         </div>
 
         <!-- Password -->
@@ -83,6 +99,13 @@
           </label>
         </div>
 
+<<<<<<< HEAD
+=======
+        <p *ngIf="errorMessage" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {{ errorMessage }}
+        </p>
+
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
         <button type="submit" [disabled]="registerForm.invalid"
           class="w-full h-12 bg-[#0066FF] text-white rounded-xl font-bold text-base hover:bg-[#0052cc] transition-all active:scale-[0.98] disabled:opacity-50 shadow-md shadow-blue-500/20 mt-2">
           Create Account
@@ -95,4 +118,8 @@
       </p>
     </div>
   </div>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)

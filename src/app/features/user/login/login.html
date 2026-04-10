@@ -54,12 +54,23 @@
           />
         </div>
 
+<<<<<<< HEAD
+=======
+        <p *ngIf="errorMessage" class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {{ errorMessage }}
+        </p>
+
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
         <!-- Sign In Button -->
         <button 
           type="submit" 
           [disabled]="loginForm.invalid"
           class="w-full h-13 bg-[#0066FF] text-white rounded-2xl font-bold text-base hover:bg-[#0052cc] transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-blue-500/25 mt-2">
+<<<<<<< HEAD
           Sign In
+=======
+          {{ loading ? 'Signing In...' : 'Sign In' }}
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
         </button>
       </form>
 
@@ -93,4 +104,8 @@
       </p>
     </div>
   </div>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)

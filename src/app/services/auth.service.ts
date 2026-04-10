@@ -24,8 +24,25 @@ export class AuthService {
     tap((res: any) => {
       if (res && res.token) {
         localStorage.setItem('token', res.token);
+<<<<<<< HEAD
         // Save the user object so the Guards and Components can see the Role
         localStorage.setItem('user', JSON.stringify(res.user)); 
+=======
+        localStorage.setItem('user', JSON.stringify(res.user)); 
+        if (res.user?.role) {
+          localStorage.setItem('userRole', res.user.role);
+          localStorage.setItem('ROLE', res.user.role);
+        } else {
+          localStorage.removeItem('userRole');
+          localStorage.removeItem('ROLE');
+        }
+        if (res.user?.id) {
+          localStorage.setItem('USER_ID', String(res.user.id));
+        } else {
+          localStorage.removeItem('USER_ID');
+        }
+
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
       }
     })
   );
@@ -42,6 +59,12 @@ getUser() {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+<<<<<<< HEAD
+=======
+    localStorage.removeItem('ROLE');
+    localStorage.removeItem('USER_ID');
+    localStorage.removeItem('userRole');
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
   }
 
   isLoggedIn(): boolean {
@@ -51,4 +74,8 @@ getUser() {
   signup(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register-client`, userData);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 21f8a6f (metier avancer + controle de saisie)
