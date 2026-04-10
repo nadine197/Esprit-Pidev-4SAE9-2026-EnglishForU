@@ -37,7 +37,7 @@ export class CheckoutComponent implements OnInit {
    promoCode = '';
   promoLoading = false;
   promoError: string | null = null;
-
+showLoginModal = false;
   promoApplied: ApplyPromoResponse | null = null;
 
   // computed numbers for display + payment
@@ -58,6 +58,10 @@ constructor(
 ) {}
   ngOnInit(): void {
     this.packageId = Number(this.route.snapshot.paramMap.get('packageId'));
+     if(this.currentUser?.email == null || this.currentUser?.email === undefined) {
+            this.showLoginPopup(); // ✅ UX
+            return ; 
+          }
     this.loadPackage();
   }
 get currentUser() {
@@ -69,33 +73,42 @@ get currentUser() {
     this.providerCheckoutUrl = null;
     this.paymentId = null;
   }
+  showLoginPopup() {
+  this.showLoginModal = true;
+}
+goToLogin() {
+  this.router.navigate(['/login'], {
+    queryParams: { returnUrl: this.router.url }
+  });
+}
+loadPackage() {
+  this.loadingPkg = true;
+  this.error = null;
 
-   loadPackage() {
-    this.loadingPkg = true;
-    this.error = null;
+  this.packageService.GetById(this.packageId).subscribe({
+    next: (p) => {
+      this.pkg = p;
+  if(this.currentUser?.email || p==null || p===undefined) {
+            this.showLoginPopup(); // ✅ UX
+            return ; 
+          }
 
-    this.packageService.GetById(this.packageId).subscribe({
-      next: (p) => {
-        this.pkg = p;
+      this.amountOriginal = Number(p.price);
+      this.discountAmount = 0;
+      this.amountFinal = this.amountOriginal;
 
-        // ✅ init totals
-        this.amountOriginal = Number(p.price);
-        this.discountAmount = 0;
-        this.amountFinal = this.amountOriginal;
-
-        // reset promo state if package changes
-        this.promoApplied = null;
-        this.promoCode = '';
-        this.promoError = null;
-
-        this.loadingPkg = false;
-      },
-      error: () => {
-        this.error = 'Package not found.';
-        this.loadingPkg = false;
-      }
-    });
+      this.loadingPkg = false;
+    },
+error: (err) => {
+  if (err.status === 401) {
+    this.showLoginModal = true;
+  } else {
+    this.error = 'Package not found.';
   }
+  this.loadingPkg = false;
+}
+  });
+}
 
   applyPromo() {
     if (!this.pkg) return;
@@ -153,9 +166,9 @@ createPayment() {
 
   const user = this.authService.getUser();
   if (!user?.email) {
-    this.error = 'You must login first.';
-    return;
-  }
+  this.showLoginPopup();
+  return;
+}
 
   this.loadingPay = true;
   this.error = null;

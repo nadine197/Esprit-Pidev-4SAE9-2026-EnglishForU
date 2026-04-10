@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-slate-50 py-10">
+<div *ngIf="!showLoginModal" class="min-h-screen bg-slate-50 py-10">
   <div class="container mx-auto px-4 max-w-4xl">
 
     <div class="mb-8">
@@ -152,6 +152,17 @@
         </div>
 
       </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showLoginModal" class="modal-container">
+  <div class="modal-box">
+    <h3>🔒 Authentication Required</h3>
+    <p>You need to login to continue.</p>
+
+    <div class="actions">
+      <button (click)="goToLogin()">Login</button>
+      <button (click)="showLoginModal = false">Cancel</button>
     </div>
   </div>
 </div>
