@@ -177,6 +177,8 @@ public class DiscussionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IMAGE_FILE_REQUIRED");
         }
 
+        validateSupportedMediaFile(file);
+
         String storedFileName = storeImageFile(file);
         post.setType(DiscussionPostType.IMAGE);
         post.setImagePath(storedFileName);
@@ -381,6 +383,28 @@ public class DiscussionService {
             return fileName;
         } catch (IOException ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE_STORAGE_FAILED");
+        }
+    }
+
+    private void validateSupportedMediaFile(MultipartFile file) {
+        String contentType = nullableTrim(file.getContentType());
+        String originalName = nullableTrim(file.getOriginalFilename());
+
+        boolean supportedMimeType = false;
+        if (contentType != null) {
+            String normalizedContentType = contentType.toLowerCase(Locale.ROOT);
+            supportedMimeType = normalizedContentType.startsWith("image/")
+                    || "application/pdf".equals(normalizedContentType);
+        }
+
+        boolean supportedExtension = false;
+        if (originalName != null) {
+            supportedExtension = originalName.toLowerCase(Locale.ROOT)
+                    .matches(".*\\.(png|jpe?g|gif|bmp|webp|svg|pdf)$");
+        }
+
+        if (!supportedMimeType && !supportedExtension) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "MEDIA_TYPE_NOT_SUPPORTED");
         }
     }
 

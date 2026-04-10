@@ -171,6 +171,14 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files.length > 0 ? input.files[0] : null;
 
+    if (file && !this.isSupportedMediaFile(file)) {
+      this.createErrorMessage = 'Only images and PDF files are supported.';
+      this.selectedImageFile = null;
+      input.value = '';
+      return;
+    }
+
+    this.createErrorMessage = '';
     this.selectedImageFile = file;
     if (file) {
       this.composer.imagePath = '';
@@ -212,6 +220,10 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
 
   getQuizOptionLabel(index: number): string {
     return String.fromCharCode(65 + index);
+  }
+
+  getComposerPostTypeLabel(type: DiscussionPostType): string {
+    return type === 'IMAGE' ? 'MEDIA' : type;
   }
 
   toggleThread(postId: number): void {
@@ -308,6 +320,39 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     }
 
     return this.mediaPreviewUrls[post.id] || null;
+  }
+
+  isPdfPost(post: DiscussionPost): boolean {
+    const mediaPath = this.normalizeOptional(post.imagePath);
+    if (!mediaPath) {
+      return false;
+    }
+
+    return /\.pdf($|\?)/i.test(mediaPath);
+  }
+
+  getPostTypeBadgeLabel(post: DiscussionPost): string {
+    if (post.type === 'IMAGE' && this.isPdfPost(post)) {
+      return 'PDF';
+    }
+
+    return post.type;
+  }
+
+  getPostFileName(post: DiscussionPost): string {
+    const mediaPath = this.normalizeOptional(post.imagePath);
+    if (!mediaPath) {
+      return 'attachment.pdf';
+    }
+
+    const cleanPath = mediaPath.split('?')[0];
+    const fileNameCandidate = cleanPath.split('/').pop() || cleanPath;
+
+    try {
+      return decodeURIComponent(fileNameCandidate);
+    } catch {
+      return fileNameCandidate;
+    }
   }
 
   getAuthorLabel(email: string): string {
@@ -494,7 +539,7 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     }
 
     if (type === 'IMAGE' && !imagePath && !this.selectedImageFile) {
-      this.createErrorMessage = 'Image posts require either an uploaded file or image path.';
+      this.createErrorMessage = 'Media posts require either an uploaded image/PDF or a media URL.';
       return null;
     }
 
@@ -722,6 +767,15 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
 
   private isAbsoluteUrl(path: string): boolean {
     return /^https?:\/\//i.test(path);
+  }
+
+  private isSupportedMediaFile(file: File): boolean {
+    const mimeType = (file.type || '').toLowerCase();
+    if (mimeType.startsWith('image/') || mimeType === 'application/pdf') {
+      return true;
+    }
+
+    return /\.(png|jpe?g|gif|bmp|webp|svg|pdf)$/i.test(file.name || '');
   }
 
   private normalizeOptional(value: unknown): string | null {
