@@ -22,3 +22,51 @@ body {
   font-family: 'Inter', sans-serif;
   margin: 0;
 }
+
+.introjs-overlay {
+  background: rgba(15, 23, 42, 0.6) !important;
+}
+
+.introjs-helperLayer {
+  border-radius: 12px !important;
+}
+
+.efu-onboarding-tooltip {
+  max-width: 320px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2) !important;
+}
+
+.efu-onboarding-tooltip .introjs-tooltip-title {
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.efu-onboarding-tooltip .introjs-tooltiptext {
+  color: #334155;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.efu-onboarding-tooltip .introjs-button {
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  text-shadow: none;
+}
+
+.efu-onboarding-tooltip .introjs-nextbutton,
+.efu-onboarding-tooltip .introjs-donebutton {
+  background: #0066ff;
+  border-color: #0066ff;
+  color: #ffffff;
+}
+
+.efu-onboarding-tooltip .introjs-nextbutton:hover,
+.efu-onboarding-tooltip .introjs-donebutton:hover {
+  background: #0b5ed7;
+  border-color: #0b5ed7;
+}

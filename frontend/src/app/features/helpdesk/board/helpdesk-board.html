@@ -10,13 +10,14 @@
 
     <div class="helpdesk-controls">
       <input
+        id="tour-helpdesk-search"
         type="text"
         placeholder="Search tickets..."
         class="search-input"
         (input)="onSearchInput($event)"
       />
 
-      <select class="severity-select" (change)="onSeverityFilterChange($event)">
+      <select id="tour-helpdesk-severity-filter" class="severity-select" (change)="onSeverityFilterChange($event)">
         <option *ngFor="let severity of severityFilters" [value]="severity">
           {{ severity === 'ALL' ? 'All Severities' : severity }}
         </option>
@@ -26,7 +27,7 @@
         <span>↻</span> Refresh
       </button>
 
-      <a routerLink="/community/feed" class="refresh-btn no-underline">
+      <a id="tour-helpdesk-join-threads" routerLink="/community/feed" class="refresh-btn no-underline">
         Join Threads
       </a>
     </div>
@@ -37,7 +38,7 @@
   <div *ngIf="errorMessage" class="error-state">{{ errorMessage }}</div>
 
   <!-- Kanban Board -->
-  <div class="kanban-board" *ngIf="!isLoading" cdkDropListGroup>
+  <div id="tour-helpdesk-board" class="kanban-board" *ngIf="!isLoading" cdkDropListGroup>
     <div
       *ngFor="let status of statuses"
       class="kanban-column"
@@ -134,7 +135,7 @@
   </div>
 
   <div class="ticket-modal-backdrop" *ngIf="isModalOpen" (click)="closeTicketModal()">
-    <div class="ticket-modal" (click)="$event.stopPropagation()">
+    <div id="tour-helpdesk-ticket-modal" class="ticket-modal" (click)="$event.stopPropagation()">
       <div class="ticket-modal-header">
         <h2>Ticket #{{ activeTicket?.id }}</h2>
         <button type="button" class="close-modal-btn" (click)="closeTicketModal()">✕</button>
@@ -165,7 +166,7 @@
 
         <aside class="ticket-sidebar-section">
           <label class="field-label">Status</label>
-          <select class="modal-input" [(ngModel)]="editDraft.status">
+          <select id="tour-helpdesk-ticket-status" class="modal-input" [(ngModel)]="editDraft.status">
             <option *ngFor="let item of statuses" [value]="item">{{ item }}</option>
           </select>
 
@@ -203,6 +204,7 @@
           <div class="request-info-box">
             <label class="field-label">Request More Info</label>
             <textarea
+              id="tour-helpdesk-request-info"
               class="modal-textarea small"
               [(ngModel)]="requestInfoDraft"
               placeholder="Ask the reporter for extra context..."
@@ -224,6 +226,7 @@
 
             <div class="comment-composer">
               <textarea
+                id="tour-helpdesk-comment"
                 class="modal-textarea small"
                 [(ngModel)]="commentDraft"
                 placeholder="Add a comment for the ticket thread..."
@@ -276,7 +279,7 @@
         <span class="modal-error" *ngIf="modalErrorMessage">{{ modalErrorMessage }}</span>
         <div class="modal-footer-actions">
           <button type="button" class="secondary-btn" (click)="closeTicketModal()">Cancel</button>
-          <button type="button" class="primary-btn" [disabled]="isSavingModal" (click)="saveTicketChanges()">
+          <button id="tour-helpdesk-save-ticket" type="button" class="primary-btn" [disabled]="isSavingModal" (click)="saveTicketChanges()">
             {{ isSavingModal ? 'Saving...' : 'Save changes' }}
           </button>
         </div>

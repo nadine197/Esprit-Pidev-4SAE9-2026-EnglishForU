@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { CreateReportPayload, ReportCategory, ReportSeverity, ReportsService } from '../../../services/reports.service';
+import { OnboardingTourService } from '../../../services/onboarding-tour.service';
 
 @Component({
   selector: 'app-report-issue',
@@ -23,7 +24,8 @@ export class ReportIssueComponent implements OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private reportsService: ReportsService,
-    private router: Router
+    private router: Router,
+    private onboardingTourService: OnboardingTourService
   ) {
     this.reportForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.maxLength(180)]],
@@ -43,6 +45,7 @@ export class ReportIssueComponent implements OnDestroy {
   openModal(): void {
     this.isOpen = true;
     document.body.style.overflow = 'hidden';
+    setTimeout(() => this.onboardingTourService.startReportModalTour(), 120);
   }
 
   closeModal(): void {

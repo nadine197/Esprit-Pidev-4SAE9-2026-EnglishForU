@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { OnboardingTourService } from '../../../services/onboarding-tour.service';
 
 interface NavLink {
   label: string;
@@ -13,7 +14,7 @@ interface NavLink {
   selector: 'app-navbar',
   templateUrl: './navbar.html'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
   isLoggedIn = false;
   currentUser: any = null;
   private readonly threadAccessRoles = ['STUDENT', 'TUTOR', 'TEACHER', 'HELP_DESK'];
@@ -28,10 +29,22 @@ export class NavbarComponent implements OnInit {
   ];
   navLinks: NavLink[] = [];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private onboardingTourService: OnboardingTourService
+  ) {}
 
   ngOnInit(): void {
     this.refreshUserState();
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isLoggedIn) {
+      return;
+    }
+
+    setTimeout(() => this.onboardingTourService.startProductTour(), 450);
   }
 
   private refreshUserState(): void {
@@ -105,5 +118,17 @@ export class NavbarComponent implements OnInit {
       : (segments[0].charAt(1) || '').toUpperCase();
 
     return `${first}${second}`.trim();
+  }
+
+  getNavLinkTourId(link: NavLink): string | null {
+    if (link.path === '/courses') {
+      return 'tour-courses-link';
+    }
+
+    if (link.path === '/community/feed') {
+      return 'tour-threads-link';
+    }
+
+    return null;
   }
 }

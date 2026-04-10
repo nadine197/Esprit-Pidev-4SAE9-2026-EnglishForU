@@ -1,10 +1,10 @@
-<button type="button" (click)="openModal()" class="report-fab">
+<button id="tour-report-issue" type="button" (click)="openModal()" class="report-fab">
   <span class="report-fab__icon">!</span>
   <span>Report Issue</span>
 </button>
 
 <div *ngIf="isOpen" class="report-overlay" (click)="closeModal()">
-  <div class="report-modal" (click)="$event.stopPropagation()">
+  <div id="tour-report-modal" class="report-modal" (click)="$event.stopPropagation()">
     <div class="report-header">
       <div>
         <p class="report-kicker">Quality Center</p>
@@ -77,7 +77,7 @@
         <button type="button" class="report-btn report-btn--ghost" (click)="closeModal()" [disabled]="isSubmitting">
           Cancel
         </button>
-        <button type="submit" class="report-btn report-btn--primary" [disabled]="isSubmitting">
+        <button id="tour-report-submit" type="submit" class="report-btn report-btn--primary" [disabled]="isSubmitting">
           {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
         </button>
       </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AuthService } from '../../../services/auth.service';
+import { OnboardingTourService } from '../../../services/onboarding-tour.service';
 import { ReportActivity, ReportCategory, ReportComment, ReportSeverity, ReportStatus, ReportTicket, ReportsService, UpdateHelpdeskReportPayload } from '../../../services/reports.service';
 import { Subject, forkJoin, interval, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -78,7 +79,8 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
   constructor(
     private reportsService: ReportsService,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private onboardingTourService: OnboardingTourService
   ) {}
 
   ngOnInit(): void {
@@ -112,11 +114,13 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
         this.reports = reports as ReportWithAge[];
         this.updateReportAges();
         this.isLoading = false;
+        setTimeout(() => this.onboardingTourService.startHelpdeskBoardTour(), 500);
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || 'Failed to load helpdesk tickets.';
         this.reports = [];
         this.isLoading = false;
+        setTimeout(() => this.onboardingTourService.startHelpdeskBoardTour(), 500);
       }
     });
   }
@@ -150,6 +154,7 @@ export class HelpdeskBoardComponent implements OnInit, OnDestroy {
     this.requestInfoDraft = '';
     this.isModalOpen = true;
     this.loadReportTimeline(report.id);
+    setTimeout(() => this.onboardingTourService.startHelpdeskTicketModalTour(), 140);
   }
 
   closeTicketModal(): void {

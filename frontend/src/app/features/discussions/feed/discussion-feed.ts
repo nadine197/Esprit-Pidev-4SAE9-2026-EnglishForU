@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
+import { OnboardingTourService } from '../../../services/onboarding-tour.service';
 import {
   CreateDiscussionPostPayload,
   DiscussionComment,
@@ -77,7 +78,8 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
 
   constructor(
     private discussionsService: DiscussionsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private onboardingTourService: OnboardingTourService
   ) {}
 
   ngOnInit(): void {
@@ -89,6 +91,7 @@ export class DiscussionFeedComponent implements OnInit, OnDestroy {
     }
 
     this.loadFeed();
+    setTimeout(() => this.onboardingTourService.startThreadPageTour(), 700);
   }
 
   ngOnDestroy(): void {
