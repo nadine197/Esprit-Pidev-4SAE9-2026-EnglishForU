@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -15,6 +16,12 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
+    private final GatewayJwtFilter gatewayJwtFilter;
+
+    public SecurityConfig(GatewayJwtFilter gatewayJwtFilter) {
+        this.gatewayJwtFilter = gatewayJwtFilter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -22,9 +29,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().permitAll()
-                );
+                        .requestMatchers("/api/auth/**",
+                                "/api/packages/active").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(gatewayJwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

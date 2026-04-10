@@ -21,8 +21,14 @@ public class ProxyForwarder {
                                                HttpServletRequest req) {
 
         HttpHeaders headers = new HttpHeaders();
-
+        headers.setContentType(MediaType.APPLICATION_JSON);
         String auth = req.getHeader(HttpHeaders.AUTHORIZATION);
+        String userId = (String) req.getAttribute("userId");
+        String role = (String) req.getAttribute("role");
+        System.out.println("from proxy " + role + userId);
+
+        if (userId != null) headers.set("X-User-Id", userId);
+        if (role != null) headers.set("X-User-Role", role);
         if (auth != null) headers.set(HttpHeaders.AUTHORIZATION, auth);
 
         String accept = req.getHeader(HttpHeaders.ACCEPT);
@@ -43,7 +49,12 @@ public class ProxyForwarder {
                                           HttpServletRequest req) {
 
         HttpHeaders headers = new HttpHeaders();
+        String userId = (String) req.getAttribute("userId");
+        String role = (String) req.getAttribute("role");
+        System.out.println("forward  proxy " + role + userId);
 
+        if (userId != null) headers.set("X-User-Id", userId);
+        if (role != null) headers.set("X-User-Role", role);
         String auth = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (auth != null) headers.set(HttpHeaders.AUTHORIZATION, auth);
 
