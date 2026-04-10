@@ -165,7 +165,8 @@ createPayment() {
     targetId: this.pkg.id,
     amountOriginal: this.amountOriginal,
     discountAmount: this.discountAmount,
-    paymentMethod: this.selectedMethod
+    paymentMethod: this.selectedMethod,
+    idPromoCode: this.promoApplied?.promoCode || null  // optional, if you want to link payment to promo
   };
 
   this.paymentService.createPayment(payload).subscribe({

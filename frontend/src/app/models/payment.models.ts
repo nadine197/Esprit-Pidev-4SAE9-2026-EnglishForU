@@ -4,6 +4,7 @@ export interface CreatePaymentRequest {
   amountOriginal: number;
   discountAmount?: number;
   paymentMethod: PaymentMethod;
+  idPromoCode?: string | null; // optional, if you want to link payment to promo
 }
 export type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
 
