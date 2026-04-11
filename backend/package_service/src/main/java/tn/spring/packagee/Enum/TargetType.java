@@ -1,7 +1,7 @@
 package tn.spring.packagee.Enum;
 
 public enum TargetType {
-    PACKAGE,
+    MIXED,
     EVENT,
-    WORKSHOP
+    COURSE
 }

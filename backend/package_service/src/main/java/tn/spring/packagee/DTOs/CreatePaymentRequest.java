@@ -17,8 +17,6 @@ public class CreatePaymentRequest {
     @Email
     private String studentEmail;
 
-    @NotNull
-    private TargetType targetType;
 
     @NotNull
     private Long targetId;
@@ -28,7 +26,7 @@ public class CreatePaymentRequest {
 
     @DecimalMin(value = "0.00", inclusive = true)
     private BigDecimal discountAmount = BigDecimal.ZERO;
-
+    private String idPromoCode;
     @NotNull
     private PaymentMethod paymentMethod;
 

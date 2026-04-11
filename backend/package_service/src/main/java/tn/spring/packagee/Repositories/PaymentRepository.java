@@ -8,9 +8,8 @@ import tn.spring.packagee.Enum.TargetType;
 
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    List<Payment> findByStudentId(Long studentId);
-    List<Payment> findByStatus(PaymentStatus status);
-    List<Payment> findByTargetTypeAndTargetId(TargetType targetType, Long targetId);
+    List<Payment> findByStudentId(UUID studentId);
 }

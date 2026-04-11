@@ -2,6 +2,7 @@ package tn.spring.packagee.Controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.packagee.DTOs.FlouciVerifyDTO;
 import tn.spring.packagee.DTOs.ResponsePaymentFlouciDTO;
@@ -15,7 +16,7 @@ import java.math.BigInteger;
 public class PaymentFlouciController {
 
     private final PaymentFlouciService flouciService;
-
+    @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT')")
     @PostMapping("/create")
     public ResponseEntity<ResponsePaymentFlouciDTO> createPayment(@RequestBody BigInteger amountTnd) throws IOException {
         BigInteger millimes = amountTnd.multiply(BigInteger.valueOf(1000)); // ✅

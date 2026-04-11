@@ -7,6 +7,7 @@ import lombok.Setter;
 import tn.spring.packagee.Enum.AppliedToType;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -15,8 +16,7 @@ public class ApplyPromoRequest {
     @NotBlank
     private String code;
 
-    @NotNull
-    private Long studentId;
+
 
 
 

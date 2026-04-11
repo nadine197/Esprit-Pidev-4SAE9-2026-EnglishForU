@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import tn.spring.packagee.Enum.PaymentMethod;
 import tn.spring.packagee.Enum.PaymentStatus;
-import tn.spring.packagee.Enum.TargetType;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -19,7 +18,7 @@ import java.util.UUID;
         name = "payment",
         indexes = {
                 @Index(name = "idx_payment_student", columnList = "studentId"),
-                @Index(name = "idx_payment_target", columnList = "targetType,targetId")
+                @Index(name = "idx_payment_target_name", columnList = "targetName,targetId")
         }
 )
 public class Payment {
@@ -38,7 +37,8 @@ public class Payment {
 
      private String providerRef;
     ;
-
+    private String voucherNumber;     // ex: VCH-2026-0000007
+    private Instant confirmedAt;
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal discountAmount = BigDecimal.ZERO;
 
@@ -55,9 +55,8 @@ public class Payment {
     @Column(nullable = false, length = 10)
     private PaymentMethod paymentMethod;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private TargetType targetType;
+    @Column(nullable = false, length = 300)
+    private String targetName;
 
     @Column(nullable = false)
     private Long targetId;

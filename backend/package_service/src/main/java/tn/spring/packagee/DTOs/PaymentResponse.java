@@ -16,7 +16,7 @@ import java.util.UUID;
 public class PaymentResponse {
     private Long id;
     private UUID studentId;
-    private TargetType targetType;
+    private String targetName;
     private Long targetId;
     private String studentFullName;
     private BigDecimal amountOriginal;
@@ -25,6 +25,8 @@ public class PaymentResponse {
     private String providerRef;          // flouci payment_id / stripe session id
     private String checkoutUrl;
     private PaymentStatus status;
+    private String voucherNumber;
+    private Instant confirmedAt;
     private PaymentMethod paymentMethod;
     private Instant createdAt;
 
