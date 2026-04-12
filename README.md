@@ -42,7 +42,7 @@ The system is divided into multiple independent services communicating through R
 * Quiz Service
 * Progress Tracking Service
 
-An API Gateway handles routing and security while each service manages its own database schema.
+An API Gateway handles routing and security while each service manages its own database schema. 
 
 ---
 
