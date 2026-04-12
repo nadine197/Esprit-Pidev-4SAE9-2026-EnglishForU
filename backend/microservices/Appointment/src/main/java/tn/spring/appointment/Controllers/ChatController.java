@@ -61,4 +61,16 @@ public class ChatController {
         // On ajoute (Object) devant payload pour lever l'ambiguïté
         messagingTemplate.convertAndSend("/topic/group/" + groupId + "/typing", (Object) payload);
     }
+
+    @MessageMapping("/chat.pin/{groupId}")
+    public void pinMessage(@DestinationVariable String groupId, @Payload ChatMessage chatMessage) {
+        // 1. (Optionnel) Si tu veux un seul message épinglé à la fois :
+        // Tu pourrais faire une requête pour mettre isPinned=false pour tout le groupe d'abord.
+
+        // 2. Sauvegarder le statut
+        chatService.saveMessage(chatMessage);
+
+        // 3. Diffuser
+        messagingTemplate.convertAndSend("/topic/group/" + groupId, chatMessage);
+    }
 }
