@@ -1,0 +1,224 @@
+<div class="page-wrapper">
+
+  <!-- ── Barre du haut ── -->
+  <div class="top-bar">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Retour
+    </button>
+
+    <h2 class="page-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8"  y1="2" x2="8"  y2="6"/>
+        <line x1="3"  y1="10" x2="21" y2="10"/>
+      </svg>
+      Calendrier des Study Groups
+    </h2>
+
+    <div class="top-bar-right">
+      <span *ngIf="loadingCalendar" class="loading-chip">
+        <span class="chip-spinner"></span> Chargement...
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Layout principal ── -->
+  <div class="calendar-layout">
+
+    <!-- ════════════════ CALENDRIER ════════════════ -->
+    <div class="cal-card">
+
+      <!-- Navigation mois -->
+      <div class="cal-nav">
+        <button class="nav-btn" (click)="prevMonth()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+        <h3 class="cal-title">{{ monthLabel }}</h3>
+        <button class="nav-btn" (click)="nextMonth()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Jours de la semaine -->
+      <div class="weekdays">
+        <span *ngFor="let d of WEEK_DAYS">{{ d }}</span>
+      </div>
+
+      <!-- Grille des jours -->
+      <div class="days-grid">
+
+        <!-- Cases vides -->
+        <div *ngFor="let _ of leadingBlanks" class="day-cell blank"></div>
+
+        <!-- Jours -->
+        <div
+          *ngFor="let day of daysInMonth"
+          class="day-cell"
+          [class.today]="isToday(day)"
+          [class.selected]="isSelected(day)"
+          [class.in-range]="isInRange(day)"
+          [class.has-start]="hasStartDate(day)"
+          [class.has-end]="hasEndDate(day)"
+          (click)="onDayClick(day)"
+        >
+          <span class="day-num">{{ day }}</span>
+          <div class="markers">
+            <span *ngIf="hasStartDate(day)" class="dot dot-start" title="Début de groupe"></span>
+            <span *ngIf="hasEndDate(day)"   class="dot dot-end"   title="Fin de groupe"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Légende -->
+      <div class="legend">
+        <div class="legend-item">
+          <span class="dot dot-start"></span>
+          <span>Début</span>
+        </div>
+        <div class="legend-item">
+          <span class="dot dot-end"></span>
+          <span>Fin</span>
+        </div>
+        <div class="legend-item">
+          <span class="range-chip"></span>
+          <span>En cours</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ════════════════ PANNEAU GROUPES ════════════════ -->
+    <div class="groups-panel">
+
+      <!-- En-tête -->
+      <div class="panel-header">
+        <div class="panel-header-info">
+          <h4 *ngIf="!selectedDate">Sélectionne une date</h4>
+          <h4 *ngIf="selectedDate">{{ getSelectedDateLabel() }}</h4>
+          <p *ngIf="selectedDate" class="panel-sub">
+            {{ selectedGroups.length }} groupe(s) actif(s)
+          </p>
+        </div>
+        <span
+          *ngIf="selectedDate"
+          class="count-badge"
+          [class.zero]="selectedGroups.length === 0">
+          {{ selectedGroups.length }}
+        </span>
+      </div>
+
+      <!-- État : aucune date sélectionnée -->
+      <div *ngIf="!selectedDate && !loading" class="state-box">
+        <div class="state-icon">📅</div>
+        <p>Clique sur une date pour afficher<br>les Study Groups actifs.</p>
+      </div>
+
+      <!-- État : chargement -->
+      <div *ngIf="loading" class="state-box">
+        <div class="spinner"></div>
+        <p>Chargement des groupes...</p>
+      </div>
+
+      <!-- État : aucun groupe -->
+      <div
+        *ngIf="!loading && selectedDate && selectedGroups.length === 0"
+        class="state-box">
+        <div class="state-icon">🔍</div>
+        <p>Aucun groupe actif à cette date.</p>
+      </div>
+
+      <!-- Liste des groupes -->
+      <div
+        *ngFor="let group of selectedGroups; trackBy: trackById; let i = index"
+        class="group-card"
+        [style.animation-delay]="(i * 60) + 'ms'"
+      >
+
+        <!-- En-tête carte -->
+        <div class="gc-header">
+          <div class="gc-title-area">
+            <h5 class="gc-name">
+              {{ group.name }}
+              <span *ngIf="isStartDate(group)" class="tag tag-start">Début</span>
+              <span *ngIf="isEndDate(group)"   class="tag tag-end">Fin</span>
+            </h5>
+            <span class="gc-level">{{ group.level }}</span>
+          </div>
+          <span
+            class="status-pill"
+            [style.background]="calService.getStatusColor(group.status) + '20'"
+            [style.color]="calService.getStatusColor(group.status)"
+            [style.border-color]="calService.getStatusColor(group.status) + '50'">
+            {{ calService.getStatusLabel(group.status) }}
+          </span>
+        </div>
+
+        <!-- Détails -->
+        <div class="gc-details">
+          <div class="gc-row">
+            <svg class="gc-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>{{ group.location }}</span>
+          </div>
+          <div class="gc-row">
+            <svg class="gc-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>{{ group.studentsIds?.length ?? 0 }} / {{ group.maxCapacity }} membres</span>
+          </div>
+          <div class="gc-row">
+            <svg class="gc-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8"  y1="2" x2="8"  y2="6"/>
+              <line x1="3"  y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>
+              {{ group.startdate | date:'dd/MM/yyyy' }}
+              &rarr;
+              {{ group.enddate | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Barre capacité -->
+        <div class="cap-bar-wrap">
+          <div class="cap-track">
+            <div
+              class="cap-fill"
+              [style.width.%]="calService.getCapacityPercent(group)"
+              [style.background]="calService.getCapacityColor(group)">
+            </div>
+          </div>
+          <span class="cap-lbl">{{ calService.getCapacityPercent(group) }}% rempli</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="header-bar">
+  <div>
+    <div class="page-title">Contents</div>
+    <div class="page-subtitle">Total contents: {{contents.length}}</div>
+  </div>
+  <div class="search-box">
+
+    <input
+      type="text"
+      placeholder="Search content..."
+      [(ngModel)]="searchText"
+      class="search-input"
+    />
+
+    <button (click)="searchContents()" class="btn-search">
+      Search
+    </button>
+
+  </div>
+  <button (click)="downloadPDF()" class="btn-pdf">
+    Export PDF
+  </button>
+  <div class="stats-section">
+
+    <button (click)="loadStats()" class="btn-stats">
+      Show Content Statistics
+    </button>
+
+    <div *ngIf="showChart" class="stats-card">
+      <h3>Contents Statistics by Type</h3>
+      <canvas id="contentChart"></canvas>
+    </div>
+
+  </div>
+  <button (click)="downloadHistory()" class="btn-history">
+    Export History
+  </button>
+  <button class="btn-add" routerLink="/contents/new">
+    + Add Content
+  </button>
+</div>
+
+<div class="table-card">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    Loading contents...
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error">
+    {{error}}
+  </div>
+
+  <table *ngIf="!loading && !error">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Type</th>
+      <th>Course</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let c of contents">
+      <td class="id">{{c.contentId}}</td>
+
+      <td>{{c.title}}</td>
+
+      <td>
+          <span class="badge-type">
+            {{c.type}}
+          </span>
+      </td>
+
+      <td>
+        {{c.courseId}}
+      </td>
+
+      <td>
+        <button class="action-btn edit"
+                [routerLink]="['/contents/edit', c.contentId]">
+          Edit
+        </button>
+
+        <button class="action-btn delete"
+                (click)="delete(c.contentId)">
+          Delete
+        </button>
+        <button class="action-btn view"
+                [routerLink]="['/contents', c.contentId]">
+          View
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>

@@ -1,0 +1,175 @@
+<div class="header-bar">
+  <div>
+    <div class="page-title">Study Groups</div>
+    <div class="page-subtitle">Total groups: {{ groups.length }}</div>
+  </div>
+
+  <div class="header-actions">
+
+    <!-- ✅ Cloche notifications ajoutée -->
+    <app-notification-bell></app-notification-bell>
+
+    <button class="btn-stats" (click)="openStats()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6"  y1="20" x2="6"  y2="14"/>
+      </svg>
+      Stats
+    </button>
+
+    <button class="btn-calendar" (click)="openCalendar()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8"  y1="2" x2="8"  y2="6"/>
+        <line x1="3"  y1="10" x2="21" y2="10"/>
+      </svg>
+      Calendar
+    </button>
+
+    <button class="btn-filter"
+            [class.active]="showFilters"
+            (click)="showFilters = !showFilters">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+      </svg>
+      Filtres
+      <span *ngIf="hasActiveFilters" class="filter-dot"></span>
+    </button>
+
+    <button class="btn-add" routerLink="/study-groups/new">
+      + Add Study Group
+    </button>
+
+  </div>
+</div>
+
+<!-- Panneau de filtres -->
+<div class="filter-panel" *ngIf="showFilters" [formGroup]="filterForm">
+  <div class="filter-grid">
+
+    <div class="filter-field">
+      <label>Nom</label>
+      <input type="text" formControlName="name"
+             placeholder="Rechercher par nom..."/>
+    </div>
+
+    <div class="filter-field">
+      <label>Niveau</label>
+      <select formControlName="level">
+        <option value="">Tous les niveaux</option>
+        <option *ngFor="let l of LEVELS" [value]="l">{{ l }}</option>
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label>Statut</label>
+      <select formControlName="status">
+        <option value="">Tous les statuts</option>
+        <option *ngFor="let s of STATUSES" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label>Localisation</label>
+      <input type="text" formControlName="location"
+             placeholder="Rechercher par lieu..."/>
+    </div>
+
+    <div class="filter-field">
+      <label>Course ID</label>
+      <input type="number" formControlName="courseId"
+             placeholder="Ex: 1"/>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn-reset"
+              (click)="resetFilters()"
+              [disabled]="!hasActiveFilters">
+        Réinitialiser
+      </button>
+    </div>
+
+  </div>
+
+  <div *ngIf="searching" class="searching-chip">
+    <span class="chip-spinner"></span> Recherche...
+  </div>
+</div>
+<button class="chatbot-btn" (click)="toggleChatbot()">
+  💬
+</button>
+<div class="chatbot-box" *ngIf="showChatbot">
+  <app-chatbot></app-chatbot>
+</div>
+<!-- Table -->
+<div class="table-card">
+
+  <div *ngIf="loading" class="loading">Loading study groups...</div>
+  <div *ngIf="error"   class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && groups.length === 0 && hasActiveFilters"
+       class="no-results">
+    <div class="no-results-icon">🔍</div>
+    <p>Aucun groupe ne correspond aux filtres.</p>
+    <button class="btn-reset" (click)="resetFilters()">
+      Effacer les filtres
+    </button>
+  </div>
+
+  <table *ngIf="!loading && !error && groups.length > 0">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Level</th>
+      <th>Location</th>
+      <th>Capacity</th>
+      <th>Status</th>
+      <th>Course</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let g of groups">
+
+      <td class="id">{{ g.groupId }}</td>
+      <td>{{ g.name }}</td>
+      <td><span class="badge-type">{{ g.level }}</span></td>
+      <td>{{ g.location }}</td>
+      <td>{{ g.maxCapacity }}</td>
+      <td>
+          <span class="badge-status"
+                [class]="'status-' + g.status.toLowerCase()">
+            {{ g.status }}
+          </span>
+      </td>
+      <td>{{ g.courseId }}</td>
+      <td>
+        <button class="action-btn edit"
+                [routerLink]="g.groupId ? ['/study-groups/edit', g.groupId] : null">
+          Edit
+        </button>
+        <button class="action-btn delete"
+                [disabled]="!g.groupId"
+                (click)="g.groupId && delete(g.groupId)">
+          Delete
+        </button>
+        <button class="action-btn view"
+                [routerLink]="g.groupId ? ['/study-groups', g.groupId] : null">
+          View
+        </button>
+        <button class="action-btn audit"
+                [routerLink]="g.groupId ? ['/study-groups', g.groupId, 'audit'] : null">
+          History
+        </button>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+</div>
