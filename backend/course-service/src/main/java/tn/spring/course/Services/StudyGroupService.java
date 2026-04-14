@@ -23,11 +23,10 @@ public interface StudyGroupService {
     List<StudyGroupResponseDTO> getGroupsByMonth(int year, int month);
     Map<String, List<String>> getMarkedDates(int year, int month);
         Map<String, Object> getStats();
-    // Pas de changement — reste String côté interface
     List<StudyGroupResponseDTO> searchGroups(
             String name,
             String level,
-            String status,      // String ici c'est ok
+            String status,     
             String location,
             Integer courseId
     );

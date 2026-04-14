@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import tn.spring.course.Models.StudyGroup;
 import tn.spring.course.Repositories.StudyGroupRepository;
 
+import java.time.Instant;
 import java.util.*;
 
 @Controller
@@ -97,7 +98,7 @@ public class StudyGroupAlertController {
         alert.put("groupId",   groupId);
         alert.put("groupName", groupName);
         alert.put("message",   message);
-        alert.put("timestamp", new Date().toString());
+        alert.put("timestamp", Instant.now().toString());
         return alert;
     }
 

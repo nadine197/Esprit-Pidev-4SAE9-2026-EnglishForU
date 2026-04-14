@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
-import tn.spring.course.Config.FeignConfig;
+import tn.spring.course.Config.FeignConfig  ;
 
 @FeignClient(name = "User", configuration = FeignConfig.class)
 public interface UserClient {

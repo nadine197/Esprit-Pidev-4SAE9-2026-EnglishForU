@@ -11,6 +11,7 @@ import tn.spring.course.Repositories.StudyGroupRepository;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -78,7 +79,7 @@ public class StudyGroupNotificationService {
         payload.put("groupId",   groupId);
         payload.put("type",      type);
         payload.put("message",   message);
-        payload.put("timestamp", new Date().toString());
+        payload.put("timestamp", Instant.now().toString());
 
         // ✅ cast (Object) pour lever l'ambiguïté
         messagingTemplate.convertAndSend(
@@ -108,7 +109,7 @@ public class StudyGroupNotificationService {
         payload.put("groupId",   groupId);
         payload.put("type",      type);
         payload.put("message",   message);
-        payload.put("timestamp", new Date().toString());
+        payload.put("timestamp", Instant.now().toString());
 
         messagingTemplate.convertAndSend(
                 "/topic/study-groups/" + groupId + "/notifications",
