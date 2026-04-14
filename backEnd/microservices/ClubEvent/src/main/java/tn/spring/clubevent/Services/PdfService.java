@@ -62,7 +62,7 @@ public class PdfService {
 
         Document document = new Document(PageSize.A5, 40, 40, 40, 40);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PdfWriter writer = PdfWriter.getInstance(document, out);
+        PdfWriter.getInstance(document, out);
         document.open();
 
         Paragraph brand = new Paragraph("🎓 LinguaAcademy", LOGO_FONT);
@@ -228,7 +228,7 @@ public class PdfService {
 
         Document document = new Document(PageSize.A5, 40, 40, 40, 40);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PdfWriter writer = PdfWriter.getInstance(document, out);
+        PdfWriter.getInstance(document, out);
         document.open();
 
         Paragraph brand = new Paragraph("🎓 LinguaAcademy", LOGO_FONT);

@@ -111,12 +111,23 @@ public class FeedbackService {
         Map<String, Object> stats = getStats("CLUB", clubId);
 
         long memberCount = membershipRepository.countByClubIdAndStatus(clubId, RequestStatus.ACCEPTED);
+        long pendingCount = membershipRepository.countByClubIdAndStatus(clubId, RequestStatus.PENDING);
+        long rejectedCount = membershipRepository.countByClubIdAndStatus(clubId, RequestStatus.REJECTED);
+        long totalMemberships = memberCount + pendingCount + rejectedCount;
+
+        stats.put("totalMembers", memberCount);
+        stats.put("totalMemberships", totalMemberships);
+        stats.put("acceptedPercent", totalMemberships > 0 ? Math.round(memberCount * 1000.0 / totalMemberships) / 10.0 : 0.0);
+        stats.put("pendingPercent", totalMemberships > 0 ? Math.round(pendingCount * 1000.0 / totalMemberships) / 10.0 : 0.0);
+        stats.put("rejectedPercent", totalMemberships > 0 ? Math.round(rejectedCount * 1000.0 / totalMemberships) / 10.0 : 0.0);
+
         List<Event> events = eventRepository.findByClubId(clubId);
 
         List<Map<String, Object>> perEventStats = new ArrayList<>();
         double totalEventRatings = 0;
         int ratedEvents = 0;
         long totalEventReviews = 0;
+        double totalParticipationRate = 0;
 
         for (Event event : events) {
             Map<String, Object> evStats = getStats("EVENT", event.getId());
@@ -128,6 +139,16 @@ public class FeedbackService {
             evEntry.put("totalReviews", evStats.get("totalReviews"));
             evEntry.put("likePercent", evStats.get("likePercent"));
             evEntry.put("dislikePercent", evStats.get("dislikePercent"));
+            evEntry.put("neutralPercent", evStats.get("neutralPercent"));
+
+            long participants = participationRepository.findByEventId(event.getId()).stream()
+                    .filter(p -> RequestStatus.ACCEPTED.equals(p.getStatus()) || p.getAmountPaid() != null)
+                    .count();
+            double partRate = memberCount > 0 ? Math.round(participants * 1000.0 / memberCount) / 10.0 : 0.0;
+            evEntry.put("participants", participants);
+            evEntry.put("participationRate", partRate);
+            totalParticipationRate += partRate;
+
             perEventStats.add(evEntry);
 
             double evAvg = (double) evStats.get("averageRating");
@@ -139,10 +160,10 @@ public class FeedbackService {
             }
         }
 
-        stats.put("totalMembers", memberCount);
         stats.put("totalEvents", (long) events.size());
         stats.put("totalEventReviews", totalEventReviews);
         stats.put("overallEventAvg", ratedEvents > 0 ? Math.round(totalEventRatings / ratedEvents * 10.0) / 10.0 : 0.0);
+        stats.put("averageParticipationRate", events.size() > 0 ? Math.round(totalParticipationRate / events.size() * 10.0) / 10.0 : 0.0);
         stats.put("perEventStats", perEventStats);
         return stats;
     }

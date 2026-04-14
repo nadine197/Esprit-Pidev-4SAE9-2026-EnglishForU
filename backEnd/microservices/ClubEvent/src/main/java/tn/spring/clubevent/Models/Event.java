@@ -42,6 +42,7 @@ public class Event {
     private Double longitude;
     private String locationName;
 
+    @Builder.Default
     private boolean paid = false;
     private Double price;
     private Integer maxParticipants;

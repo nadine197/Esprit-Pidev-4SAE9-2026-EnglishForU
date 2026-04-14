@@ -1,9 +1,10 @@
-FROM node:20-alpine AS build
+# syntax=docker/dockerfile:1
+FROM node:20-slim AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
-RUN npm run build -- --configuration production
+RUN node ./node_modules/@angular/cli/bin/ng.js build --configuration production
 
 FROM nginx:alpine
 COPY --from=build /app/dist/job-board /usr/share/nginx/html

@@ -20,7 +20,6 @@ import tn.spring.user.Models.PasswordResetToken;
 import tn.spring.user.Models.Student;
 import tn.spring.user.Models.User;
 import tn.spring.user.Repositories.PasswordResetTokenRepo;
-import tn.spring.user.Repositories.StudentRepos;
 import tn.spring.user.Repositories.UserRepos;
 
 import java.time.Duration;
@@ -39,7 +38,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordResetTokenRepo passwordResetTokenRepo;
     private final AuthenticationManager authenticationManager;
-    private final StudentRepos studentRepos;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
@@ -218,7 +216,6 @@ public class AuthService {
         var payload = googleTokenVerifierService.verify(request.getIdToken());
 
         String email = payload.getEmail();
-        boolean emailVerified = Boolean.TRUE.equals(payload.getEmailVerified());
 
         String givenName = (String) payload.get("given_name");
         String familyName = (String) payload.get("family_name");

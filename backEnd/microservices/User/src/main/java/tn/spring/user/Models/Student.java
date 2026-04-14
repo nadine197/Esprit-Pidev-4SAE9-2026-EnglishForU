@@ -7,12 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import lombok.EqualsAndHashCode;
+
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class Student extends User  {
     private String englishLevel;
     private String learningGoal;

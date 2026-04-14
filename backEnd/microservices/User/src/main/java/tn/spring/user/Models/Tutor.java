@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import tn.spring.user.Enums.AvailableStatus;
 
+import lombok.EqualsAndHashCode;
+
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class Tutor extends User {
 
     private Boolean verified;
