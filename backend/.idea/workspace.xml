@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/Models/ChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/Models/ChatMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway/src/main/java/tn/spring/gateway/Config/GatewayJwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway/src/main/java/tn/spring/gateway/Config/GatewayJwtFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway/src/main/java/tn/spring/gateway/Config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway/src/main/java/tn/spring/gateway/Config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway/src/main/java/tn/spring/gateway/Controllers/DiscussionProxyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway/src/main/java/tn/spring/gateway/Controllers/DiscussionProxyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-management/src/main/java/tn/spring/user/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-management/src/main/java/tn/spring/user/Controllers/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-management/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-management/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Appointment/documentation/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Appointment/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Appointment/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/AppointmentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/AppointmentApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

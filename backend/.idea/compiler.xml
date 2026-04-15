@@ -9,8 +9,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="User" />
         <module name="Quiz" />
-        <module name="Gateway" />
         <module name="eureka" />
+        <module name="Gateway" />
       </profile>
       <profile name="Annotation profile for Appointment" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
