@@ -51,8 +51,8 @@ import { VisitorModule } from './features/visitor/visitor.module';
     AdminModule,
     TutorModule,
     StudentModule,
-        ReactiveFormsModule,
-        FormsModule,
+    ReactiveFormsModule,
+    FormsModule,
     AppointmentModule,
     VisitorModule,
 
