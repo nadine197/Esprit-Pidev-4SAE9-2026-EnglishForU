@@ -18,7 +18,7 @@ services:
   # ── Eureka Service Registry ──────────────────────────────────
   eureka-server:
     build:
-      context: ./eureka-server
+      context: ./backend/eureka-server
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/eureka-server:${TAG:-latest}
     container_name: eureka-server
@@ -40,7 +40,7 @@ services:
   # ── API Gateway ──────────────────────────────────────────────
   gateway:
     build:
-      context: ./gateway
+      context: ./backend/Gateway
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/gateway:${TAG:-latest}
     container_name: gateway
@@ -61,11 +61,38 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
-
+  # ── user Service ──────────────────────────────────────
+  user-service:
+    build:
+      context: ./backend/user-management
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-local}/user-service:${TAG:-latest}
+    container_name: user-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      <<: [*eureka-env, *java-opts]
+      SPRING_PROFILES_ACTIVE: docker
+      # TODO: set your DB env vars here, e.g.:
+      # SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/user_db
+      # SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      # SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - microservices-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8081/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
   # ── Appointment Service ──────────────────────────────────────
   appointment-service:
     build:
-      context: ./appointment-service
+      context: ./backend/Appointment
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/appointment-service:${TAG:-latest}
     container_name: appointment-service
@@ -94,7 +121,7 @@ services:
   # ── Club Service ─────────────────────────────────────────────
   club-service:
     build:
-      context: ./club-service
+      context: ./backend/ClubEvent
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/club-service:${TAG:-latest}
     container_name: club-service
@@ -119,7 +146,7 @@ services:
   # ── Course Service ───────────────────────────────────────────
   course-service:
     build:
-      context: ./course-service
+      context: ./backend/course-service
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/course-service:${TAG:-latest}
     container_name: course-service
@@ -144,7 +171,7 @@ services:
   # ── Discussion Service ───────────────────────────────────────
   discussion-service:
     build:
-      context: ./discussion-service
+      context: ./backend/discussion-service
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/discussion-service:${TAG:-latest}
     container_name: discussion-service
@@ -169,7 +196,7 @@ services:
   # ── Package Service ──────────────────────────────────────────
   package-service:
     build:
-      context: ./package-service
+      context: ./backend/package_service
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/package-service:${TAG:-latest}
     container_name: package-service
@@ -194,7 +221,7 @@ services:
   # ── Quiz Service ─────────────────────────────────────────────
   quiz-service:
     build:
-      context: ./quiz-service
+      context: ./backend/Quiz
       dockerfile: Dockerfile
     image: ${REGISTRY:-local}/quiz-service:${TAG:-latest}
     container_name: quiz-service
