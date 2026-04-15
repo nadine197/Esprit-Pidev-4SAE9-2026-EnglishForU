@@ -15,8 +15,8 @@ import { PromoManagementComponent } from './features/admin/promo-management/prom
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
-import { CoursesComponent } from './features/courses/courses';
-import { CourseDetailsComponent } from './features/courses/course-details/course-details.component';
+
+import { CourseDetailsComponent } from './features/courses/pages/course-details/course-details.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -40,9 +40,9 @@ const routes: Routes = [
   },
    { path: 'checkout/:packageId', component: CheckoutComponent },
   { path: 'payment-result', component: PaymentResultComponent },
-  { 
-    path: 'admin', 
-    component: AdminLayoutComponent, 
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
@@ -50,7 +50,7 @@ const routes: Routes = [
             { path: 'payments', component: PaymentManagementComponent },
 
 { path: 'packages', component: PackageManagementComponent },
-{       path: 'users/:role',component: UserListComponent 
+{       path: 'users/:role',component: UserListComponent
 },      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
@@ -64,11 +64,11 @@ const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
   ]
 },
-{ 
-    path: 'student-home', 
-    component: StudentHomeComponent, 
+{
+    path: 'student-home',
+    component: StudentHomeComponent,
     canActivate: [authGuard],
-    data: { roles: ['STUDENT'] } 
+    data: { roles: ['STUDENT'] }
   },
   { path: '', redirectTo: 'main', pathMatch: 'full' }
 ];

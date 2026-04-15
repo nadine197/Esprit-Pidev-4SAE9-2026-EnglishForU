@@ -8,14 +8,12 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './features/shared/shared.module';
 
-import { CoursesComponent } from './features/courses/courses';
-import { CourseDetailsComponent } from './features/courses/course-details/course-details.component';
+
 
 import { UserModule } from './features/user-module';
 import { AdminModule } from './features/admin/admin-module';
 import { TutorModule } from './features/tutor/tutor-module';
 import { StudentModule } from './features/student/student.module';
-
 import { PromoManagementComponent } from './features/admin/promo-management/promo-management.component';
 import { PackageManagementComponent } from './features/admin/package-management/package-management.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
@@ -25,8 +23,6 @@ import { PaymentManagementComponent } from './features/payment-management/paymen
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent,
-    CourseDetailsComponent,
     PromoManagementComponent,
     PackageManagementComponent,
     CheckoutComponent,

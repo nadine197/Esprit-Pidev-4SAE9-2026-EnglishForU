@@ -20,6 +20,18 @@ export class UserService {
     return this.http.get<any[]>(`${this.apiUrl}/admins`, { headers: this.getHeaders() });
   }
 
+  getAllStudents(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/students`, { headers: this.getHeaders() });
+  }
+
+  getAllTutors(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/tutors`, { headers: this.getHeaders() });
+  }
+
+  getAllAdmins(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admins`, { headers: this.getHeaders() });
+  }
+
   // Dans user.service.ts
 
 createUser(user: any): Observable<any> {
