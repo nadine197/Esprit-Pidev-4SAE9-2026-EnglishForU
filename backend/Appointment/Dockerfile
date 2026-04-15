@@ -1,10 +1,8 @@
-# Image de base Java 17
-FROM openjdk:17-jdk-alpine
-# On définit le répertoire de travail
+# Remplace la ligne 1 par :
+FROM eclipse-temurin:17-jdk-alpine
+
 WORKDIR /app
-# On copie le fichier JAR généré par Maven
 COPY target/*.jar app.jar
-# On expose le port
+# (Garde le reste : EXPOSE et ENTRYPOINT selon le service)
 EXPOSE 8087
-# Commande de lancement
 ENTRYPOINT ["java", "-jar", "app.jar"]
