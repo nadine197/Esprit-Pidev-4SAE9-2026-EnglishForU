@@ -1,0 +1,43 @@
+.modal-container {
+  position: fixed;
+  top: 20%;              /* 👈 not full center */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+/* Modal box */
+.modal-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Buttons */
+.actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  flex: 1;
+  height: 38px;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.actions button:first-child {
+  background: #0066ff;
+  color: white;
+}
+
+.actions button:last-child {
+  background: #e5e7eb;
+}
