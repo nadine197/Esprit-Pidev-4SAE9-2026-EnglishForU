@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tn.spring.course.Controllers.StudyGroupAlertController;
 import tn.spring.course.DTO.StudyGroupRequestDTO;
@@ -31,6 +32,7 @@ public class StudyGroupController {
     private final StudyGroupAlertController     alertController;     // alertes métier
     private final StudyGroupSchedulerService schedulerService;
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'TUTOR')")
     public StudyGroupResponseDTO createStudyGroup(
             @RequestBody StudyGroupRequestDTO dto) {
         return studyGroupService.createStudyGroup(dto);
@@ -47,6 +49,7 @@ public class StudyGroupController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'TUTOR')")
     public StudyGroupResponseDTO updateStudyGroup(
             @PathVariable Long id,
             @RequestBody StudyGroupRequestDTO dto) {
@@ -68,6 +71,7 @@ public class StudyGroupController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public void deleteStudyGroup(@PathVariable Long id) {
         studyGroupService.deleteStudyGroup(id);
     }
@@ -123,6 +127,7 @@ public class StudyGroupController {
         return ResponseEntity.ok(studyGroupService.getAuditLog(id));
     }
     @PostMapping("/scheduler/run")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Map<String, Object>> runScheduler() {
         schedulerService.updateStatuses();
 
@@ -139,6 +144,7 @@ public class StudyGroupController {
         return ResponseEntity.ok(Map.of("reply", reply));
     }
     @PostMapping("/validated")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'TUTOR')")
     public ResponseEntity<StudyGroupResponseDTO> createWithValidation(
             @RequestBody StudyGroupRequestDTO dto) {
         return ResponseEntity.ok(

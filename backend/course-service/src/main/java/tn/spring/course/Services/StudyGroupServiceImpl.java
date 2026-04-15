@@ -311,6 +311,16 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     }
     @Override
     public String chat(String message, Long groupId) {
+        String msg = message.toLowerCase();
+
+        // ── 1. Tentative de réponse locale (Intent detection simple) pour économiser le quota ──
+        if (groupId != null && (
+                msg.contains("niveau") || msg.contains("quand") || msg.contains("où") ||
+                msg.contains("lieu") || msg.contains("place") || msg.contains("capacité") ||
+                msg.contains("date") || msg.contains("commence") || msg.contains("statut")
+        )) {
+            return generateFallbackResponse(message, groupId);
+        }
 
         StringBuilder prompt = new StringBuilder();
         prompt.append(
@@ -355,22 +365,78 @@ public class StudyGroupServiceImpl implements StudyGroupService {
                     .block();
 
             List<Map> candidates = (List<Map>) response.get("candidates");
+            if (candidates == null || candidates.isEmpty()) {
+                return generateFallbackResponse(message, groupId);
+            }
             Map content = (Map) candidates.get(0).get("content");
             List<Map> parts = (List<Map>) content.get("parts");
             return (String) parts.get(0).get("text");
 
         } catch (WebClientResponseException e) {
             System.out.println("GEMINI STATUS: " + e.getStatusCode().value());
-            System.out.println("GEMINI BODY: " + e.getResponseBodyAsString());
             if (e.getStatusCode().value() == 429) {
-                return "Quota Gemini dépassé. Réessayez dans 1 minute.";
+                // ✅ Fallback automatique si quota dépassé
+                return generateFallbackResponse(message, groupId);
             }
-            return "Erreur Gemini : " + e.getStatusCode().value();
+            return "Désolé, je rencontre une difficulté technique (Erreur " + e.getStatusCode().value() + ").";
         } catch (Exception e) {
             System.out.println("GEMINI EXCEPTION: " + e.getMessage());
-            return "Désolé, je n'ai pas pu traiter votre question.";
+            return generateFallbackResponse(message, groupId);
         }
     }
+
+    private String generateFallbackResponse(String message, Long groupId) {
+        String msg = message.toLowerCase();
+
+        if (groupId == null) {
+            List<StudyGroup> all = studyGroupRepository.findAll();
+            if (all.isEmpty()) return "Il n'y a actuellement aucun groupe d'étude disponible.";
+
+            if (msg.contains("niveau")) {
+                Set<String> levels = all.stream().map(StudyGroup::getLevel).collect(Collectors.toSet());
+                return "Nous proposons des groupes pour les niveaux suivants : " + String.join(", ", levels) + ".";
+            }
+            if (msg.contains("où") || msg.contains("lieu") || msg.contains("localisation")) {
+                Set<String> locations = all.stream().map(StudyGroup::getLocation).collect(Collectors.toSet());
+                return "Nos groupes se réunissent dans divers lieux : " + String.join(", ", locations) + ".";
+            }
+            if (msg.contains("combien") || msg.contains("nombre") || msg.contains("groupe")) {
+                return "Il y a actuellement " + all.size() + " groupes d'étude actifs sur la plateforme.";
+            }
+
+            return "Je suis l'assistant Study Group. Il y a " + all.size() +
+                   " groupes disponibles. Posez-moi une question sur les niveaux, les lieux ou sélectionnez un groupe spécifique.";
+        }
+
+        Optional<StudyGroup> groupOpt = studyGroupRepository.findById(groupId);
+        if (groupOpt.isEmpty()) return "Désolé, je ne trouve pas les détails de ce groupe.";
+
+        StudyGroup g = groupOpt.get();
+
+        if (msg.contains("niveau")) {
+            return "Le groupe d'étude '" + g.getName() + "' est de niveau " + g.getLevel() + ".";
+        }
+        if (msg.contains("où") || msg.contains("lieu") || msg.contains("emplacement") || msg.contains("localisation")) {
+            return "Les sessions se déroulent à : " + g.getLocation() + ".";
+        }
+        if (msg.contains("quand") || msg.contains("date") || msg.contains("commence") || msg.contains("début")) {
+            return "Le groupe est prévu du " + g.getStartdate() + " au " + g.getEnddate() + ".";
+        }
+        if (msg.contains("place") || msg.contains("capacité") || msg.contains("combien") || msg.contains("inscrit")) {
+            int enrolled = g.getStudentsIds() != null ? g.getStudentsIds().size() : 0;
+            int remaining = g.getMaxCapacity() - enrolled;
+            return "La capacité est de " + g.getMaxCapacity() + " places. Il y a " + enrolled + " inscrits et " +
+                   (remaining > 0 ? remaining + " places restantes." : "le groupe est complet.");
+        }
+        if (msg.contains("statut") || msg.contains("état")) {
+            return "Le statut actuel de ce groupe est : " + g.getStatus() + ".";
+        }
+
+        // Réponse par défaut informative
+        return "Le groupe '" + g.getName() + "' est de niveau " + g.getLevel() +
+               ", situé à " + g.getLocation() + ", et son statut est " + g.getStatus() + ".";
+    }
+
     @Override
     public StudyGroupResponseDTO createStudyGroupWithValidation(
             StudyGroupRequestDTO dto) {
