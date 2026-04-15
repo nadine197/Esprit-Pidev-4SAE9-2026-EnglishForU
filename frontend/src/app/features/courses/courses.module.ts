@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { CoursesRoutingModule } from './courses-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { SharedModule } from '../shared/shared.module';
+
 import { CourseListComponent } from './pages/course-list/course-list.component';
 import { CourseFormComponent } from './pages/course-form/course-form.component';
 import { CourseDetailsComponent } from './pages/course-details/course-details.component';
@@ -17,7 +19,8 @@ import { CourseDetailsComponent } from './pages/course-details/course-details.co
     CommonModule,
     CoursesRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule   // ✅ FIX IMPORTANT
   ]
 })
 export class CoursesModule {}

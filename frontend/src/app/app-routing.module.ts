@@ -4,7 +4,7 @@ import { LoginComponent } from './features/user/login/login';
 import { RegisterComponent } from './features/user/register/register';
 import { MainComponent } from './features/user/main/main';
 
-import { CoursesComponent } from './features/courses/courses';
+
 import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 import { authGuard } from './/guards/auth.guard';
@@ -25,7 +25,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'main', component: MainComponent },
-  { path: 'courses', component: CoursesComponent },
+
 
   {
     path: 'courses',
