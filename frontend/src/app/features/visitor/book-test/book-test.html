@@ -1,0 +1,150 @@
+<div class="min-h-screen bg-[#f8fafc] pb-20">
+  <app-navbar></app-navbar>
+
+  <div class="container mx-auto px-4 py-12 flex flex-col items-center">
+    <div class="w-full max-w-[700px] bg-white rounded-[40px] shadow-2xl border border-slate-100 overflow-hidden">
+      
+      <!-- SECTION 1 : ACCÈS AU TEST (DÉJÀ INSCRIT) -->
+      <div class="bg-slate-900 p-8 md:p-12 text-white">
+        <span class="text-[#0066FF] text-[10px] font-black uppercase tracking-widest mb-2 block">Already Booked?</span>
+        <h2 class="text-2xl font-black mb-6">Enter your code to start the test</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="email" [(ngModel)]="accessEmail" name="accessEmail" placeholder="Your Email" 
+                 class="h-12 bg-white/10 border border-white/20 rounded-xl px-4 outline-none focus:border-[#0066FF] text-sm">
+          
+          <input type="text" [(ngModel)]="accessCode" name="accessCode" placeholder="6-digit Code" 
+                 class="h-12 bg-white/10 border border-white/20 rounded-xl px-4 text-center font-bold tracking-widest outline-none focus:border-[#0066FF] text-sm">
+          
+          <button (click)="onVerifyCode()" 
+                  [disabled]="!accessEmail || !accessCode"
+                  class="md:col-span-2 h-12 bg-[#0066FF] hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl font-black transition-all">
+            START TEST NOW →
+          </button>
+        </div>
+      </div>
+
+      <!-- SÉPARATEUR -->
+      <div class="relative flex py-8 items-center px-12">
+        <div class="flex-grow border-t border-slate-100"></div>
+        <span class="flex-shrink mx-4 text-slate-400 text-[10px] font-black uppercase tracking-tighter">Or book a new session</span>
+        <div class="flex-grow border-t border-slate-100"></div>
+      </div>
+
+      <!-- SECTION 2 : FORMULAIRE DE RÉSERVATION -->
+      <div class="p-8 md:p-12 pt-0">
+        
+        <!-- Message de Succès -->
+        <div *ngIf="success" class="text-center py-10 animate-in fade-in zoom-in">
+          <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">✓</div>
+          <h2 class="text-3xl font-black text-slate-900 mb-2">Success!</h2>
+          <p class="text-slate-500">Redirecting to home page...</p>
+        </div>
+
+        <form *ngIf="!success" [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          
+          <!-- CHOIX DU MODE (SITE OU REMOTE) -->
+          <div class="space-y-3">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Test Mode</label>
+            <div class="grid grid-cols-2 gap-4">
+              <button type="button" (click)="bookingForm.patchValue({locationType: 'ON_SITE'})"
+                      [class.border-[#0066FF]]="bookingForm.value.locationType === 'ON_SITE'"
+                      [class.bg-blue-50]="bookingForm.value.locationType === 'ON_SITE'"
+                      class="p-4 border-2 border-slate-100 rounded-2xl flex flex-col items-center transition-all hover:bg-slate-50">
+                <span class="text-xl mb-1">🏫</span>
+                <span class="font-bold text-slate-900 text-sm">On Site</span>
+              </button>
+              <button type="button" (click)="bookingForm.patchValue({locationType: 'REMOTE'})"
+                      [class.border-[#0066FF]]="bookingForm.value.locationType === 'REMOTE'"
+                      [class.bg-blue-50]="bookingForm.value.locationType === 'REMOTE'"
+                      class="p-4 border-2 border-slate-100 rounded-2xl flex flex-col items-center transition-all hover:bg-slate-50">
+                <span class="text-xl mb-1">💻</span>
+                <span class="font-bold text-slate-900 text-sm">Remote</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- INPUTS AVEC CONTRÔLE DE SAISIE -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Nom -->
+            <div class="flex flex-col gap-1">
+              <input formControlName="visitorName" type="text" placeholder="Full Name" 
+                     [class.border-red-500]="bookingForm.get('visitorName')?.invalid && bookingForm.get('visitorName')?.touched"
+                     class="h-12 border border-slate-200 rounded-xl px-4 outline-none focus:border-[#0066FF] bg-slate-50/50 text-sm">
+              <p *ngIf="bookingForm.get('visitorName')?.invalid && bookingForm.get('visitorName')?.touched" class="text-[9px] text-red-500 font-bold ml-1">Name is required (min. 3 chars)</p>
+            </div>
+
+            <!-- Téléphone -->
+            <div class="flex flex-col gap-1">
+              <input formControlName="visitorPhone" type="tel" placeholder="Phone Number" 
+                     [class.border-red-500]="bookingForm.get('visitorPhone')?.invalid && bookingForm.get('visitorPhone')?.touched"
+                     class="h-12 border border-slate-200 rounded-xl px-4 outline-none focus:border-[#0066FF] bg-slate-50/50 text-sm">
+              <p *ngIf="bookingForm.get('visitorPhone')?.invalid && bookingForm.get('visitorPhone')?.touched" class="text-[9px] text-red-500 font-bold ml-1">Valid phone required</p>
+            </div>
+
+            <!-- Email -->
+            <div class="md:col-span-2 flex flex-col gap-1">
+              <input formControlName="visitorEmail" type="email" placeholder="Email Address" 
+                     [class.border-red-500]="bookingForm.get('visitorEmail')?.invalid && bookingForm.get('visitorEmail')?.touched"
+                     class="h-12 border border-slate-200 rounded-xl px-4 outline-none focus:border-[#0066FF] bg-slate-50/50 text-sm">
+              <p *ngIf="bookingForm.get('visitorEmail')?.invalid && bookingForm.get('visitorEmail')?.touched" class="text-[9px] text-red-500 font-bold ml-1">Please enter a valid email</p>
+            </div>
+          </div>
+
+          <!-- CALENDRIER ET CRÉNEAUX -->
+          <div class="border border-slate-100 rounded-[32px] p-6 bg-slate-50/30">
+            <div class="flex items-center justify-between mb-6">
+              <h4 class="font-black text-slate-900 uppercase text-xs tracking-widest">{{ viewDate | date:'MMMM yyyy' }}</h4>
+              <div class="flex gap-2">
+                <button type="button" (click)="changeMonth(-1)" class="p-2 hover:bg-white rounded-lg transition-all">←</button>
+                <button type="button" (click)="changeMonth(1)" class="p-2 hover:bg-white rounded-lg transition-all">→</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-7 gap-2 text-center mb-6">
+              <div *ngFor="let d of ['Su','Mo','Tu','We','Th','Fr','Sa']" class="text-[10px] font-black text-slate-300 uppercase">{{d}}</div>
+              <button type="button" *ngFor="let day of daysInMonth" 
+                (click)="selectDate(day)" 
+                [disabled]="!hasSlots(day)"
+                [class.bg-[#0066FF]]="selectedDate?.toDateString() === day.toDateString()"
+                [class.text-white]="selectedDate?.toDateString() === day.toDateString()"
+                [class.bg-white]="hasSlots(day) && selectedDate?.toDateString() !== day.toDateString()"
+                class="aspect-square flex items-center justify-center rounded-xl text-sm font-bold transition-all disabled:opacity-20 shadow-sm">
+                {{ day.getDate() }}
+              </button>
+            </div>
+
+            <div *ngIf="selectedDate" class="space-y-3 animate-in slide-in-from-top-2">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Available Times</label>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" *ngFor="let slot of slotsForSelectedDate"
+                  (click)="bookingForm.patchValue({appointmentDate: slot.startTime})"
+                  [class.bg-slate-900]="bookingForm.value.appointmentDate === slot.startTime"
+                  [class.text-white]="bookingForm.value.appointmentDate === slot.startTime"
+                  [class.bg-white]="bookingForm.value.appointmentDate !== slot.startTime"
+                  class="px-4 py-2 border border-slate-100 rounded-xl text-xs font-bold transition-all hover:border-[#0066FF]">
+                  {{ slot.startTime | date:'HH:mm' }}
+                </button>
+              </div>
+            </div>
+            
+            <div *ngIf="!selectedDate" class="text-center py-2">
+               <p class="text-[10px] font-bold text-slate-400 uppercase italic">Please select a blue date above</p>
+            </div>
+          </div>
+
+          <!-- Message d'erreur global pour la date -->
+          <p *ngIf="bookingForm.get('appointmentDate')?.invalid && bookingForm.get('appointmentDate')?.touched" class="text-center text-[10px] text-red-500 font-black uppercase">
+            ⚠️ Please select a date and a time slot
+          </p>
+
+          <button type="submit" [disabled]="bookingForm.invalid || loading"
+            class="w-full h-16 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 transition-all shadow-xl shadow-slate-200">
+            {{ loading ? 'Booking...' : 'Confirm Appointment' }}
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

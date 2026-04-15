@@ -16,6 +16,7 @@ export class NavbarComponent implements OnInit {
     { label: "Pricing", path: "/", fragment: "pricing" },
     { label: "Testimonials", path: "/", fragment: "testimonials" },
     { label: "Contact", path: "/", fragment: "footer" },
+          { label: "Book a Test", path: "/book-test" },
   ];
 
   constructor(private authService: AuthService, private router: Router) {}

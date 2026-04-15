@@ -16,6 +16,11 @@ import { PromoManagementComponent } from './features/admin/promo-management/prom
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
+import { BookTestComponent } from './features/visitor/book-test/book-test';
+import { TakeTestComponent } from './features/visitor/take-test/take-test.component';
+import { AppointmentMgmtComponent } from './features/Appointment/appointment-mgmt/appointment-mgmt';
+import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
+import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -24,6 +29,8 @@ const routes: Routes = [
   { path: 'courses', component: CoursesComponent },
    { path: 'checkout/:packageId', component: CheckoutComponent },
   { path: 'payment-result', component: PaymentResultComponent },
+  { path: 'book-test', component: BookTestComponent },
+  { path: 'take-test', component: TakeTestComponent },
   { 
     path: 'admin', 
     component: AdminLayoutComponent, 
@@ -32,6 +39,10 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'promos', component: PromoManagementComponent },
             { path: 'payments', component: PaymentManagementComponent },
+            { path: 'appointments', component: AppointmentMgmtComponent },
+      { path: 'discussions', component: DiscussionMgmtComponent }, 
+      { path: 'chat', component: ChatWidgetComponent }, 
+
 
 { path: 'packages', component: PackageManagementComponent },
 {       path: 'users/:role',component: UserListComponent 
