@@ -42,13 +42,6 @@ public class UserService {
         user.setRole(newRole);
         userRepos.save(user);
     }
-    public User getByEmail(String email) {
-        return userRepos.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
-                        org.springframework.http.HttpStatus.NOT_FOUND,
-                        "User not found with email: " + email
-                ));
-    }
     // Dans UserService.java
 
     public User createStudentOrTutor(User user) {

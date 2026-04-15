@@ -9,7 +9,6 @@ import tn.spring.user.Enums.UserRole;
 import tn.spring.user.Models.Student;
 import tn.spring.user.Models.Tutor;
 import tn.spring.user.Models.User;
-import tn.spring.user.Models.UserPublicDTO;
 import tn.spring.user.Services.UserService;
 
 import java.util.List;
@@ -74,25 +73,22 @@ public class UserController {
     }
 
     @GetMapping("/students")
-    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN', 'ADMIN')") // Modifié
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
     public ResponseEntity<List<Student>> getAllstudents() {
         return ResponseEntity.ok(userService.getAllStudents());
     }
+
     @GetMapping("/tutors")
-    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN', 'ADMIN')") // Modifié
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
     public ResponseEntity<List<Tutor>> getAlltutors() {
         return ResponseEntity.ok(userService.getAllTutors());
     }
 
+
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<User> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
-    @GetMapping("/public/by-email")
-    public ResponseEntity<UserPublicDTO> getPublicByEmail(@RequestParam String email) {
-        User u = userService.getByEmail(email);
-        return ResponseEntity.ok(new UserPublicDTO(u.getName(), u.getLastName(), u.getId()));
-    }
 }

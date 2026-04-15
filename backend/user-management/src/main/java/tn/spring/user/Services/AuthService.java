@@ -23,6 +23,7 @@ import tn.spring.user.Enums.UserRole;
 import tn.spring.user.Exceptions.BadRequestException;
 import tn.spring.user.Models.PasswordResetToken;
 import tn.spring.user.Models.Student;
+import tn.spring.user.Models.Tutor;
 import tn.spring.user.Models.User;
 import tn.spring.user.Repositories.PasswordResetTokenRepo;
 import tn.spring.user.Repositories.StudentRepos;
@@ -111,17 +112,56 @@ public class AuthService {
 
 
     public AuthenticationResponse registerStudent(RegisterClientRequest request) {
+        // 1. Check if email already exists
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "EMAIL_REQUIRED");
+        }
+        if (userRepos.findByEmailIgnoreCase(request.getEmail().trim()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "EMAIL_ALREADY_EXISTS");
+        }
+
+        // 2. Check if phone already exists (if provided)
+        if (request.getPhone() != null && !request.getPhone().isBlank()) {
+            if (userRepos.findByPrefixAndPhone(request.getPrefix(), request.getPhone().trim()).isPresent()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "PHONE_ALREADY_EXISTS");
+            }
+        }
+
         String password = passwordEncoder.encode(request.getPassword());
 
         User user;
+        String roleStr = request.getRole() != null ? request.getRole().toUpperCase() : "STUDENT";
 
-        // On vérifie le rôle envoyé dans le JSON de Postman
-        if ("ADMIN".equalsIgnoreCase(request.getRole())) {
-            user = User.builder() // Simple User pour l'admin
+        // 3. Handle Name Splitting
+        String firstName = "";
+        String lastName = "";
+        if (request.getFullName() != null && !request.getFullName().isBlank()) {
+            String[] parts = request.getFullName().trim().split("\\s+");
+            if (parts.length > 1) {
+                lastName = parts[parts.length - 1];
+                firstName = request.getFullName().trim().substring(0, request.getFullName().trim().lastIndexOf(lastName)).trim();
+            } else {
+                firstName = parts[0];
+            }
+        } else {
+            firstName = request.getName();
+            lastName = request.getLastName();
+        }
+
+        // 4. Create Entity based on Role
+        if ("ADMIN".equals(roleStr)) {
+            user = User.builder()
                     .role(UserRole.ADMIN)
                     .build();
+        } else if ("TUTOR".equals(roleStr) || "TEACHER".equals(roleStr)) {
+            user = Tutor.builder()
+                    .role(UserRole.TUTOR)
+                    .verified(false)
+                    .experience_years(0)
+                    .rating(0)
+                    .build();
         } else {
-            user = Student.builder() // Student pour les élèves
+            user = Student.builder()
                     .role(UserRole.STUDENT)
                     .englishLevel("A1")
                     .learningGoal("General")
@@ -129,16 +169,16 @@ public class AuthService {
                     .build();
         }
 
-        // Champs communs
-        user.setEmail(request.getEmail());
+        // 5. Common fields
+        user.setEmail(request.getEmail().trim());
         user.setPassword(password);
-        user.setName(request.getName());
-        user.setLastName(request.getLastName());
-        user.setPhone(request.getPhone());
+        user.setName(firstName);
+        user.setLastName(lastName);
+        user.setPhone(request.getPhone() != null ? request.getPhone().trim() : null);
         user.setPrefix(request.getPrefix());
         user.setActive(true);
 
-        userRepos.save(user); // Utiliser userRepos au lieu de studentRepos pour la polyvalence
+        userRepos.save(user);
 
         return AuthenticationResponse.builder()
                 .token(jwtService.generateAccessToken(user))

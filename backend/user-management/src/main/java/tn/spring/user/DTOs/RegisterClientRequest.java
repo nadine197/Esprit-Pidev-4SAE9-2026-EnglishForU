@@ -16,5 +16,6 @@ public class RegisterClientRequest {
     private String lastName;
     private String phone;
     private String prefix;
+    private String fullName;
     private String role;
 }
