@@ -1,4 +1,4 @@
-package tn.spring.appointment.Services;
+package tn.spring.appointment;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,8 @@ import tn.spring.appointment.Enums.ApptStatus;
 import tn.spring.appointment.Models.Appointment;
 import tn.spring.appointment.Models.Availability;
 import tn.spring.appointment.Repositories.ApptRepository;
+import tn.spring.appointment.Services.ApptService;
+import tn.spring.appointment.Services.NotificationService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
