@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { NotificationBellComponent } from './notification-bell.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('NotificationBellComponent', () => {
   let component: NotificationBellComponent;
@@ -8,6 +8,7 @@ describe('NotificationBellComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       declarations: [NotificationBellComponent]
     });
     fixture = TestBed.createComponent(NotificationBellComponent);

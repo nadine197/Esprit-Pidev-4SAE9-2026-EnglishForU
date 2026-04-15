@@ -17,6 +17,7 @@ export class StudyGroupDetailsComponent implements OnInit, OnDestroy {
 
   // Pour afficher ou cacher la carte
   showMap = false;
+  showChatbot = false;
 
   constructor(
     private route: ActivatedRoute,

@@ -28,3 +28,12 @@
   </button>
 
 </div>
+
+<!-- ✅ Chatbot avec contexte -->
+<button class="chatbot-floating-btn" (click)="showChatbot = !showChatbot">
+  💬
+</button>
+
+<div class="chatbot-box-details" *ngIf="showChatbot">
+  <app-chatbot [groupId]="group.groupId"></app-chatbot>
+</div>

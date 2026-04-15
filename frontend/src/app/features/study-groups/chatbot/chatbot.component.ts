@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { StudyGroupService } from '../../../services/study-group.service';
 
 interface Message {
@@ -13,6 +13,8 @@ interface Message {
 })
 export class ChatbotComponent {
 
+  @Input() groupId?: number;
+
   // ✅ ouverture/fermeture chatbot
   isOpen = false;
 
@@ -21,7 +23,6 @@ export class ChatbotComponent {
   ];
 
   userInput = '';
-  groupId?: number;
   loading = false;
 
   constructor(private studyGroupService: StudyGroupService) {}

@@ -5,15 +5,17 @@ import { StudyGroupService } from '../../../../services/study-group.service';
 import { StudyGroup } from '../../models/study-group';
 
 function uuidValidator(control: AbstractControl): ValidationErrors | null {
-  if (!control.value) return null;
+  const val = control.value;
+  if (!val || typeof val !== 'string') return null;
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(control.value.trim()) ? null : { invalidUuid: true };
+  return uuidRegex.test(val.trim()) ? null : { invalidUuid: true };
 }
 
 function uuidListValidator(control: AbstractControl): ValidationErrors | null {
-  if (!control.value || control.value.trim() === '') return null;
+  const val = control.value;
+  if (!val || typeof val !== 'string' || val.trim() === '') return null;
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  const ids = control.value.split(',').map((s: string) => s.trim()).filter((s: string) => s);
+  const ids = val.split(',').map((s: string) => s.trim()).filter((s: string) => s);
   return ids.every((id: string) => uuidRegex.test(id)) ? null : { invalidUuidList: true };
 }
 

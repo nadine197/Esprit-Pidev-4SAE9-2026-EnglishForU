@@ -34,11 +34,18 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   clearAll():     void { this.notifications = []; }
 
   formatTime(ts: string): string {
+    if (!ts) return '';
+    const date = new Date(ts);
+    if (isNaN(date.getTime())) {
+      return ts; // Fallback to raw string if still invalid
+    }
     try {
-      return new Date(ts).toLocaleTimeString('fr-FR', {
+      return date.toLocaleTimeString('fr-FR', {
         hour: '2-digit', minute: '2-digit'
       });
-    } catch { return ts; }
+    } catch {
+      return ts;
+    }
   }
 
   ngOnDestroy(): void {
