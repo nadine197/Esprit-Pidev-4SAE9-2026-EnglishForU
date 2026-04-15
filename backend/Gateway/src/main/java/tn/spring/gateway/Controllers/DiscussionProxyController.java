@@ -41,7 +41,6 @@ public class DiscussionProxyController {
         return proxy.forward(DISCUSSION_BASE + "/groups/" + id, HttpMethod.DELETE, null, req);
     }
 
-    // Dans DiscussionProxyController.java (Projet GATEWAY - 8090)
 
     @GetMapping("/groups/{groupId}/messages")
     public ResponseEntity<String> getHistory(@PathVariable String groupId, HttpServletRequest req) {

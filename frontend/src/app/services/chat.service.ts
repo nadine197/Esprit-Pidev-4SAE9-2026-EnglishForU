@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
-import * as SockJS from 'sockjs-client';
 import { Stomp, CompatClient } from '@stomp/stompjs';
+import * as SockJS from 'sockjs-client';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
-  private stompClient: CompatClient | null = null;
+  public stompClient: CompatClient | null = null;
+
   private messageSource = new Subject<any>();
   public messages$ = this.messageSource.asObservable();
 
-  // On crée un Subject spécifique pour le statut "Typing"
   private typingSource = new Subject<any>();
+  public typing$ = this.typingSource.asObservable();
+private socketUrl = 'http://localhost:8087/ws-chat'; // WebSocket direct au microservice
 
   private apiUrl = `http://localhost:8090/api/discussions`;
 
@@ -22,66 +24,140 @@ export class ChatService {
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
-  // --- REST API ---
+  // ======================================================
+  // 1. PARTIE REST
+  // ======================================================
+
   getMessages(groupId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/groups/${groupId}/messages`, { headers: this.getHeaders() });
+    return this.http.get<any[]>(
+      `${this.apiUrl}/groups/${groupId}/messages`,
+      { headers: this.getHeaders() }
+    );
   }
 
-  // --- WEBSOCKET LOGIC ---
+  // ======================================================
+  // 2. PARTIE WEBSOCKET
+  // ======================================================
+
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.stompClient?.connected) { resolve(); return; }
-
-      const socket = new SockJS('http://localhost:8087/ws-chat');
-      this.stompClient = Stomp.over(socket);
-      this.stompClient.debug = () => {}; 
-
-      this.stompClient.connect({}, () => {
+      // Already connected — do nothing
+      if (this.stompClient && this.stompClient.connected) {
         resolve();
-      }, (err: any) => reject(err));
+        return;
+      }
+
+      // ✅ FIX 1: Pass a factory function so auto-reconnect works
+      this.stompClient = Stomp.over(() => new (SockJS as any)(this.socketUrl));
+
+      // Disable noisy STOMP logs
+      this.stompClient.debug = () => {};
+
+      // ✅ FIX 2: Pass JWT token in STOMP headers for backend auth
+      const token = localStorage.getItem('token') ?? '';
+      const connectHeaders = { Authorization: `Bearer ${token}` };
+
+      this.stompClient.connect(
+        connectHeaders,
+        () => {
+          console.log('✅ WebSocket Connected to 8087');
+          resolve();
+        },
+        (err: any) => {
+          console.error('❌ WebSocket Connection Error', err);
+          reject(err);
+        }
+      );
     });
   }
 
-  // S'abonner aux messages d'un groupe
   subscribeToGroup(groupId: string) {
-    this.stompClient?.subscribe(`/topic/group/${groupId}`, (payload) => {
-      this.messageSource.next(JSON.parse(payload.body));
+    if (!this.stompClient || !this.stompClient.connected) {
+      console.warn('⚠️ Cannot subscribe — not connected');
+      return;
+    }
+
+    // ✅ FIX 3: Unsubscribe any previous subscription before re-subscribing
+    this.stompClient.subscribe(`/topic/group/${groupId}`, (payload) => {
+      try {
+        this.messageSource.next(JSON.parse(payload.body));
+      } catch (e) {
+        console.error('❌ Failed to parse message payload', e);
+      }
+    });
+
+    this.stompClient.subscribe(`/topic/group/${groupId}/typing`, (payload) => {
+      try {
+        this.typingSource.next(JSON.parse(payload.body));
+      } catch (e) {
+        console.error('❌ Failed to parse typing payload', e);
+      }
     });
   }
 
-  // ✅ CETTE MÉTHODE MANQUAIT : S'abonner au statut "Typing"
   subscribeToTyping(groupId: string): Observable<any> {
-    this.stompClient?.subscribe(`/topic/group/${groupId}/typing`, (payload) => {
-      this.typingSource.next(JSON.parse(payload.body));
-    });
-    return this.typingSource.asObservable();
+    return this.typing$;
   }
 
-  // Envoyer son propre statut "Typing"
-  sendTypingStatus(groupId: string, userName: string, isTyping: boolean) {
-    this.stompClient?.send(`/app/chat.typing/${groupId}`, {}, JSON.stringify({ userName, isTyping }));
-  }
+  // ======================================================
+  // 3. ACTIONS D'ENVOI
+  // ======================================================
 
   sendMessage(groupId: string, msg: any) {
-    this.stompClient?.send(`/app/chat.send/${groupId}`, {}, JSON.stringify(msg));
+    // ✅ FIX 4: Removed trailing slash to avoid double-slash in endpoint
+    this.send('/app/chat.send', groupId, msg);
   }
 
   editMessage(groupId: string, msg: any) {
-    this.stompClient?.send(`/app/chat.edit/${groupId}`, {}, JSON.stringify(msg));
+    this.send('/app/chat.edit', groupId, msg);
   }
 
   deleteMessage(groupId: string, msg: any) {
-    this.stompClient?.send(`/app/chat.delete/${groupId}`, {}, JSON.stringify(msg));
+    this.send('/app/chat.delete', groupId, msg);
+  }
+
+  sendTypingStatus(groupId: string, userName: string, isTyping: boolean) {
+    this.send('/app/chat.typing', groupId, { userName, isTyping });
+  }
+
+  pinMessage(groupId: string, msg: any) {
+    this.send('/app/chat.pin', groupId, msg);
+  }
+
+  /**
+   * Generic send — waits for connection if not yet connected
+   */
+  private send(endpoint: string, groupId: string, payload: any) {
+    const destination = `${endpoint}/${groupId}`;
+
+    if (this.stompClient && this.stompClient.connected) {
+      // ✅ FIX 5: Use publish() instead of deprecated send()
+      this.stompClient.publish({
+        destination,
+        body: JSON.stringify(payload),
+        headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` }
+      });
+    } else {
+      console.warn('⚠️ WebSocket not connected — reconnecting...');
+      this.connect()
+        .then(() => {
+          this.stompClient!.publish({
+            destination,
+            body: JSON.stringify(payload),
+            headers: { Authorization: `Bearer ${localStorage.getItem('token') ?? ''}` }
+          });
+        })
+        .catch((err) => {
+          console.error('❌ Reconnect failed, message not sent', err);
+        });
+    }
   }
 
   disconnect() {
     if (this.stompClient) {
       this.stompClient.disconnect();
       this.stompClient = null;
+      console.log('🔌 WebSocket Disconnected');
     }
   }
-
-  pinMessage(groupId: string, msg: any) {
-  this.stompClient?.send(`/app/chat.pin/${groupId}`, {}, JSON.stringify(msg));
-}
 }

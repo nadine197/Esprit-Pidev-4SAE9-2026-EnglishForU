@@ -30,7 +30,7 @@ public class ChatMessage {
 
     // Pour les réactions : on stocke une Map <EmailUtilisateur, Emoji>
     private String reaction; // Contiendra l'emoji (ex: "❤️")
-    private boolean isPinned; // Par défaut false
+    private Boolean isPinned = false;
 
 
 }

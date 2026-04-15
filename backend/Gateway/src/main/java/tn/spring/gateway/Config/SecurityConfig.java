@@ -31,6 +31,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**",
                                 "/api/packages/active").permitAll()
+                        .requestMatchers("/api/appointments/**").permitAll()
+                        .requestMatchers("/api/discussions/**").permitAll()
+                        .requestMatchers("/api/users/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(gatewayJwtFilter, UsernamePasswordAuthenticationFilter.class);

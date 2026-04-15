@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DiscussionService } from '../../../services/discussion.service';
 import { ChatService } from '../../../services/chat.service'; 
@@ -24,7 +24,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   newMessage: string = '';
   pinnedMessage: any = null; 
   
-  // --- ÉTATS AVANCÉS ---
+  // --- ÉTATS AVANCÉS (REPLY / EDIT / TYPING) ---
   replyingTo: any = null; 
   isEditing = false;
   editingMsgId: string | null = null;
@@ -32,6 +32,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   typingTimer: any;
   
   private messageSub?: Subscription;
+  private typingSub?: Subscription;
 
   constructor(
     private discussionService: DiscussionService,
@@ -47,55 +48,79 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() { this.cleanup(); }
+  ngOnDestroy() { 
+    this.cleanup(); 
+  }
 
-  // --- 1. CHARGEMENT & NOTIFICATIONS ---
+  // --- 1. CHARGEMENT INITIAL & ÉCOUTE GLOBALE ---
+
   loadMyDiscussions() {
     if (!this.currentUser) return;
     const email = this.currentUser.email;
-    const obs = this.currentUser.role === 'ADMIN' ? this.discussionService.getAllGroups() : this.discussionService.getMyGroupsByEmail(email);
+    
+    // On choisit l'observable selon le rôle
+    const obs = this.currentUser.role === 'ADMIN' 
+      ? this.discussionService.getAllGroups() 
+      : this.discussionService.getMyGroupsByEmail(email);
 
-    obs.subscribe({ next: (data: any) => {
-      this.groups = data.content ? data.content : data;
-      this.initBackgroundListening();
-    }});
+    obs.subscribe({ 
+      next: (data: any) => {
+        this.groups = data.content ? data.content : data;
+        // On initialise la connexion WebSocket pour les notifications
+        this.initNotificationSystem();
+      },
+      error: (err: any) => console.error("Erreur chargement groupes", err)
+    });
   }
 
-  async initBackgroundListening() {
+  async initNotificationSystem() {
     try {
       await this.chatService.connect();
-      // On s'abonne à tous les groupes pour les notifs en arrière-plan
+      // On s'abonne à tous les groupes de l'utilisateur pour le badge rouge
       this.groups.forEach(g => this.chatService.subscribeToGroup(g.id));
 
       if (this.messageSub) this.messageSub.unsubscribe();
       this.messageSub = this.chatService.messages$.subscribe(msg => {
         this.handleIncomingSocketData(msg);
       });
-    } catch (err) { console.error("WebSocket connection failed", err); }
+    } catch (err) {
+      console.error("Erreur d'initialisation WebSocket", err);
+    }
   }
 
   handleIncomingSocketData(incomingMsg: any) {
-  if (this.selectedGroup && incomingMsg.groupId === this.selectedGroup.id) {
-    const index = this.messages.findIndex(m => m.id === incomingMsg.id);
+    // CAS A : Le message appartient au groupe ouvert à l'écran
+    if (this.selectedGroup && incomingMsg.groupId === this.selectedGroup.id) {
+      const index = this.messages.findIndex(m => m.id === incomingMsg.id);
 
-    if (index !== -1) {
-      // On met à jour le message dans la liste
-      this.messages[index] = { ...this.messages[index], ...incomingMsg };
-      
-      // --- CETTE LOGIQUE EST CRUCIALE ---
-      if (incomingMsg.isPinned) {
-        this.pinnedMessage = incomingMsg; // Affiche la barre bleue
-      } else if (this.pinnedMessage && this.pinnedMessage.id === incomingMsg.id) {
-        this.pinnedMessage = null; // Cache la barre bleue si on a désépinglé CE message
+      if (incomingMsg.content === "DELETED_SIGNAL") {
+        if (index !== -1) this.messages.splice(index, 1);
+        if (this.pinnedMessage?.id === incomingMsg.id) this.pinnedMessage = null;
+      } 
+      else if (index !== -1) {
+        // Mise à jour (Edit, Réaction ou Pin)
+        this.messages[index] = { ...this.messages[index], ...incomingMsg };
+        if (incomingMsg.isPinned) this.pinnedMessage = incomingMsg;
+        else if (this.pinnedMessage?.id === incomingMsg.id) this.pinnedMessage = null;
+      } 
+      else {
+        // Nouveau message
+        this.messages.push(incomingMsg);
+        this.scrollToBottom();
       }
-    } else {
-      this.messages.push(incomingMsg);
-      this.scrollToBottom();
+    } 
+    // CAS B : Notification (Badge rouge)
+    else {
+      // Si ce n'est pas mon propre message, on incrémente le compteur
+      if (incomingMsg.senderId !== this.currentUser.email && incomingMsg.content !== "DELETED_SIGNAL") {
+        this.unreadCount++;
+        this.playNotificationSound();
+      }
     }
   }
-}
 
-  // --- 2. LOGIQUE DE SÉLECTION ---
+  // --- 2. LOGIQUE DE SÉLECTION D'UN GROUPE ---
+
   selectGroup(group: any) {
     this.selectedGroup = group;
     this.messages = [];
@@ -103,29 +128,40 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
     this.pinnedMessage = null;
     this.cancelReply();
     this.cancelEdit();
+    this.typingUser = null;
 
-    this.chatService.getMessages(group.id).subscribe(data => {
-      this.messages = data;
-  this.pinnedMessage = this.messages.find(m => m.isPinned === true);
-      this.scrollToBottom();
+    // Charger l'historique via REST (Gateway 8090)
+    this.chatService.getMessages(group.id).subscribe({
+      next: (data: any) => {
+        this.messages = Array.isArray(data) ? data : (data.content || []);
+        this.pinnedMessage = this.messages.find(m => m.isPinned);
+        this.scrollToBottom();
+      }
     });
 
-    this.chatService.subscribeToTyping(group.id).subscribe((data: any) => {
+    // Écouter le statut "Typing" spécifique à ce groupe
+    if (this.typingSub) this.typingSub.unsubscribe();
+    this.typingSub = this.chatService.subscribeToTyping(group.id).subscribe((data: any) => {
       if (data.userName !== this.currentUser.name) {
         this.typingUser = data.isTyping ? data.userName : null;
       }
     });
   }
 
-  // --- 3. ACTIONS MESSAGES ---
+  // --- 3. ENVOI & ACTIONS MESSAGES ---
+
   sendMsg() {
     if (!this.newMessage.trim() || !this.selectedGroup) return;
 
     if (this.isEditing) {
+      // ACTION MODIFICATION
       const msg = this.messages.find(m => m.id === this.editingMsgId);
-      this.chatService.editMessage(this.selectedGroup.id, { ...msg, content: this.newMessage });
+      if (msg) {
+        this.chatService.editMessage(this.selectedGroup.id, { ...msg, content: this.newMessage });
+      }
       this.cancelEdit();
     } else {
+      // ACTION ENVOI NORMAL OU RÉPONSE
       const chatMsg: any = {
         groupId: this.selectedGroup.id,
         senderId: this.currentUser.email,
@@ -133,47 +169,25 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
         content: this.newMessage,
         timestamp: new Date()
       };
+
       if (this.replyingTo) {
         chatMsg.replyToId = this.replyingTo.id;
         chatMsg.replyToText = this.replyingTo.content;
         chatMsg.replyToUser = this.replyingTo.senderName;
       }
+
       this.chatService.sendMessage(this.selectedGroup.id, chatMsg);
       this.newMessage = ''; 
       this.cancelReply();
+      // Arrêt immédiat du statut typing après envoi
+      this.chatService.sendTypingStatus(this.selectedGroup.id, this.currentUser.name, false);
     }
   }
 
-  // Dans chat-widget.ts
-onPin(msg: any) {
-  console.log("Action Pin déclenchée sur :", msg.content);
-  
-  // 1. Inversion du statut
-  const updatedMsg = { ...msg, isPinned: !msg.isPinned };
-  
-  // 2. Mise à jour LOCALE immédiate pour que l'admin voie le résultat sans attendre le serveur
-  if (updatedMsg.isPinned) {
-    this.pinnedMessage = updatedMsg;
-  } else {
-    this.pinnedMessage = null;
-  }
-
-  // 3. Envoi au serveur
-  this.chatService.editMessage(this.selectedGroup.id, updatedMsg);
-}
-
-  onDeleteMsg(msg: any) {
-    if (confirm("Delete this message?")) this.chatService.deleteMessage(this.selectedGroup.id, msg);
-  }
-
-  reactToMessage(msg: any, emoji: string) {
-    this.chatService.editMessage(this.selectedGroup.id, { ...msg, reaction: emoji });
-  }
-
-  // --- 4. FICHIERS & TYPING ---
   onTyping() {
     if (!this.selectedGroup) return;
     this.chatService.sendTypingStatus(this.selectedGroup.id, this.currentUser.name, true);
+    
     clearTimeout(this.typingTimer);
     this.typingTimer = setTimeout(() => {
       this.chatService.sendTypingStatus(this.selectedGroup.id, this.currentUser.name, false);
@@ -185,25 +199,87 @@ onPin(msg: any) {
     if (file && this.selectedGroup) {
       const formData = new FormData();
       formData.append('file', file);
+
+      // Upload via Gateway (8090)
       this.http.post('http://localhost:8090/api/discussions/files/upload', formData, { responseType: 'text' })
-        .subscribe(url => {
-          const msg = { 
-            groupId: this.selectedGroup.id, senderId: this.currentUser.email, senderName: this.currentUser.name,
-            content: "📁 Sent a file: " + file.name, fileUrl: url, fileName: file.name, timestamp: new Date()
-          };
-          this.chatService.sendMessage(this.selectedGroup.id, msg);
+        .subscribe({
+          next: (url) => {
+            const msg = { 
+              groupId: this.selectedGroup.id, 
+              senderId: this.currentUser.email, 
+              senderName: this.currentUser.name,
+              content: "📁 Shared a file: " + file.name, 
+              fileUrl: url, 
+              fileName: file.name, 
+              timestamp: new Date()
+            };
+            this.chatService.sendMessage(this.selectedGroup.id, msg);
+          },
+          error: (err: any) => alert("Upload failed. Check if /uploads folder exists on server.")
         });
     }
   }
 
-  // --- 5. UI UTILS ---
-  setupReply(m: any) { this.replyingTo = m; this.isEditing = false; }
+  // --- 4. RÉACTIONS, PIN, DELETE ---
+
+  reactToMessage(msg: any, emoji: string) {
+    const updated = { ...msg, reaction: emoji };
+    this.chatService.editMessage(this.selectedGroup.id, updated);
+  }
+
+  onPin(msg: any) {
+    if (this.currentUser.role === 'STUDENT') return;
+    const updated = { ...msg, isPinned: !msg.isPinned };
+    this.chatService.pinMessage(this.selectedGroup.id, updated);
+  }
+
+  onDeleteMsg(msg: any) {
+    if (confirm("Delete this message for everyone?")) {
+      this.chatService.deleteMessage(this.selectedGroup.id, msg);
+    }
+  }
+
+  // --- 5. UI UTILS & NAVIGATION ---
+
+  setupReply(m: any) { this.isEditing = false; this.replyingTo = m; }
   cancelReply() { this.replyingTo = null; }
-  setupEdit(m: any) { this.isEditing = true; this.editingMsgId = m.id; this.newMessage = m.content; this.replyingTo = null; }
+  
+  setupEdit(m: any) { 
+    this.replyingTo = null;
+    this.isEditing = true; 
+    this.editingMsgId = m.id; 
+    this.newMessage = m.content; 
+  }
   cancelEdit() { this.isEditing = false; this.editingMsgId = null; this.newMessage = ''; }
-  toggleChat() { this.isOpen = !this.isOpen; if (this.isOpen) this.unreadCount = 0; }
-  goBack() { this.selectedGroup = null; this.typingUser = null; }
-  private cleanup() { this.chatService.disconnect(); }
-  playNotificationSound() { new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3').play().catch(() => {}); }
-  scrollToBottom() { setTimeout(() => { if (this.myScrollContainer) this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight; }, 100); }
+
+  toggleChat() {
+    this.isOpen = !this.isOpen;
+    if (this.isOpen) this.unreadCount = 0;
+  }
+
+  goBack() {
+    this.selectedGroup = null;
+    this.typingUser = null;
+    this.cancelEdit();
+    this.cancelReply();
+  }
+
+  private cleanup() {
+    this.chatService.disconnect();
+    if (this.messageSub) this.messageSub.unsubscribe();
+    if (this.typingSub) this.typingSub.unsubscribe();
+  }
+
+  playNotificationSound() {
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+    audio.play().catch(() => {});
+  }
+
+  scrollToBottom(): void {
+    setTimeout(() => {
+      if (this.myScrollContainer) {
+        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+      }
+    }, 100);
+  }
 }
