@@ -1,6 +1,7 @@
 package tn.spring.gateway.Config;
 
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,6 +28,8 @@ import java.util.List;
 
 @Configuration
 
+
+
 public class SecurityConfig {
 
     private final GatewayJwtFilter gatewayJwtFilter;
@@ -32,6 +40,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -40,6 +49,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -54,6 +64,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
                         // ── Endpoints publics (auth) ──────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
                         // ── Lecture publique (GET sans token) ─────────────
@@ -75,19 +86,25 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
 
+
         configuration.setAllowedMethods(List.of("GET", "PATCH","POST", "PUT", "DELETE", "OPTIONS"));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        configuration.setAllowedMethods(List.of("GET", "PATCH","POST", "PUT", "DELETE", "OPTIONS"));
 
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -96,6 +113,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 }
 
