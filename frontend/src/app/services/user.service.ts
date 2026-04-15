@@ -11,44 +11,41 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  // Helper pour récupérer les headers avec le Token JWT
   private getHeaders() {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  const token = localStorage.getItem('token');
+  return new HttpHeaders().set('Authorization', `Bearer ${token}`); // <-- Espace ici !
+}
+
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admins`, { headers: this.getHeaders() });
   }
 
-getAllAdmins(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/admins`, { headers: this.getHeaders() });
+  // Dans user.service.ts
+
+createUser(user: any): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+  // Appelle l'endpoint ADMIN -> /api/users/create-user
+  return this.http.post(`${this.apiUrl}/create-user`, user, { headers });
 }
 
-getAllStudents(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/students`, { headers: this.getHeaders() });
-}
-
-getAllTutors(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/tutors`, { headers: this.getHeaders() });
-}
-  // 4. Créer un utilisateur (Admin action)
-  createUser(user: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/create-user`, user, { headers: this.getHeaders() });
-  }
-
-  // 5. Mettre à jour un utilisateur
+  // 3. UPDATE (Matches @PutMapping("/{id}"))
   updateUser(id: string, user: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${id}`, user, { headers: this.getHeaders() });
   }
 
-  // 6. Bloquer un utilisateur
+  // 4. BLOCK (Matches @PutMapping("/block/{id}"))
   blockUser(id: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/block/${id}`, {}, { headers: this.getHeaders() });
   }
 
-  // 7. Débloquer un utilisateur
+  // 5. UNBLOCK (Matches @PutMapping("/unblock/{id}"))
   unblockUser(id: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/unblock/${id}`, {}, { headers: this.getHeaders() });
   }
 
-  // 8. Supprimer un utilisateur
+  // 6. DELETE (Add this if you want to use the delete button)
   deleteUser(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
