@@ -6,7 +6,7 @@ import { StudyGroup, MarkedDates, StudyGroupStatus } from '../features/study-gro
 @Injectable({ providedIn: 'root' })
 export class StudyGroupService {
 
-  private api = 'http://localhost:8084/api/study-groups';
+  private api = 'http://localhost:8090/api/study-groups';
   private headers = new HttpHeaders({
     'Authorization': 'Basic ' + btoa('admin:admin123')
   });

@@ -9,7 +9,7 @@ import {Course} from "../features/courses/models/courses";
 })
 export class ContentService {
 
-  private api = 'http://localhost:8084/api/contents';
+  private api = 'http://localhost:8090/api/contents';
 
   constructor(private http: HttpClient) {}
 

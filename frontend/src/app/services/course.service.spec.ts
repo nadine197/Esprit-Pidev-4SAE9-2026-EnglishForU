@@ -6,7 +6,7 @@ import { Course } from '../features/courses/models/courses';
 describe('CourseService', () => {
   let service: CourseService;
   let httpMock: HttpTestingController;
-  const api = 'http://localhost:8084/api/courses';
+  const api = 'http://localhost:8090/api/courses';
 
   const mockCourse: Course = {
     courseid: 1,

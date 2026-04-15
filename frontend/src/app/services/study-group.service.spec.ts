@@ -6,7 +6,7 @@ import { StudyGroup } from '../features/study-groups/models/study-group';
 describe('StudyGroupService', () => {
   let service: StudyGroupService;
   let httpMock: HttpTestingController;
-  const api = 'http://localhost:8084/api/study-groups';
+  const api = 'http://localhost:8090/api/study-groups';
 
   const mockGroup: StudyGroup = {
     groupId: 1,
