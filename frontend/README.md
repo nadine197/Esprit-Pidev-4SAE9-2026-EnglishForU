@@ -1,27 +1,57 @@
-# JobBoard
+# EnglishForU – English Learning Platform
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.15.
+## 📌 Overview
 
-## Development server
+EnglishForU is a full-stack web application developed as part of the **PIDEV – 4th Year Engineering Program** at **Esprit School of Engineering (2025–2026)**.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The platform helps students improve their English skills through:
+- Interactive courses
+- Quizzes
+- Study groups
+- Progress tracking
 
-## Code scaffolding
+It also provides dashboards for teachers and administrators.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 🏗️ Architecture
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+The system is based on a **Microservices Architecture**:
 
-## Running unit tests
+- Authentication Service
+- User Service
+- Course Service
+- Quiz Service
+- Discussion Service
+- Gateway (API Gateway)
+- Eureka Server
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Each service has its own database and communicates via REST APIs.
 
-## Running end-to-end tests
+The **API Gateway** manages routing and security using JWT authentication.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## 💻 Tech Stack
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Frontend
+- Angular 16+
+- TypeScript
+- Bootstrap / Angular Material
+
+### Backend
+- Spring Boot (Microservices)
+- Spring Cloud
+- JWT Security
+- REST APIs
+
+### Database
+- PostgreSQL
+
+---
+
+## ⚙️ Angular Development
+
+### Development server
+```bash
+ng serve

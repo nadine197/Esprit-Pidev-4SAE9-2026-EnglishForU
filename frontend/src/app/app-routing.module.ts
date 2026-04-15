@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './features/user/login/login';
 import { RegisterComponent } from './features/user/register/register';
 import { MainComponent } from './features/user/main/main';
+
 import { CoursesComponent } from './features/courses/courses';
 import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
@@ -21,12 +22,31 @@ import { TakeTestComponent } from './features/visitor/take-test/take-test.compon
 import { AppointmentMgmtComponent } from './features/Appointment/appointment-mgmt/appointment-mgmt';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
-
+import { CourseDetailsComponent } from './features/courses/course-details/course-details.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'main', component: MainComponent },
   { path: 'courses', component: CoursesComponent },
+
+  {
+    path: 'courses',
+    loadChildren: () =>
+      import('./features/courses/courses.module').then(m => m.CoursesModule)
+  },
+    { path: 'coursesDetails/:id', component: CourseDetailsComponent },
+  {
+    path: 'contents',
+    loadChildren: () =>
+      import('./features/contents/contents.module').then(m => m.ContentsModule)
+  },
+  {
+    path: 'study-groups',
+    loadChildren: () =>
+      import('./features/study-groups/study-groups.module')
+        .then(m => m.StudyGroupsModule)
+  },
+
    { path: 'checkout/:packageId', component: CheckoutComponent },
   { path: 'payment-result', component: PaymentResultComponent },
   { path: 'book-test', component: BookTestComponent },
