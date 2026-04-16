@@ -23,8 +23,9 @@ export class SidebarComponent {
             { label: 'Payments Logs', link: '/admin/payments', icon: 'tag' },
 
   { label: 'Package Management', link: '/admin/packages', icon: 'box' },
-    { label: 'Appointments', link: '/admin/appointments', icon: 'calendar' },
-    { label: 'Settings', link: '/admin/settings', icon: 'settings' },
+{ label: 'Appointments', link: '/admin/appointments', icon: 'calendar' },
+    { label: 'Discussion Groups', link: '/admin/discussions', icon: 'message-square' }, 
+        { label: 'Settings', link: '/admin/settings', icon: 'settings' },
   ];
  
 

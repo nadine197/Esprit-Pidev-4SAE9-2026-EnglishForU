@@ -22,6 +22,10 @@ import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
 import { CoursesModule } from './features/courses/courses.module';
+import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
+import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
+import { AppointmentModule } from './features/Appointment/appointment.module';
+import { VisitorModule } from './features/visitor/visitor.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +35,9 @@ import { CoursesModule } from './features/courses/courses.module';
     PackageManagementComponent,
     CheckoutComponent,
     PaymentResultComponent,
-    PaymentManagementComponent
+    PaymentManagementComponent,
+    ChatWidgetComponent ,
+    DiscussionMgmtComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +51,9 @@ import { CoursesModule } from './features/courses/courses.module';
     AdminModule,
     TutorModule,
     CoursesModule,
-    StudentModule
+    StudentModule,
+    AppointmentModule,
+    VisitorModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
