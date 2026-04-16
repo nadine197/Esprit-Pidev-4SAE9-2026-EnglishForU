@@ -1,7 +1,8 @@
+# syntax=docker/dockerfile:1
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --legacy-peer-deps
+RUN --mount=type=cache,target=/root/.npm npm ci --legacy-peer-deps --cache /root/.npm
 COPY . .
 RUN npm run build -- --configuration production
 

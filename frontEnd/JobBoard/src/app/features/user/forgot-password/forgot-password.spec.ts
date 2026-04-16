@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ForgotPassword } from './forgot-password';
 
 describe('ForgotPassword', () => {
@@ -8,9 +8,9 @@ describe('ForgotPassword', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ForgotPassword]
-    })
-    .compileComponents();
+      declarations: [ForgotPassword],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ForgotPassword);
     component = fixture.componentInstance;
@@ -21,4 +21,3 @@ describe('ForgotPassword', () => {
     expect(component).toBeTruthy();
   });
 });
-

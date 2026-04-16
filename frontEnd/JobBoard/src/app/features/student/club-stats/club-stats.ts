@@ -30,7 +30,7 @@ export class ClubStatsComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private feedbackService: FeedbackService,
     private clubService: ClubService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.clubId = +this.route.snapshot.paramMap.get('id')!;
@@ -45,7 +45,7 @@ export class ClubStatsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.charts.forEach(c => { try { c.destroy(); } catch (_) {} });
+    this.charts.forEach(c => { try { c.destroy(); } catch (_) { } });
   }
 
   loadData(): void {
@@ -57,7 +57,7 @@ export class ClubStatsComponent implements OnInit, AfterViewInit, OnDestroy {
           this.router.navigate(['/student/clubs', this.clubId]);
         }
       },
-      error: () => {}
+      error: () => { }
     });
 
     this.feedbackService.getClubStats(this.clubId).subscribe({
@@ -89,7 +89,7 @@ export class ClubStatsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   renderCharts(): void {
-    this.charts.forEach(c => { try { c.destroy(); } catch (_) {} });
+    this.charts.forEach(c => { try { c.destroy(); } catch (_) { } });
     this.charts = [];
 
     if (this.stats) {
@@ -176,15 +176,19 @@ export class ClubStatsComponent implements OnInit, AfterViewInit, OnDestroy {
     const negative = reviews.filter(r => r.rating <= 2).length;
     const total = reviews.length || 1;
 
+    this.clubFeedbackData.likePercent = Math.round(positive * 100 / total);
+    this.clubFeedbackData.neutralPercent = Math.round(neutral * 100 / total);
+    this.clubFeedbackData.dislikePercent = Math.round(negative * 100 / total);
+
     const chart = new Chart(this.clubSentimentRef.nativeElement, {
       type: 'doughnut',
       data: {
         labels: ['Positive', 'Neutral', 'Negative'],
         datasets: [{
           data: [
-            Math.round(positive * 100 / total),
-            Math.round(neutral * 100 / total),
-            Math.round(negative * 100 / total)
+            this.clubFeedbackData.likePercent,
+            this.clubFeedbackData.neutralPercent,
+            this.clubFeedbackData.dislikePercent
           ],
           backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
           borderColor: ['#059669', '#d97706', '#dc2626'],
