@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { DiscussionService } from '../../../services/discussion.service';
 import { ChatService } from '../../../services/chat.service'; 
 import { Subscription } from 'rxjs';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-chat-widget',
@@ -58,9 +59,13 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
       ? this.discussionService.getAllGroups() 
       : this.discussionService.getMyGroupsByEmail(email);
 
-    obs.subscribe({ next: (data: any) => {
+    obs.pipe(
+      catchError(() => of([]))
+    ).subscribe({ next: (data: any) => {
       this.groups = data.content ? data.content : data;
-      this.initNotificationSystem();
+      if (this.groups.length > 0) {
+        this.initNotificationSystem();
+      }
     }});
   }
 
