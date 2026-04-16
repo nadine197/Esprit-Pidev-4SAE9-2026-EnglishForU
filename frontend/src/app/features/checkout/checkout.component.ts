@@ -58,10 +58,7 @@ constructor(
 ) {}
   ngOnInit(): void {
     this.packageId = Number(this.route.snapshot.paramMap.get('packageId'));
-     if(this.currentUser?.email == null || this.currentUser?.email === undefined) {
-            this.showLoginPopup(); // ✅ UX
-            return ; 
-          }
+  
     this.loadPackage();
   }
 get currentUser() {
@@ -88,7 +85,7 @@ loadPackage() {
   this.packageService.GetById(this.packageId).subscribe({
     next: (p) => {
       this.pkg = p;
-  if(this.currentUser?.email || p==null || p===undefined) {
+  if(this.currentUser?.email==null || p==null || p===undefined) {
             this.showLoginPopup(); // ✅ UX
             return ; 
           }

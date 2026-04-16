@@ -22,13 +22,19 @@ import java.util.UUID;
 import java.util.Random;
 
 @Service
-@RequiredArgsConstructor
 public class ApptService {
 
     private final ApptRepository apptRepository;
     private final AvailabilityRepository availabilityRepository;
     private final NotificationService notificationService;
     private final GroupRepository groupRepository;
+
+    public ApptService(ApptRepository apptRepository, AvailabilityRepository availabilityRepository, NotificationService notificationService, GroupRepository groupRepository) {
+        this.apptRepository = apptRepository;
+        this.availabilityRepository = availabilityRepository;
+        this.notificationService = notificationService;
+        this.groupRepository = groupRepository;
+    }
 
     public Appointment book(Appointment appt) {
         appt.setStatus(ApptStatus.PENDING);

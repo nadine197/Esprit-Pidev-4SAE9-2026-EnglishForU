@@ -17,7 +17,7 @@ import { PromoManagementComponent } from './features/admin/promo-management/prom
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
-import { CourseDetailsComponent } from './features/courses/course-details/course-details.component';
+import { CourseDetailsComponent } from './features/courses/pages/course-details/course-details.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @FeignClient(
         name = "User",
-        url = "${quiz.services.user-url:http://localhost:8081}",
         configuration = ForwardAuthFeignConfiguration.class
 )
 public interface UserClient {

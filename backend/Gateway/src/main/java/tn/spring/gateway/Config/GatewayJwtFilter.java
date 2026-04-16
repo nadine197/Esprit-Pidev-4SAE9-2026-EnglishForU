@@ -43,7 +43,7 @@ public class GatewayJwtFilter extends OncePerRequestFilter {
                         .parseClaimsJws(token)
                         .getBody();
 
-                String userId = (String) claims.get("userId");
+                String userId = (String) claims.get("sub");
                 String role = (String) claims.get("role");
 
                 System.out.println("ROLE = " + role + " USER = " + userId);

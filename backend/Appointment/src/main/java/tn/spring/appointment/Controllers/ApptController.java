@@ -22,10 +22,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/appointments")
-@RequiredArgsConstructor
 public class ApptController {
 
     private final ApptService service;
+
+    public ApptController(ApptService service) {
+        this.service = service;
+    }
 
     // --- SECTION VISITEUR ---
 
