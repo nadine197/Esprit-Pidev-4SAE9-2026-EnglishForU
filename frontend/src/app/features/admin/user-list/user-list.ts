@@ -43,18 +43,18 @@ export class UserListComponent implements OnInit {
   loadData() {
   this.loading = true;
   if (this.currentRole === 'STUDENT') {
-    this.userService.getAllStudents().subscribe(data => {
+    this.userService.getAllStudents().subscribe((data: any[]) => {
       this.users = data;
       this.loading = false;
     });
   } else if (this.currentRole === 'TUTOR') {
-    this.userService.getAllTutors().subscribe(data => {
+    this.userService.getAllTutors().subscribe((data: any[]) => {
       this.users = data;
       this.loading = false;
     });
   } else {
     // Ici, on n'appellera que les ADMINS
-    this.userService.getAllAdmins().subscribe(data => {
+    this.userService.getAllAdmins().subscribe((data: any[]) => {
       this.users = data;
       this.loading = false;
     });

@@ -4,7 +4,7 @@ import { LoginComponent } from './user/login/login';
 import { RegisterComponent } from './user/register/register';
 import { ForgotPassword } from './user/forgot-password/forgot-password';
 import { MainComponent } from './user/main/main';
-import { CoursesComponent } from './courses/courses';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -12,7 +12,6 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPassword },
   { path: 'main', component: MainComponent },
-    { path: 'courses', component: CoursesComponent }
 
 ];
 

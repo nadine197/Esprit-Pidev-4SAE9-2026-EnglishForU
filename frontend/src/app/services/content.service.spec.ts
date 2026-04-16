@@ -6,7 +6,7 @@ import { Content } from '../features/contents/models/content';
 describe('ContentService', () => {
   let service: ContentService;
   let httpMock: HttpTestingController;
-  const api = 'http://localhost:8084/api/contents';
+  const api = 'http://localhost:8090/api/contents';
 
   const mockContent: Content = {
     contentId: 1,
