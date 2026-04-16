@@ -1,3 +1,18 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────
+#  Shared environment fragments
+# ─────────────────────────────────────────────────────────────────
+x-eureka-env: &eureka-env
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+  EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+
+x-java-opts: &java-opts
+  JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
+
+# ─────────────────────────────────────────────────────────────────
+#  Services
+# ─────────────────────────────────────────────────────────────────
 services:
 
   postgres:
@@ -19,6 +34,7 @@ services:
     networks:
       - app-network
 
+  # ── Eureka Service Registry ──────────────────────────────────
   eureka:
     build: ./backEnd/eureka
     ports:
@@ -33,6 +49,7 @@ services:
       - app-network
     restart: on-failure
 
+  # ── API Gateway ──────────────────────────────────────────────
   gateway:
     build: ./backEnd/Gateway
     ports:
@@ -46,6 +63,7 @@ services:
       - app-network
     restart: on-failure
 
+  # ── User Service ─────────────────────────────────────────────
   user-service:
     build: ./backEnd/microservices/User
     ports:
@@ -64,6 +82,7 @@ services:
       - app-network
     restart: on-failure
 
+  # ── Club/Event Service ───────────────────────────────────────
   clubevent-service:
     build: ./backEnd/microservices/ClubEvent
     ports:
@@ -84,7 +103,133 @@ services:
       - app-network
     restart: on-failure
 
-  frontend:
+  # ── Appointment Service ──────────────────────────────────────
+  appointment-service:
+    build:
+      context: ./backend/Appointment
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-local}/appointment-service:${TAG:-latest}
+    container_name: appointment-service
+    restart: unless-stopped
+    ports:
+      - "8087:8087"
+    environment:
+      <<: [*eureka-env, *java-opts]
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      eureka:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8087/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # ── Course Service ───────────────────────────────────────────
+  course-service:
+    build:
+      context: ./backend/course-service
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-local}/course-service:${TAG:-latest}
+    container_name: course-service
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      <<: [*eureka-env, *java-opts]
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      eureka:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8084/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # ── Discussion Service ───────────────────────────────────────
+  discussion-service:
+    build:
+      context: ./backend/discussion-service
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-local}/discussion-service:${TAG:-latest}
+    container_name: discussion-service
+    restart: unless-stopped
+    ports:
+      - "8088:8088"
+    environment:
+      <<: [*eureka-env, *java-opts]
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      eureka:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8088/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  # ── Package Service ──────────────────────────────────────────
+  package-service:
+    build:
+      context: ./backend/package_service
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-local}/package-service:${TAG:-latest}
+    container_name: package-service
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    environment:
+      <<: [*eureka-env, *java-opts]
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      eureka:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8085/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # ── Quiz Service ─────────────────────────────────────────────
+  quiz-service:
+    build:
+      context: ./backend/Quiz
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-local}/quiz-service:${TAG:-latest}
+    container_name: quiz-service
+    restart: unless-stopped
+    ports:
+      - "8056:8056"
+    environment:
+      <<: [*eureka-env, *java-opts]
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      eureka:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8056/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # ── Frontend (JobBoard - ClubEvent Angular App) ──────────────
+  frontend-jobboard:
     build: ./frontEnd/JobBoard
     ports:
       - "4200:80"
@@ -93,6 +238,31 @@ services:
     networks:
       - app-network
 
+  # ── Frontend (Main Angular App) ──────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-local}/frontend:${TAG:-latest}
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      gateway:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+# ─────────────────────────────────────────────────────────────────
+#  Volumes & Networks
+# ─────────────────────────────────────────────────────────────────
 volumes:
   postgres_data:
 
