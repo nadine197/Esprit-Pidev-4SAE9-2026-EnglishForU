@@ -22,7 +22,7 @@ import { TakeTestComponent } from './features/visitor/take-test/take-test.compon
 import { AppointmentMgmtComponent } from './features/Appointment/appointment-mgmt/appointment-mgmt';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
-import { CourseDetailsComponent } from './features/courses/course-details/course-details.component';
+import { CourseDetailsComponent } from './features/courses/pages/course-details/course-details.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

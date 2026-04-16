@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './features/shared/shared.module';
 
 import { CoursesComponent } from './features/courses/courses';
-import { CourseDetailsComponent } from './features/courses/course-details/course-details.component';
 
 import { UserModule } from './features/user-module';
 import { AdminModule } from './features/admin/admin-module';
@@ -25,12 +24,12 @@ import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { AppointmentModule } from './features/Appointment/appointment.module';
 import { VisitorModule } from './features/visitor/visitor.module';
+import { CourseDetailsComponent } from './features/courses/pages/course-details/course-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CoursesComponent,
-    CourseDetailsComponent,
     PromoManagementComponent,
     PackageManagementComponent,
     CheckoutComponent,

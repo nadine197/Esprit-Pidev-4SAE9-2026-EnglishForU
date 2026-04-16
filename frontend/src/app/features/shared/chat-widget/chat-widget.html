@@ -1,49 +1,62 @@
-<!-- BULLE FLOTTANTE -->
+<!-- 1. BOUTON FLOTTANT + BADGE ROUGE -->
 <div class="fixed bottom-6 right-6 z-[10000] flex flex-col items-end">
-  <div *ngIf="unreadCount > 0" class="absolute -top-2 -right-1 bg-red-600 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-lg z-[10001]">{{ unreadCount }}</div>
-  <button (click)="toggleChat()" class="w-14 h-14 bg-[#0066FF] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all active:scale-95">
+  <div *ngIf="unreadCount > 0" 
+       class="absolute -top-2 -right-1 bg-red-600 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white animate-bounce shadow-lg z-[10001]">
+    {{ unreadCount }}
+  </div>
+  <button (click)="toggleChat()" 
+          class="w-14 h-14 bg-[#0066FF] text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-all active:scale-95">
     <span *ngIf="!isOpen" class="text-2xl">💬</span>
     <span *ngIf="isOpen" class="text-xl font-bold">×</span>
   </button>
 </div>
 
-<!-- FENÊTRE -->
-<div *ngIf="isOpen" class="fixed bottom-24 right-6 left-auto w-[340px] h-[520px] bg-white shadow-2xl rounded-[30px] border border-slate-100 z-[9999] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+<!-- 2. LA FENÊTRE DE CHAT (Position Droite) -->
+<div *ngIf="isOpen" 
+     class="fixed bottom-24 right-6 left-auto w-[340px] h-[520px] bg-white shadow-2xl rounded-[30px] border border-slate-100 z-[9999] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
   
-  <!-- LISTE DES GROUPES -->
+  <!-- VUE 1 : LISTE DES GROUPES -->
   <div *ngIf="!selectedGroup" class="flex flex-col h-full">
     <div class="bg-slate-900 p-6 text-white shrink-0 font-bold text-lg">My Discussions</div>
     <div class="flex-1 overflow-y-auto p-3 bg-slate-50/50">
-      <div *ngFor="let g of groups" (click)="selectGroup(g)" class="p-4 bg-white rounded-2xl mb-2 cursor-pointer shadow-sm flex items-center gap-3 border border-transparent hover:border-[#0066FF] transition-all">
+      <div *ngFor="let g of groups" (click)="selectGroup(g)" 
+           class="p-4 bg-white rounded-2xl mb-2 cursor-pointer shadow-sm flex items-center gap-3 border border-transparent hover:border-[#0066FF] transition-all">
         <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xs shrink-0">{{ g.groupName.substring(0,1).toUpperCase() }}</div>
         <div class="font-bold text-slate-700 truncate">{{ g.groupName }}</div>
       </div>
+      <div *ngIf="groups.length === 0" class="text-center py-10 text-slate-400 text-xs font-bold">No groups assigned yet.</div>
     </div>
   </div>
 
-  <!-- CONVERSATION -->
+  <!-- VUE 2 : LA CONVERSATION -->
   <div *ngIf="selectedGroup" class="flex flex-col h-full bg-white">
-    <div class="bg-slate-900 p-4 text-white flex items-center gap-3 shrink-0 shadow-md">
-      <button (click)="goBack()" class="text-lg">←</button>
-      <div class="flex flex-col">
+    <!-- Header -->
+    <div class="bg-slate-900 p-4 text-white flex items-center gap-3 shrink-0">
+      <button (click)="goBack()" class="hover:text-blue-400 transition-colors text-lg">←</button>
+      <div class="flex flex-col truncate">
         <span class="text-sm font-bold truncate">{{selectedGroup.groupName}}</span>
-        <span class="text-[9px] text-green-400 font-bold uppercase">Live</span>
+        <span class="text-[9px] text-green-400 font-bold uppercase tracking-widest">Live</span>
       </div>
     </div>
 
-    <!-- PINNED MESSAGE -->
+    <!-- BARRE ÉPINGLÉE -->
     <div *ngIf="pinnedMessage" class="bg-blue-50 border-b border-blue-100 p-2 flex items-center gap-2 shrink-0 animate-in slide-in-from-top-2">
       <span class="text-xs">📌</span>
-      <div class="flex-1 truncate text-[10px] text-slate-700 font-bold">{{ pinnedMessage.content }}</div>
+      <div class="flex-1 truncate">
+        <p class="text-[8px] font-black text-blue-600 uppercase">Announcement</p>
+        <p class="text-[10px] text-slate-700 truncate font-bold">{{ pinnedMessage.content }}</p>
+      </div>
       <button *ngIf="currentUser.role !== 'STUDENT'" (click)="onPin(pinnedMessage)" class="text-slate-400 px-1">×</button>
     </div>
 
-    <!-- MESSAGES -->
+    <!-- ZONE DES MESSAGES -->
     <div #scrollMe class="flex-1 overflow-y-auto p-4 space-y-8 bg-slate-50/30 overflow-x-hidden">
       <div *ngFor="let m of messages" class="flex w-full items-start gap-2" [class.flex-row-reverse]="m.senderId === currentUser.email">
         <div class="max-w-[75%] flex flex-col" [class.items-end]="m.senderId === currentUser.email">
+          
+          <!-- Nom + Actions -->
           <div class="flex items-center gap-2 mb-1">
-            <span class="text-[9px] text-slate-400 font-black uppercase">{{ m.senderName }}</span>
+            <span class="text-[10px] text-slate-400 font-black uppercase">{{ m.senderName }}</span>
             <div class="flex gap-1">
               <button (click)="onPin(m)" *ngIf="currentUser.role !== 'STUDENT'" class="text-[10px] grayscale hover:grayscale-0">📌</button>
               <button (click)="reactToMessage(m, '❤️')" class="text-[10px]">❤️</button>
@@ -53,29 +66,28 @@
             </div>
           </div>
           
-          <div *ngIf="m.replyToId" class="bg-white/70 p-2 rounded-t-xl border-l-2 border-[#0066FF] text-[9px] w-full truncate italic mb-[-2px] text-slate-500">{{ m.replyToText }}</div>
+          <div *ngIf="m.replyToId" class="bg-white/70 p-2 rounded-t-xl border-l-2 border-[#0066FF] text-[9px] w-full truncate italic mb-[-2px]">{{ m.replyToText }}</div>
 
           <div class="relative">
-            <!-- FIX COULEUR : bg-[#0066FF] text-white pour l'expéditeur -->
             <div [ngClass]="{'bg-[#0066FF] text-white': m.senderId === currentUser.email, 'bg-white text-slate-800': m.senderId !== currentUser.email, 'rounded-tr-none': m.senderId === currentUser.email, 'rounded-tl-none': m.senderId !== currentUser.email}"
                  class="p-3 rounded-2xl text-xs font-bold shadow-sm border border-slate-100">
-              <div *ngIf="m.fileUrl" class="mb-2 p-2 bg-black/5 rounded-lg flex items-center gap-2 text-[9px]">
+              <div *ngIf="m.fileUrl" class="mb-2 p-2 bg-black/5 rounded-lg border flex items-center gap-2 text-[9px]">
                 <span>📁</span> <a [href]="m.fileUrl" target="_blank" class="underline truncate" [class.text-white]="m.senderId === currentUser.email">{{ m.fileName }}</a>
               </div>
               {{ m.content }}
             </div>
             <div *ngIf="m.reaction" class="absolute -bottom-2 bg-white shadow-md rounded-full px-1.5 border border-slate-100 text-[10px]" [class.right-1]="m.senderId === currentUser.email" [class.left-1]="m.senderId !== currentUser.email">{{ m.reaction }}</div>
           </div>
-          <span class="text-[7px] text-slate-300 mt-2 font-bold uppercase">{{ m.timestamp | date:'HH:mm' }}</span>
+          <span class="text-[7px] text-slate-300 mt-2 uppercase font-bold">{{ m.timestamp | date:'HH:mm' }}</span>
         </div>
       </div>
     </div>
 
-    <!-- INPUT -->
+    <!-- ZONE DE SAISIE -->
     <div class="border-t bg-white shrink-0">
       <div *ngIf="typingUser" class="px-4 py-1 text-[9px] text-blue-500 font-bold italic animate-pulse">{{ typingUser }} is typing...</div>
       <div *ngIf="replyingTo || isEditing" class="p-2 flex justify-between items-center border-b" [class.bg-blue-50]="replyingTo" [class.bg-amber-50]="isEditing">
-        <p class="text-[9px] font-black uppercase pl-2" [class.text-blue-600]="replyingTo" [class.text-amber-600]="isEditing">{{ replyingTo ? 'Replying...' : 'Editing Message' }}</p>
+        <p class="text-[9px] font-black uppercase pl-2" [class.text-blue-600]="replyingTo" [class.text-amber-600]="isEditing">{{ replyingTo ? 'Replying to ' + replyingTo.senderName : 'Editing Message' }}</p>
         <button (click)="replyingTo ? cancelReply() : cancelEdit()" class="text-slate-400 px-2 text-lg">×</button>
       </div>
       <div class="p-3 flex gap-2 items-center">

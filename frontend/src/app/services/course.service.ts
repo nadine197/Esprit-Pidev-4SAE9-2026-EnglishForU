@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Course} from "../features/courses/models/courses";
 import { Observable } from 'rxjs';
@@ -47,4 +47,11 @@ export class CourseService {
       responseType:'blob'
     });
   }
+
+  getStudyGroups(): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.api}/study-groups`, { headers });
+  }
+
 }

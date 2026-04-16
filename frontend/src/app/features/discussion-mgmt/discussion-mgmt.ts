@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DiscussionService } from 'src/app/services/discussion.service';
 import { UserService } from 'src/app/services/user.service';
+import { CourseService } from 'src/app/services/course.service';
 
 @Component({
   selector: 'app-discussion-mgmt',
@@ -10,13 +11,14 @@ export class DiscussionMgmtComponent implements OnInit {
   groups: any[] = [];
   tutors: any[] = [];
   students: any[] = [];
+  studyGroups: any[] = []; 
   currentUser: any;
 
   showModal = false;
   isEditMode = false;
   editingGroupId: string | null = null;
+  selectedStudyGroupId: string = ''; // ID pour l'import rapide
 
-  // On utilise désormais les EMAILS pour identifier les membres
   newGroup = {
     groupName: '',
     tutorEmail: '', 
@@ -26,7 +28,8 @@ export class DiscussionMgmtComponent implements OnInit {
 
   constructor(
     private discussionService: DiscussionService,
-    private userService: UserService
+    private userService: UserService,
+    private courseService: CourseService 
   ) {}
 
   ngOnInit() {
@@ -34,39 +37,59 @@ export class DiscussionMgmtComponent implements OnInit {
     if (userJson) {
       this.currentUser = JSON.parse(userJson);
     }
-
     this.loadGroups();
     this.loadUsers();
+    this.loadStudyGroups(); // Charger les groupes de cours pour l'import
   }
 
   // --- CHARGEMENT DES DONNÉES ---
 
   loadGroups() {
     if (!this.currentUser) return;
+    const obs = this.currentUser.role === 'ADMIN' 
+      ? this.discussionService.getAllGroups() 
+      : this.discussionService.getMyGroupsByEmail(this.currentUser.email);
 
-    if (this.currentUser.role === 'ADMIN') {
-      this.discussionService.getAllGroups().subscribe({
-        next: (data: any) => this.groups = data.content ? data.content : data,
-        error: (err) => console.error("Erreur chargement groupes", err)
-      });
-    } else {
-      // FIX : On filtre par EMAIL car l'ID est manquant dans le localStorage
-      this.discussionService.getMyGroups(this.currentUser.email).subscribe({
-        next: (data: any) => this.groups = data.content ? data.content : data,
-        error: (err) => console.error("Erreur chargement mes groupes", err)
-      });
-    }
+    obs.subscribe({
+      next: (data: any) => this.groups = data.content ? data.content : data,
+      error: (err) => console.error("Erreur chargement groupes", err)
+    });
   }
 
   loadUsers() {
-    this.userService.getAllTutors().subscribe({
-      next: (res: any) => this.tutors = res.content ? res.content : res,
-      error: (err) => console.error("Erreur tuteurs", err)
+    // On ajoute explicitement (res: any) pour autoriser la lecture de .content
+    this.userService.getAllTutors().subscribe((res: any) => {
+      this.tutors = res && res.content ? res.content : res;
+      console.log("Tuteurs chargés :", this.tutors);
     });
 
-    this.userService.getAllStudents().subscribe({
-      next: (res: any) => this.students = res.content ? res.content : res,
-      error: (err) => console.error("Erreur étudiants", err)
+    this.userService.getAllStudents().subscribe((res: any) => {
+      this.students = res && res.content ? res.content : res;
+      console.log("Étudiants chargés :", this.students);
+    });
+  }
+
+  loadStudyGroups() {
+    this.courseService.getStudyGroups().subscribe((res: any) => {
+      // Même logique ici pour l'import des groupes de cours
+      this.studyGroups = res && res.content ? res.content : res;
+      console.log("Study Groups chargés :", this.studyGroups);
+    });
+  }
+
+  // --- LOGIQUE D'IMPORTATION RAPIDE ---
+
+  onImportFromStudyGroup() {
+    if (!this.selectedStudyGroupId) return;
+
+    this.discussionService.createFromStudyGroup(this.selectedStudyGroupId).subscribe({
+      next: () => {
+        this.loadGroups(); // Rafraîchir la liste
+        this.showModal = false;
+        this.selectedStudyGroupId = '';
+        console.log("Discussion synchronisée avec succès !");
+      },
+      error: (err) => alert("Error during import. Check if services are linked.")
     });
   }
 
@@ -93,9 +116,10 @@ export class DiscussionMgmtComponent implements OnInit {
 
   resetForm() {
     this.newGroup = { groupName: '', tutorEmail: '', tutorName: '', studentEmails: [] };
+    this.selectedStudyGroupId = '';
   }
 
-  // --- ACTIONS FORMULAIRE ---
+  // --- ACTIONS FORMULAIRE MANUEL ---
 
   toggleStudent(student: any) {
     const email = student.email;
@@ -115,16 +139,20 @@ export class DiscussionMgmtComponent implements OnInit {
     const selectedTutor = this.tutors.find(t => t.email === this.newGroup.tutorEmail);
     if (selectedTutor) {
       this.newGroup.tutorName = selectedTutor.name + ' ' + selectedTutor.lastName;
-      // newGroup.tutorEmail est déjà rempli par le [(ngModel)] du select
     }
 
-    this.discussionService.createGroup(this.newGroup).subscribe({
+    const request = (this.isEditMode && this.editingGroupId)
+      ? this.discussionService.updateGroup(this.editingGroupId, this.newGroup)
+      : this.discussionService.createGroup(this.newGroup);
+
+    request.subscribe({
       next: () => {
         this.loadGroups();
         this.showModal = false;
       }
     });
-}
+  }
+
   onDelete(id: string) {
     if (confirm("Permanently delete this group?")) {
       this.discussionService.deleteGroup(id).subscribe(() => this.loadGroups());

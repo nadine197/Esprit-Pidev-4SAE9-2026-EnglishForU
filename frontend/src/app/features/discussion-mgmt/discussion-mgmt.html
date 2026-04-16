@@ -24,64 +24,68 @@
       </div>
       <h4 class="text-xl font-bold text-slate-900 truncate">{{group.groupName}}</h4>
       <p class="text-sm text-slate-500 font-medium">Tutor: <span class="text-[#0066FF]">{{group.tutorName}}</span></p>
-      <div class="mt-4 pt-4 border-t border-slate-50">
-        <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">
-          <!-- Changement ici : studentEmails au lieu de studentIds -->
-          {{group.studentEmails?.length || 0}} Students enrolled
-        </span>
+      <div class="mt-4 pt-4 border-t border-slate-50 text-[10px] font-black uppercase text-slate-400 tracking-widest">
+        {{group.studentEmails?.length || 0}} Students enrolled
       </div>
     </div>
   </div>
 
   <!-- MODAL DE CRÉATION / ÉDITION -->
   <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-    <div class="bg-white rounded-[40px] w-full max-w-lg p-10 shadow-2xl border border-slate-100">
+    <div class="bg-white rounded-[40px] w-full max-w-lg p-10 shadow-2xl border border-slate-100 overflow-y-auto max-h-[90vh]">
       <h3 class="text-2xl font-black mb-2 text-slate-900">{{ isEditMode ? 'Update Group' : 'Setup Discussion Group' }}</h3>
-      <p class="text-slate-500 text-sm mb-8">Assign a tutor and select students for this group.</p>
       
+      <!-- OPTION 1 : IMPORT DEPUIS COURSE (Seulement en mode création) -->
+      <div *ngIf="!isEditMode" class="bg-blue-50 p-5 rounded-3xl border border-blue-100 mb-8 mt-4">
+        <label class="text-[10px] font-black uppercase text-blue-600 ml-1">🚀 Fast Import from Course</label>
+        <div class="flex gap-2 mt-2">
+          <select [(ngModel)]="selectedStudyGroupId" class="flex-1 h-12 border border-blue-200 rounded-xl px-4 text-xs bg-white outline-none focus:ring-1 focus:ring-blue-500">
+            <option value="" disabled selected>Select a Study Group</option>
+            <option *ngFor="let sg of studyGroups" [value]="sg.id">{{ sg.name }} ({{ sg.tutorName }})</option>
+          </select>
+          <button (click)="onImportFromStudyGroup()" [disabled]="!selectedStudyGroupId" 
+                  class="bg-[#0066FF] text-white px-4 rounded-xl text-[10px] font-black hover:bg-blue-700 transition-all disabled:opacity-30">
+            IMPORT
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!isEditMode" class="relative flex items-center mb-8">
+        <div class="flex-grow border-t border-slate-100"></div>
+        <span class="flex-shrink mx-4 text-slate-300 text-[10px] font-bold">OR CONFIGURE MANUALLY</span>
+        <div class="flex-grow border-t border-slate-100"></div>
+      </div>
+
+      <!-- OPTION 2 : CONFIGURATION MANUELLE -->
       <div class="space-y-6">
-        <!-- Nom du groupe -->
         <div class="space-y-1">
           <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Group Name</label>
-          <input [(ngModel)]="newGroup.groupName" name="groupName" placeholder="e.g. IELTS Advanced Class" 
-                 class="w-full h-14 border border-slate-200 rounded-2xl px-4 outline-none focus:border-[#0066FF] bg-slate-50/50">
+          <input [(ngModel)]="newGroup.groupName" placeholder="e.g. IELTS Advanced Class" class="w-full h-14 border border-slate-200 rounded-2xl px-4 outline-none focus:border-[#0066FF] bg-slate-50/50">
         </div>
 
-        <!-- Sélection Tuteur -->
         <div class="space-y-1">
           <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Assign a Tutor</label>
-          <!-- FIX : ngModel lié à tutorEmail -->
-          <select [(ngModel)]="newGroup.tutorEmail" name="tutorEmail" 
-                  class="w-full h-14 border border-slate-200 rounded-2xl px-4 bg-white outline-none focus:border-[#0066FF] cursor-pointer">
+          <select [(ngModel)]="newGroup.tutorEmail" name="tutorEmail" class="w-full h-14 border border-slate-200 rounded-2xl px-4 bg-white outline-none focus:border-[#0066FF]">
             <option value="" disabled selected>Select a teacher</option>
-            <!-- FIX : value liée à tutor.email -->
-            <option *ngFor="let tutor of tutors" [value]="tutor.email">
-              {{tutor.name}} {{tutor.lastName}}
-            </option>
+            <option *ngFor="let tutor of tutors" [value]="tutor.email">{{tutor.name}} {{tutor.lastName}}</option>
           </select>
-          <p *ngIf="tutors.length === 0" class="text-[9px] text-red-400 font-bold ml-2">⚠️ No tutors available. Check User-Service.</p>
         </div>
 
-        <!-- Sélection Étudiants -->
         <div class="space-y-1">
           <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Select Students</label>
           <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-2xl p-4 space-y-3 bg-slate-50/30">
-            <p *ngIf="students.length === 0" class="text-xs text-slate-400 text-center py-4">No students available.</p>
             <div *ngFor="let student of students" class="flex items-center gap-3">
-              <!-- FIX : On passe l'objet student entier aux fonctions -->
-              <input type="checkbox" [checked]="isStudentSelected(student)" (change)="toggleStudent(student)" 
-                     class="w-5 h-5 rounded-md accent-[#0066FF] cursor-pointer">
+              <input type="checkbox" [checked]="isStudentSelected(student)" (change)="toggleStudent(student)" class="w-5 h-5 rounded-md accent-[#0066FF] cursor-pointer">
               <span class="text-sm font-bold text-slate-700">{{student.name}} {{student.lastName}}</span>
             </div>
           </div>
         </div>
 
         <!-- Boutons -->
-        <div class="flex gap-4 pt-6">
-          <button (click)="showModal = false" class="flex-1 h-14 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-all">Cancel</button>
-          <button (click)="onSaveGroup()" 
-                  [disabled]="!newGroup.groupName || !newGroup.tutorEmail || newGroup.studentEmails.length === 0"
-                  class="flex-1 h-14 bg-[#0066FF] text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 disabled:opacity-30 transition-all">
+        <div class="flex gap-4 pt-4">
+          <button (click)="showModal = false" class="flex-1 h-14 rounded-2xl font-bold text-slate-400 hover:bg-slate-50">Cancel</button>
+          <button (click)="onSaveGroup()" [disabled]="!newGroup.groupName || !newGroup.tutorEmail || newGroup.studentEmails.length === 0"
+                  class="flex-1 h-14 bg-[#0066FF] text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 disabled:opacity-30">
             {{ isEditMode ? 'Update Group' : 'Create Group' }}
           </button>
         </div>

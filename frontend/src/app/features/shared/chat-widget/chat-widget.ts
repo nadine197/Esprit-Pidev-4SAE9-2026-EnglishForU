@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DiscussionService } from '../../../services/discussion.service';
 import { ChatService } from '../../../services/chat.service'; 
@@ -24,7 +24,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   newMessage: string = '';
   pinnedMessage: any = null; 
   
-  // --- ÉTATS AVANCÉS (REPLY / EDIT / TYPING) ---
+  // --- ÉTATS AVANCÉS ---
   replyingTo: any = null; 
   isEditing = false;
   editingMsgId: string | null = null;
@@ -32,7 +32,6 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   typingTimer: any;
   
   private messageSub?: Subscription;
-  private typingSub?: Subscription;
 
   constructor(
     private discussionService: DiscussionService,
@@ -48,44 +47,34 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() { 
-    this.cleanup(); 
-  }
+  ngOnDestroy() { this.cleanup(); }
 
-  // --- 1. CHARGEMENT INITIAL & ÉCOUTE GLOBALE ---
+  // --- 1. INITIALISATION & NOTIFICATIONS ---
 
   loadMyDiscussions() {
     if (!this.currentUser) return;
     const email = this.currentUser.email;
-    
-    // On choisit l'observable selon le rôle
     const obs = this.currentUser.role === 'ADMIN' 
       ? this.discussionService.getAllGroups() 
       : this.discussionService.getMyGroupsByEmail(email);
 
-    obs.subscribe({ 
-      next: (data: any) => {
-        this.groups = data.content ? data.content : data;
-        // On initialise la connexion WebSocket pour les notifications
-        this.initNotificationSystem();
-      },
-      error: (err: any) => console.error("Erreur chargement groupes", err)
-    });
+    obs.subscribe({ next: (data: any) => {
+      this.groups = data.content ? data.content : data;
+      this.initNotificationSystem();
+    }});
   }
 
   async initNotificationSystem() {
     try {
       await this.chatService.connect();
-      // On s'abonne à tous les groupes de l'utilisateur pour le badge rouge
+      // On s'abonne à tous les groupes pour capter les messages même si la bulle est fermée
       this.groups.forEach(g => this.chatService.subscribeToGroup(g.id));
 
       if (this.messageSub) this.messageSub.unsubscribe();
       this.messageSub = this.chatService.messages$.subscribe(msg => {
         this.handleIncomingSocketData(msg);
       });
-    } catch (err) {
-      console.error("Erreur d'initialisation WebSocket", err);
-    }
+    } catch (err) { console.error("WebSocket connection failed", err); }
   }
 
   handleIncomingSocketData(incomingMsg: any) {
@@ -98,28 +87,23 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
         if (this.pinnedMessage?.id === incomingMsg.id) this.pinnedMessage = null;
       } 
       else if (index !== -1) {
-        // Mise à jour (Edit, Réaction ou Pin)
         this.messages[index] = { ...this.messages[index], ...incomingMsg };
         if (incomingMsg.isPinned) this.pinnedMessage = incomingMsg;
         else if (this.pinnedMessage?.id === incomingMsg.id) this.pinnedMessage = null;
       } 
       else {
-        // Nouveau message
         this.messages.push(incomingMsg);
         this.scrollToBottom();
       }
     } 
-    // CAS B : Notification (Badge rouge)
-    else {
-      // Si ce n'est pas mon propre message, on incrémente le compteur
-      if (incomingMsg.senderId !== this.currentUser.email && incomingMsg.content !== "DELETED_SIGNAL") {
-        this.unreadCount++;
-        this.playNotificationSound();
-      }
+    // CAS B : Notification (Si bulle fermée ou autre groupe)
+    else if (incomingMsg.senderId !== this.currentUser.email && incomingMsg.content !== "DELETED_SIGNAL") {
+      this.unreadCount++;
+      this.playNotificationSound();
     }
   }
 
-  // --- 2. LOGIQUE DE SÉLECTION D'UN GROUPE ---
+  // --- 2. LOGIQUE DE SÉLECTION ---
 
   selectGroup(group: any) {
     this.selectedGroup = group;
@@ -130,7 +114,6 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
     this.cancelEdit();
     this.typingUser = null;
 
-    // Charger l'historique via REST (Gateway 8090)
     this.chatService.getMessages(group.id).subscribe({
       next: (data: any) => {
         this.messages = Array.isArray(data) ? data : (data.content || []);
@@ -139,29 +122,23 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Écouter le statut "Typing" spécifique à ce groupe
-    if (this.typingSub) this.typingSub.unsubscribe();
-    this.typingSub = this.chatService.subscribeToTyping(group.id).subscribe((data: any) => {
+    this.chatService.subscribeToTyping(group.id).subscribe((data: any) => {
       if (data.userName !== this.currentUser.name) {
         this.typingUser = data.isTyping ? data.userName : null;
       }
     });
   }
 
-  // --- 3. ENVOI & ACTIONS MESSAGES ---
+  // --- 3. ACTIONS MESSAGES ---
 
   sendMsg() {
     if (!this.newMessage.trim() || !this.selectedGroup) return;
 
     if (this.isEditing) {
-      // ACTION MODIFICATION
       const msg = this.messages.find(m => m.id === this.editingMsgId);
-      if (msg) {
-        this.chatService.editMessage(this.selectedGroup.id, { ...msg, content: this.newMessage });
-      }
+      if (msg) this.chatService.editMessage(this.selectedGroup.id, { ...msg, content: this.newMessage });
       this.cancelEdit();
     } else {
-      // ACTION ENVOI NORMAL OU RÉPONSE
       const chatMsg: any = {
         groupId: this.selectedGroup.id,
         senderId: this.currentUser.email,
@@ -169,25 +146,35 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
         content: this.newMessage,
         timestamp: new Date()
       };
-
       if (this.replyingTo) {
         chatMsg.replyToId = this.replyingTo.id;
         chatMsg.replyToText = this.replyingTo.content;
         chatMsg.replyToUser = this.replyingTo.senderName;
       }
-
       this.chatService.sendMessage(this.selectedGroup.id, chatMsg);
       this.newMessage = ''; 
       this.cancelReply();
-      // Arrêt immédiat du statut typing après envoi
       this.chatService.sendTypingStatus(this.selectedGroup.id, this.currentUser.name, false);
     }
+  }
+
+  onPin(msg: any) {
+    if (this.currentUser.role === 'STUDENT') return;
+    const updatedMsg = { ...msg, isPinned: !msg.isPinned };
+    this.chatService.pinMessage(this.selectedGroup.id, updatedMsg);
+  }
+
+  onDeleteMsg(msg: any) {
+    if (confirm("Delete this message?")) this.chatService.deleteMessage(this.selectedGroup.id, msg);
+  }
+
+  reactToMessage(msg: any, emoji: string) {
+    this.chatService.editMessage(this.selectedGroup.id, { ...msg, reaction: emoji });
   }
 
   onTyping() {
     if (!this.selectedGroup) return;
     this.chatService.sendTypingStatus(this.selectedGroup.id, this.currentUser.name, true);
-    
     clearTimeout(this.typingTimer);
     this.typingTimer = setTimeout(() => {
       this.chatService.sendTypingStatus(this.selectedGroup.id, this.currentUser.name, false);
@@ -199,76 +186,37 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
     if (file && this.selectedGroup) {
       const formData = new FormData();
       formData.append('file', file);
-
-      // Upload via Gateway (8090)
       this.http.post('http://localhost:8090/api/discussions/files/upload', formData, { responseType: 'text' })
-        .subscribe({
-          next: (url) => {
-            const msg = { 
-              groupId: this.selectedGroup.id, 
-              senderId: this.currentUser.email, 
-              senderName: this.currentUser.name,
-              content: "📁 Shared a file: " + file.name, 
-              fileUrl: url, 
-              fileName: file.name, 
-              timestamp: new Date()
-            };
-            this.chatService.sendMessage(this.selectedGroup.id, msg);
-          },
-          error: (err: any) => alert("Upload failed. Check if /uploads folder exists on server.")
+        .subscribe(url => {
+          const msg = { 
+            groupId: this.selectedGroup.id, senderId: this.currentUser.email, senderName: this.currentUser.name,
+            content: "📁 Shared a file: " + file.name, fileUrl: url, fileName: file.name, timestamp: new Date()
+          };
+          this.chatService.sendMessage(this.selectedGroup.id, msg);
         });
     }
   }
 
-  // --- 4. RÉACTIONS, PIN, DELETE ---
-
-  reactToMessage(msg: any, emoji: string) {
-    const updated = { ...msg, reaction: emoji };
-    this.chatService.editMessage(this.selectedGroup.id, updated);
-  }
-
-  onPin(msg: any) {
-    if (this.currentUser.role === 'STUDENT') return;
-    const updated = { ...msg, isPinned: !msg.isPinned };
-    this.chatService.pinMessage(this.selectedGroup.id, updated);
-  }
-
-  onDeleteMsg(msg: any) {
-    if (confirm("Delete this message for everyone?")) {
-      this.chatService.deleteMessage(this.selectedGroup.id, msg);
-    }
-  }
-
-  // --- 5. UI UTILS & NAVIGATION ---
+  // --- 4. UI UTILS ---
 
   setupReply(m: any) { this.isEditing = false; this.replyingTo = m; }
   cancelReply() { this.replyingTo = null; }
-  
-  setupEdit(m: any) { 
-    this.replyingTo = null;
-    this.isEditing = true; 
-    this.editingMsgId = m.id; 
-    this.newMessage = m.content; 
-  }
+  setupEdit(m: any) { this.replyingTo = null; this.isEditing = true; this.editingMsgId = m.id; this.newMessage = m.content; }
   cancelEdit() { this.isEditing = false; this.editingMsgId = null; this.newMessage = ''; }
-
+  
   toggleChat() {
     this.isOpen = !this.isOpen;
     if (this.isOpen) this.unreadCount = 0;
   }
 
-  goBack() {
-    this.selectedGroup = null;
-    this.typingUser = null;
-    this.cancelEdit();
-    this.cancelReply();
+  goBack() { 
+    this.selectedGroup = null; 
+    this.typingUser = null; 
+    this.cancelEdit(); 
+    this.cancelReply(); 
   }
 
-  private cleanup() {
-    this.chatService.disconnect();
-    if (this.messageSub) this.messageSub.unsubscribe();
-    if (this.typingSub) this.typingSub.unsubscribe();
-  }
+  private cleanup() { this.chatService.disconnect(); if (this.messageSub) this.messageSub.unsubscribe(); }
 
   playNotificationSound() {
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
@@ -277,9 +225,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
 
   scrollToBottom(): void {
     setTimeout(() => {
-      if (this.myScrollContainer) {
-        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-      }
+      if (this.myScrollContainer) this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
     }, 100);
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
@@ -35,5 +35,11 @@ deleteGroup(id: string): Observable<any> {
 getMyGroupsByEmail(email: string): Observable<any> {
   // On appelle ton endpoint Gateway (8090)
   return this.http.get<any[]>(`${this.apiUrl}/groups/user/${email}`);
+}
+
+createFromStudyGroup(studyGroupId: string): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.post(`${this.apiUrl}/groups/from-study-group/${studyGroupId}`, {}, { headers });
 }
 }

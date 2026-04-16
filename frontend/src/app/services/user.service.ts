@@ -49,4 +49,17 @@ createUser(user: any): Observable<any> {
   deleteUser(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
+
+  // Dans UserService
+getAllStudents(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/role/STUDENT`, { headers: this.getHeaders() });
+}
+
+getAllTutors(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/role/TUTOR`, { headers: this.getHeaders() });
+}
+
+getAllAdmins(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/role/ADMIN`, { headers: this.getHeaders() });
+}
 }

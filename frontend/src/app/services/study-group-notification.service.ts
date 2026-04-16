@@ -44,8 +44,8 @@ export class StudyGroupNotificationService implements OnDestroy {
   connect(): void {
     this.client = new Client({
       webSocketFactory: () =>
-        new SockJS('http://localhost:8084/ws-notifications'),
-      reconnectDelay: 3000,
+new (SockJS as any)('http://localhost:8084/ws-notifications'),
+            reconnectDelay: 3000,
       onConnect: () => {
         console.log('✅ WebSocket connecté');   // ← vérifie dans F12
         this.subscribeGlobal();
