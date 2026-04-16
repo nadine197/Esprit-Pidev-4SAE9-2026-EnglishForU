@@ -4,7 +4,7 @@ import { LoginComponent } from './features/user/login/login';
 import { RegisterComponent } from './features/user/register/register';
 import { MainComponent } from './features/user/main/main';
 
-import { CoursesComponent } from './features/courses/courses';
+
 import { AdminLayoutComponent } from './features/admin/admin-layout/admin-layout.component';
 import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 import { authGuard } from './/guards/auth.guard';
@@ -27,7 +27,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'main', component: MainComponent },
-  { path: 'courses', component: CoursesComponent },
+
 
   {
     path: 'courses',
@@ -58,14 +58,26 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'promos', component: PromoManagementComponent },
-            { path: 'payments', component: PaymentManagementComponent },
-            { path: 'appointments', component: AppointmentMgmtComponent },
+      { path: 'payments', component: PaymentManagementComponent },
+      { path: 'appointments', component: AppointmentMgmtComponent },
       { path: 'discussions', component: DiscussionMgmtComponent }, 
-      { path: 'chat', component: ChatWidgetComponent }, 
-
-{ path: 'packages', component: PackageManagementComponent },
-{       path: 'users/:role',component: UserListComponent 
-},      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      { path: 'chat', component: ChatWidgetComponent },
+      { path: 'packages', component: PackageManagementComponent },
+      { path: 'users/:role', component: UserListComponent },
+      // Lazy-loaded modules for admin
+      { 
+        path: 'courses', 
+        loadChildren: () => import('./features/courses/courses.module').then(m => m.CoursesModule)
+      },
+      { 
+        path: 'contents', 
+        loadChildren: () => import('./features/contents/contents.module').then(m => m.ContentsModule)
+      },
+      { 
+        path: 'study-groups', 
+        loadChildren: () => import('./features/study-groups/study-groups.module').then(m => m.StudyGroupsModule)
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
   {

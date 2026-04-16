@@ -18,7 +18,9 @@ export class SidebarComponent {
       icon: 'users',
       hasSubmenu: true // Marks this as a dropdown
     },
-    { label: 'Course ', link: '/admin/courses', icon: 'book' },
+    { label: 'Course', link: '/admin/courses', icon: 'book' },
+    { label: 'Study Groups', link: '/admin/study-groups', icon: 'users' },
+    { label: 'Course Content', link: '/admin/contents', icon: 'file-text' },
       { label: 'Promo Codes', link: '/admin/promos', icon: 'tag' },
             { label: 'Payments Logs', link: '/admin/payments', icon: 'tag' },
 
