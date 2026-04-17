@@ -1,23 +1,21 @@
 package tn.spring.packagee.Services;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tn.spring.packagee.Clients.UserFeignClient;
+import org.springframework.web.client.RestTemplate;
 import tn.spring.packagee.DTOs.UserPublicDTO;
 
-import java.util.UUID;
-
-/**
- * Délègue les appels vers le microservice User via Feign (lb://User).
- * Remplace l'ancien RestTemplate hardcodé sur localhost:8081.
- */
 @Service
-@RequiredArgsConstructor
 public class UserClient {
 
-    private final UserFeignClient userFeignClient;
+    private final RestTemplate restTemplate;
+
+    public UserClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public UserPublicDTO fetchStudentByEmail(String email) {
-        return userFeignClient.getPublicByEmail(email);
+        String url = "http://localhost:8081/api/users/public/by-email?email={email}";
+        return restTemplate.getForObject(url, UserPublicDTO.class, email);
     }
+
 }

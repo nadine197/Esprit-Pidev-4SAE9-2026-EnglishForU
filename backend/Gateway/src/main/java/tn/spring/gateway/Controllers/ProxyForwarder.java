@@ -49,12 +49,13 @@ public class ProxyForwarder {
                                           HttpServletRequest req) {
 
         HttpHeaders headers = new HttpHeaders();
+
         String userId = (String) req.getAttribute("userId");
-        String role = (String) req.getAttribute("role");
-        System.out.println("forward  proxy " + role + userId);
+        String role   = (String) req.getAttribute("role");
 
         if (userId != null) headers.set("X-User-Id", userId);
         if (role != null) headers.set("X-User-Role", role);
+
         String auth = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (auth != null) headers.set(HttpHeaders.AUTHORIZATION, auth);
 
@@ -65,9 +66,9 @@ public class ProxyForwarder {
         if (accept != null) headers.set(HttpHeaders.ACCEPT, accept);
 
         String contentType = req.getHeader(HttpHeaders.CONTENT_TYPE);
-        if (contentType != null) headers.set(HttpHeaders.CONTENT_TYPE, contentType);
-
-        if (body != null && headers.getContentType() == null) {
+        if (contentType != null) {
+            headers.set(HttpHeaders.CONTENT_TYPE, contentType);
+        } else if (body != null) {
             headers.setContentType(MediaType.APPLICATION_JSON);
         }
 
@@ -76,11 +77,14 @@ public class ProxyForwarder {
         ResponseEntity<String> response =
                 restTemplate.exchange(url, method, entity, String.class);
 
+        // IMPORTANT FIX
         HttpHeaders out = new HttpHeaders();
-        List<String> cookies = response.getHeaders().get(HttpHeaders.SET_COOKIE);
-        if (cookies != null) {
-            out.put(HttpHeaders.SET_COOKIE, cookies);
-        }
-        return new ResponseEntity<>(response.getBody(), out, response.getStatusCode());
+        out.putAll(response.getHeaders());
+
+        return new ResponseEntity<>(
+                response.getBody(),
+                out,
+                response.getStatusCode()
+        );
     }
 }

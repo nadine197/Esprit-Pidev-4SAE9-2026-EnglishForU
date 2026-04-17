@@ -22,7 +22,10 @@ public class InternalAuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-
+        if(request.getMethod().equals("OPTIONS")){
+            filterChain.doFilter(request,response);
+            return;
+        }
         String userId = request.getHeader("X-User-Id");
         String role = request.getHeader("X-User-Role");
 

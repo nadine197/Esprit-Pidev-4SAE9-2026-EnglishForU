@@ -1,4 +1,4 @@
-package tn.spring.appointment.clients;
+package tn.spring.appointment.Clients;
 
 import lombok.Data;
 import java.util.List;
