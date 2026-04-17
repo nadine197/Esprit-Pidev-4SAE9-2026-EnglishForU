@@ -21,7 +21,6 @@ import { PackageManagementComponent } from './features/admin/package-management/
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
-import { CoursesModule } from './features/courses/courses.module';
 import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { AppointmentModule } from './features/Appointment/appointment.module';
