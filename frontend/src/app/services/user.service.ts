@@ -11,41 +11,43 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders() {
-  const token = localStorage.getItem('token');
-  return new HttpHeaders().set('Authorization', `Bearer ${token}`); // <-- Espace ici !
-}
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
 
   getAllUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/admins`, { headers: this.getHeaders() });
   }
 
-  // Dans user.service.ts
+  getAllStudents(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/students`, { headers: this.getHeaders() });
+  }
 
-createUser(user: any): Observable<any> {
-  const token = localStorage.getItem('token');
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
-  // Appelle l'endpoint ADMIN -> /api/users/create-user
-  return this.http.post(`${this.apiUrl}/create-user`, user, { headers });
-}
+  getAllTutors(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/tutors`, { headers: this.getHeaders() });
+  }
 
-  // 3. UPDATE (Matches @PutMapping("/{id}"))
+  getAllAdmins(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/admins`, { headers: this.getHeaders() });
+  }
+
+  createUser(user: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/create-user`, user, { headers: this.getHeaders() });
+  }
+
   updateUser(id: string, user: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${id}`, user, { headers: this.getHeaders() });
   }
 
-  // 4. BLOCK (Matches @PutMapping("/block/{id}"))
   blockUser(id: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/block/${id}`, {}, { headers: this.getHeaders() });
   }
 
-  // 5. UNBLOCK (Matches @PutMapping("/unblock/{id}"))
   unblockUser(id: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/unblock/${id}`, {}, { headers: this.getHeaders() });
   }
 
-  // 6. DELETE (Add this if you want to use the delete button)
   deleteUser(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }

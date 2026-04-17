@@ -18,8 +18,6 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
-
-
     "@stomp/stompjs": "^7.3.0",
     "chart.js": "^4.5.1",
     "crypto-browserify": "^3.12.1",

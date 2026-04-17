@@ -18,7 +18,9 @@ export class SidebarComponent {
       icon: 'users',
       hasSubmenu: true // Marks this as a dropdown
     },
-    { label: 'Course Catalog', link: '/admin/courses', icon: 'book' },
+    { label: 'Course', link: '/admin/courses', icon: 'book' },
+    { label: 'Study Groups', link: '/admin/study-groups', icon: 'users' },
+    { label: 'Course Content', link: '/admin/contents', icon: 'file-text' },
       { label: 'Promo Codes', link: '/admin/promos', icon: 'tag' },
             { label: 'Payments Logs', link: '/admin/payments', icon: 'tag' },
 
@@ -27,6 +29,7 @@ export class SidebarComponent {
     { label: 'Discussion Groups', link: '/admin/discussions', icon: 'message-square' }, 
         { label: 'Settings', link: '/admin/settings', icon: 'settings' },
   ];
+ 
 
   // Specific sub-items for User Management
   userSubItems = [

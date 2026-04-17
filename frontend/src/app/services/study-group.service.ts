@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StudyGroup, MarkedDates, StudyGroupStatus } from '../features/study-groups/models/study-group';
 
@@ -7,9 +7,6 @@ import { StudyGroup, MarkedDates, StudyGroupStatus } from '../features/study-gro
 export class StudyGroupService {
 
   private api = 'http://localhost:8090/api/study-groups';
-  private headers = new HttpHeaders({
-    'Authorization': 'Basic ' + btoa('admin:admin123')
-  });
 
   constructor(private http: HttpClient) {}
 

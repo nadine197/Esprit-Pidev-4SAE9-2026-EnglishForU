@@ -23,7 +23,9 @@ export class RegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       role: ['student'],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
+      agreeTerms: [false, Validators.requiredTrue]
     });
   }
 

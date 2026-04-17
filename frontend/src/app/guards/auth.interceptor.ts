@@ -24,11 +24,15 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error('HTTP Error caught by interceptor:', error.status, error.message, error.url);
         if (error.status === 401 || error.status === 403) {
-          console.warn('Unauthorized or Forbidden access - redirecting to login');
-          this.authService.logout();
-          this.router.navigate(['/login']);
+          const isLoggedIn = !!localStorage.getItem('token');
+          if (!isLoggedIn) {
+            // Session truly expired or not logged in — redirect
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          }
+          // If user is still logged in, a background request (e.g. chat-widget)
+          // got a 401 — do NOT redirect, just propagate the error silently
         }
         return throwError(() => error);
       })

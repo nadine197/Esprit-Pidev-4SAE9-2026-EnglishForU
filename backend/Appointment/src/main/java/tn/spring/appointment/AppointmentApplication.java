@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 
 @EnableFeignClients
 @SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
 public class AppointmentApplication {
 
 	public static void main(String[] args) {

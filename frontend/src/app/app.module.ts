@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './guards/auth.interceptor';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -20,11 +21,11 @@ import { PackageManagementComponent } from './features/admin/package-management/
 import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
+import { CoursesModule } from './features/courses/courses.module';
 import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { AppointmentModule } from './features/Appointment/appointment.module';
 import { VisitorModule } from './features/visitor/visitor.module';
-import { CourseDetailsComponent } from './features/courses/pages/course-details/course-details.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,8 @@ import { CourseDetailsComponent } from './features/courses/pages/course-details/
     CheckoutComponent,
     PaymentResultComponent,
     PaymentManagementComponent,
+    ChatWidgetComponent ,
+    DiscussionMgmtComponent,
     ChatWidgetComponent ,
     DiscussionMgmtComponent,
   ],
@@ -49,6 +52,7 @@ import { CourseDetailsComponent } from './features/courses/pages/course-details/
     UserModule,
     AdminModule,
     TutorModule,
+  
     StudentModule,
     ReactiveFormsModule,
     FormsModule,
@@ -56,7 +60,9 @@ import { CourseDetailsComponent } from './features/courses/pages/course-details/
     VisitorModule,
 
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
