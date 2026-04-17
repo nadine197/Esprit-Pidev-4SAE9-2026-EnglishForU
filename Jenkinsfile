@@ -30,10 +30,13 @@ pipeline {
                 deleteDir()
             }
         }
-
+        options {
+           skipDefaultCheckout(true)
+         }
         // ── 1. Checkout ─────────────────────────────────────────
         stage('Checkout') {
             steps {
+                 cleanWs()
                 checkout scm
                 sh 'echo "Branch: ${BRANCH_NAME:-main} | Build: ${BUILD_NUMBER}"'
             }
