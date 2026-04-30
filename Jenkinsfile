@@ -114,11 +114,11 @@ pipeline {
                     echo "All core services healthy ✅"
                 """
             }
-            post {
-                always {
-                    sh 'docker compose down -v --remove-orphans || true'
-                }
-            }
+             post {
+                 failure {
+                    docker compose down -v --remove-orphans || true
+                 }
+             }
         }
 
         // ── 5. Deploy ────────────────────────────────────────────
