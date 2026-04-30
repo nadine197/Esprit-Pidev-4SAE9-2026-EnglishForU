@@ -3,10 +3,11 @@ package tn.spring.appointment.Controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.spring.appointment.Clients.CourseClient;
+import tn.spring.appointment.Clients.StudyGroupDTO;
 import tn.spring.appointment.Models.DiscussionGroup;
 import tn.spring.appointment.Repositories.GroupRepository;
-import tn.spring.appointment.clients.CourseClient;
-import tn.spring.appointment.clients.StudyGroupDTO;
+
 
 import java.util.List;
 import java.util.UUID;
