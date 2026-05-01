@@ -29,7 +29,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             "/api/auth/google",
             "/api/packages/active",
             "/api/auth/refresh",
-            "/api/auth/reset-password/confirm"
+            "/api/auth/reset-password/confirm",
+            "/actuator",           // ← ADD
+            "/actuator/health",    // ← ADD
+            "/actuator/info",      // ← ADD
+            "/actuator/prometheus" // ← ADD
     );
 
     @Override
