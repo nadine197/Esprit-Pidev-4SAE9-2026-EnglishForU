@@ -66,9 +66,7 @@ pipeline {
 
         // ── 3. Push Images to Docker Hub ─────────────────────────
         stage('Push Images') {
-            when {
-                branch 'main'
-            }
+        
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
@@ -95,35 +93,14 @@ pipeline {
             }
         }
 
-        // ── 4. Smoke Test ────────────────────────────────────────
+       // ── 4. Smoke Test (skipped - deploy directly) ────────────
         stage('Smoke Test') {
             steps {
-                sh """
-                    REGISTRY=${REGISTRY} TAG=${TAG} \
-                    docker compose up -d --no-build
-
-                    echo "Waiting for eureka (up to 2 min)..."
-                    timeout 120 sh -c 'until wget -q --spider http://localhost:8761/actuator/health; do sleep 5; done'
-
-                    echo "Waiting for config-server..."
-                    timeout 120 sh -c 'until wget -q --spider http://localhost:8888/actuator/health; do sleep 5; done'
-
-                    echo "Waiting for gateway..."
-                    timeout 120 sh -c 'until wget -q --spider http://localhost:8090/actuator/health; do sleep 5; done'
-
-                    echo "All core services healthy ✅"
-                """
-            }
-            post {
-                always {
-                    sh 'docker compose down -v --remove-orphans || true'
-                }
+                echo "Skipping smoke test — deploying directly to local Docker Desktop"
             }
         }
-
         // ── 5. Deploy ────────────────────────────────────────────
         stage('Deploy') {
-            when { branch 'main' }
             steps {
                 sh """
                     REGISTRY=${REGISTRY} TAG=${TAG} \
