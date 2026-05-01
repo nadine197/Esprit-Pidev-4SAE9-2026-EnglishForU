@@ -25,6 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private static final List<String> PUBLIC_PATHS = List.of(
             "/api/auth/login",
             "/api/auth/register-client",
+
             "/api/auth/ForgotPassword",
             "/api/auth/google",
             "/api/packages/active",
