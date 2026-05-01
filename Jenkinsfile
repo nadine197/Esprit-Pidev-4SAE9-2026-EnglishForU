@@ -24,7 +24,38 @@ pipeline {
                 sh 'echo "Branch: ${GIT_BRANCH}  |  Build: ${BUILD_NUMBER}"'
             }
         }
-
+// ── 1.5. SonarQube Analysis ──────────────────────────────────
+stage('SonarQube Analysis') {
+    steps {
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            script {
+                def services = [
+                    [name: 'eureka-server',       path: './backend/eureka-server'],
+                    [name: 'config-server',        path: './backend/config-server'],
+                    [name: 'gateway',              path: './backend/Gateway'],
+                    [name: 'user-service',         path: './backend/user-management'],
+                    [name: 'appointment-service',  path: './backend/Appointment'],
+                    [name: 'club-service',         path: './backend/ClubEvent'],
+                    [name: 'course-service',       path: './backend/course-service'],
+                    [name: 'discussion-service',   path: './backend/discussion-service'],
+                    [name: 'package-service',      path: './backend/package_service'],
+                    [name: 'quiz-service',         path: './backend/Quiz'],
+                ]
+                services.each { svc ->
+                    sh """
+                        cd ${svc.path}
+                        mvn sonar:sonar \
+                            -Dsonar.projectKey=${svc.name} \
+                            -Dsonar.host.url=http://sonarqube:9000 \
+                            -Dsonar.token=${SONAR_TOKEN} \
+                            -DskipTests -B || true
+                        cd -
+                    """
+                }
+            }
+        }
+    }
+}
         // ── 2. Build all images in parallel ─────────────────────
         stage('Build Images') {
             parallel {

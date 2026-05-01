@@ -1,0 +1,55 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  - job_name: 'eureka-server'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['eureka-server:8761']
+
+  - job_name: 'config-server'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['config-server:8888']
+
+  - job_name: 'gateway'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['gateway:8090']
+
+  - job_name: 'user-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['user-service:8081']
+
+  - job_name: 'appointment-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['appointment-service:8087']
+
+  - job_name: 'club-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['club-service:8083']
+
+  - job_name: 'course-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['course-service:8084']
+
+  - job_name: 'discussion-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['discussion-service:8088']
+
+  - job_name: 'package-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['package-service:8085']
+
+  - job_name: 'quiz-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['quiz-service:8056']
