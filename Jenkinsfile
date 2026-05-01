@@ -66,9 +66,7 @@ pipeline {
 
         // ── 3. Push Images to Docker Hub ─────────────────────────
         stage('Push Images') {
-            when {
-                branch 'main'
-            }
+        
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
