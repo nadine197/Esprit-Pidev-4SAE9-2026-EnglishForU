@@ -92,9 +92,18 @@ pipeline {
                 stage('frontend') {
                     steps { script { buildService('frontend', './frontend') } }
                 }
-                stage('prometheus') {
-                    steps { script { buildService('prometheus', './monitoring') } }
-                }
+              stage('prometheus') {
+    steps {
+        sh """
+            docker build \
+                --tag ${REGISTRY}/prometheus:${TAG} \
+                --dockerfile ./monitoring/Dockerfile.prometheus \
+                --label "git.commit=${env.GIT_COMMIT ?: 'local'}" \
+                --label "build.number=${BUILD_NUMBER}" \
+                ./monitoring
+        """
+    }
+}
             }
         }
 
