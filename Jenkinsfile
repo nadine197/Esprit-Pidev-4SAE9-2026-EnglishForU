@@ -130,18 +130,26 @@ stage('SonarQube Analysis') {
                 echo "Skipping smoke test — deploying directly to local Docker Desktop"
             }
         }
-        // ── 5. Deploy ────────────────────────────────────────────
-        stage('Deploy') {
-            steps {
-                sh """
-                    REGISTRY=${REGISTRY} TAG=${TAG} \
-                    docker compose down --remove-orphans || true
-        
-                    REGISTRY=${REGISTRY} TAG=${TAG} \
-                    docker compose up -d --no-build --remove-orphans
-                """
-            }
+      stage('Deploy') {
+    steps {
+        sh """
+            # Tear down compose-managed containers
+            REGISTRY=${REGISTRY} TAG=${TAG} \
+            docker compose down --remove-orphans || true
+
+            # Force-remove containers that survive compose down
+            # (started outside this compose project scope)
+            docker rm -f sonar-db sonarqube prometheus grafana || true
+
+            # Wait for network to be fully released
+            sleep 3
+
+            REGISTRY=${REGISTRY} TAG=${TAG} \
+            docker compose up -d --no-build --remove-orphans
+        """
+    }
 }
+
 
     }
 
