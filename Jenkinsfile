@@ -135,10 +135,14 @@ stage('SonarQube Analysis') {
             steps {
                 sh """
                     REGISTRY=${REGISTRY} TAG=${TAG} \
+                    docker compose down --remove-orphans || true
+        
+                    REGISTRY=${REGISTRY} TAG=${TAG} \
                     docker compose up -d --no-build --remove-orphans
                 """
             }
-        }
+}
+
     }
 
     post {
