@@ -17,13 +17,14 @@ pipeline {
 
     stages {
 
-        // ── 1. Checkout ──────────────────────────────────────────
-        stage('Checkout') {
-            steps {
-                checkout scm
-                sh 'echo "Branch: ${GIT_BRANCH}  |  Build: ${BUILD_NUMBER}"'
-            }
-        }
+     stage('Checkout') {
+    steps {
+        checkout scm
+        sh 'echo "Branch: ${GIT_BRANCH}  |  Build: ${BUILD_NUMBER}"'
+        // Add this to confirm the file is present after checkout:
+        sh 'ls -la monitoring/'
+    }
+}
 // ── 1.5. SonarQube Analysis ──────────────────────────────────
 stage('SonarQube Analysis') {
     steps {
