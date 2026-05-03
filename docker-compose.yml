@@ -356,7 +356,7 @@ services:
       ports:
         - "9090:9090"
       volumes:
-        - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+        - /tmp/prometheus.yml:/etc/prometheus/prometheus.yml
       networks:
         - microservices-net
 
