@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="" />
+    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="inhance pom xml for appointment">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,21 +15,25 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "khalilsahnoun123"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;khalilsahnoun123&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/nadine197/Esprit-Pidev-4SAE9-2026-EnglishForU.git",
-    "accountId": "4becd83c-8b93-4501-950a-5b203049eff0"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/nadine197/Esprit-Pidev-4SAE9-2026-EnglishForU.git&quot;,
+    &quot;accountId&quot;: &quot;4becd83c-8b93-4501-950a-5b203049eff0&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="3C7mHzuKR2KKGbfA1HYZc6vj88h" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -32,13 +41,112 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Maven.Appointment [clean].executor": "Run",
+    "Maven.Appointment [compile].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "PackageManagement",
+    "Spring Boot.EurekaApplication.executor": "Run",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.EurekaApplication">
+    <configuration name="AppointmentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Appointment" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.appointment.AppointmentApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClubEventApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="ClubEvent" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.clubevent.ClubEventApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.configserver.ConfigServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CourseApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Course" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.course.CourseApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DiscussionServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="discussion-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.discussion.DiscussionServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eureka" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.eureka.EurekaApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.gateway.GatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PackageApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Package" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.packagee.PackageApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="QuizApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Quiz" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.quiz.QuizApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="User" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.user.UserApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -56,10 +164,83 @@
       <option name="presentableId" value="Default" />
       <updated>1775744901207</updated>
       <workItem from="1775744902313" duration="67000" />
+      <workItem from="1777633295722" duration="1750000" />
+      <workItem from="1777635079754" duration="3667000" />
+      <workItem from="1777644527720" duration="239000" />
+      <workItem from="1777724908484" duration="2373000" />
+      <workItem from="1777813126943" duration="1469000" />
     </task>
+    <task id="LOCAL-00001" summary="permit actuator health endpoint in csecurity config for apigateay to test health">
+      <option name="closed" value="true" />
+      <created>1777633456903</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1777633456903</updated>
+    </task>
+    <task id="LOCAL-00002" summary="health check pass on either 200 or 403 for gateway micro servcie">
+      <option name="closed" value="true" />
+      <created>1777633688406</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1777633688406</updated>
+    </task>
+    <task id="LOCAL-00003" summary="ix: allow actuator endpoints through JWT filter">
+      <option name="closed" value="true" />
+      <created>1777636934775</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1777636934775</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add sonar-maven-plugin to each pom.xml&#10;□ Add micrometer-registry-prometheus to each pom.xml&#10;□ Add actuator properties to each application.properties&#10;□ Create monitoring/prometheus.yml file&#10;□ Update docker-compose.yml with sonarqube/prometheus/grafana services&#10;□ Set Docker Desktop RAM to 4GB+&#10;□ Start sonarqube first, generate token, add to Jenkins">
+      <option name="closed" value="true" />
+      <created>1777640225264</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1777640225264</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Add sonar-maven-plugin to each pom.xml&#10;□ Add micrometer-registry-prometheus to each pom.xml&#10;□ Add actuator properties to each application.properties&#10;□ Create monitoring/prometheus.yml file&#10;□ Update docker-compose.yml with sonarqube/prometheus/grafana services&#10;□ Set Docker Desktop RAM to 4GB+&#10;□ Start sonarqube first, generate token, add to Jenkins">
+      <option name="closed" value="true" />
+      <created>1777640330698</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1777640330698</updated>
+    </task>
+    <task id="LOCAL-00006" summary="inhance pom xml for appointment">
+      <option name="closed" value="true" />
+      <created>1777814268401</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1777814268401</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="permit actuator health endpoint in csecurity config for apigateay to test health" />
+    <MESSAGE value="health check pass on either 200 or 403 for gateway micro servcie" />
+    <MESSAGE value="ix: allow actuator endpoints through JWT filter" />
+    <MESSAGE value="Add sonar-maven-plugin to each pom.xml&#10;□ Add micrometer-registry-prometheus to each pom.xml&#10;□ Add actuator properties to each application.properties&#10;□ Create monitoring/prometheus.yml file&#10;□ Update docker-compose.yml with sonarqube/prometheus/grafana services&#10;□ Set Docker Desktop RAM to 4GB+&#10;□ Start sonarqube first, generate token, add to Jenkins" />
+    <MESSAGE value="inhance pom xml for appointment" />
+    <option name="LAST_COMMIT_MESSAGE" value="inhance pom xml for appointment" />
   </component>
 </project>
