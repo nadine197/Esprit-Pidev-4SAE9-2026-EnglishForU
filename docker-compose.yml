@@ -10,8 +10,6 @@ x-service-env: &service-env
   EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
   SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
   JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
-
-x-db-env: &db-env
   SPRING_DATASOURCE_USERNAME: postgres
   SPRING_DATASOURCE_PASSWORD: postgres
   SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
@@ -20,7 +18,6 @@ x-db-env: &db-env
 
 services:
 
-  # ── PostgreSQL (single instance, all DBs) ────────────────────
   postgres:
     image: postgres:15-alpine
     container_name: postgres
@@ -43,7 +40,6 @@ services:
       retries: 5
       start_period: 20s
 
-  # ── 1. Eureka ────────────────────────────────────────────────
   eureka-server:
     image: ${REGISTRY:-local}/eureka-server:${TAG:-latest}
     container_name: eureka-server
@@ -66,7 +62,6 @@ services:
       retries: 5
       start_period: 60s
 
-  # ── 2. Config Server ─────────────────────────────────────────
   config-server:
     image: ${REGISTRY:-local}/config-server:${TAG:-latest}
     container_name: config-server
@@ -92,7 +87,6 @@ services:
       retries: 5
       start_period: 60s
 
-  # ── 3. API Gateway ───────────────────────────────────────────
   gateway:
     image: ${REGISTRY:-local}/gateway:${TAG:-latest}
     container_name: gateway
@@ -120,7 +114,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # ── 4. User Service ──────────────────────────────────────────
   user-service:
     image: ${REGISTRY:-local}/user-service:${TAG:-latest}
     container_name: user-service
@@ -129,7 +122,6 @@ services:
       - "8081:8081"
     environment:
       <<: *service-env
-      <<: *db-env
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/GestionUserPI
     deploy:
@@ -152,7 +144,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # ── 5. Appointment Service ───────────────────────────────────
   appointment-service:
     image: ${REGISTRY:-local}/appointment-service:${TAG:-latest}
     container_name: appointment-service
@@ -161,7 +152,6 @@ services:
       - "8087:8087"
     environment:
       <<: *service-env
-      <<: *db-env
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/GestionAppointPI
     deploy:
@@ -184,7 +174,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # ── 6. Club Service ──────────────────────────────────────────
   club-service:
     image: ${REGISTRY:-local}/club-service:${TAG:-latest}
     container_name: club-service
@@ -193,7 +182,6 @@ services:
       - "8083:8083"
     environment:
       <<: *service-env
-      <<: *db-env
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ClubEventPI
     deploy:
@@ -216,7 +204,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # ── 7. Course Service ────────────────────────────────────────
   course-service:
     image: ${REGISTRY:-local}/course-service:${TAG:-latest}
     container_name: course-service
@@ -225,7 +212,6 @@ services:
       - "8084:8084"
     environment:
       <<: *service-env
-      <<: *db-env
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/CoursePI
       DB_URL: jdbc:postgresql://postgres:5432/CoursePI
@@ -251,7 +237,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # ── 8. Discussion Service ────────────────────────────────────
   discussion-service:
     image: ${REGISTRY:-local}/discussion-service:${TAG:-latest}
     container_name: discussion-service
@@ -260,7 +245,6 @@ services:
       - "8088:8088"
     environment:
       <<: *service-env
-      <<: *db-env
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/DiscussionPI
     deploy:
@@ -283,7 +267,6 @@ services:
       retries: 5
       start_period: 120s
 
-  # ── 9. Package Service ───────────────────────────────────────
   package-service:
     image: ${REGISTRY:-local}/package-service:${TAG:-latest}
     container_name: package-service
@@ -292,7 +275,6 @@ services:
       - "8085:8085"
     environment:
       <<: *service-env
-      <<: *db-env
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/GestionPackagePI
     deploy:
@@ -315,7 +297,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # ── 10. Quiz Service ─────────────────────────────────────────
   quiz-service:
     image: ${REGISTRY:-local}/quiz-service:${TAG:-latest}
     container_name: quiz-service
@@ -324,11 +305,8 @@ services:
       - "8056:8056"
     environment:
       <<: *service-env
-      <<: *db-env
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/QuizPI
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
       QUIZ_USER_SERVICE_URL: http://user-service:8081
     deploy:
       resources:
@@ -350,7 +328,6 @@ services:
       retries: 5
       start_period: 90s
 
-  # ── 11. Frontend ─────────────────────────────────────────────
   frontend:
     image: ${REGISTRY:-local}/frontend:${TAG:-latest}
     container_name: frontend
@@ -373,7 +350,6 @@ services:
       retries: 3
       start_period: 30s
 
-  # ── SonarQube ─────────────────────────────────────────────────
   sonarqube:
     image: sonarqube:community
     container_name: sonarqube
@@ -410,7 +386,6 @@ services:
     volumes:
       - sonar_db_data:/var/lib/postgresql/data
 
-  # ── Prometheus ────────────────────────────────────────────────
   prometheus:
     build:
       context: ./monitoring
@@ -423,7 +398,6 @@ services:
     networks:
       - microservices-net
 
-  # ── Grafana ───────────────────────────────────────────────────
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
