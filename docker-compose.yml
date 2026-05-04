@@ -19,10 +19,7 @@ x-service-env: &service-env
 services:
 
   postgres:
-    build:
-      context: ./postgres-init
-      dockerfile: Dockerfile.postgres
-    image: ${REGISTRY:-khalilsahnoun}/postgres:${TAG:-latest}
+    image: postgres:15-alpine
     container_name: postgres
     restart: unless-stopped
     environment:
@@ -33,6 +30,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - microservices-net
     healthcheck:

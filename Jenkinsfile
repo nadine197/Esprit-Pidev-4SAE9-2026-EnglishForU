@@ -71,18 +71,7 @@ pipeline {
                 stage('user-service') {
                     steps { script { buildService('user-service', './backend/user-management') } }
                 }
-                stage('postgres') {
-                    steps {
-                        sh """
-                            docker build \
-                                --tag ${REGISTRY}/postgres:${TAG} \
-                                --file ./postgres-init/Dockerfile.postgres \
-                                --label "git.commit=${env.GIT_COMMIT ?: 'local'}" \
-                                --label "build.number=${BUILD_NUMBER}" \
-                                ./postgres-init
-                        """
-                    }
-                }
+
 
                 stage('appointment-service') {
                     steps { script { buildService('appointment-service', './backend/Appointment') } }
@@ -133,7 +122,7 @@ pipeline {
                             'eureka-server', 'config-server', 'gateway',
                             'user-service', 'appointment-service', 'club-service',
                             'course-service', 'discussion-service', 'package-service',
-                            'quiz-service', 'frontend', 'prometheus', 'postgres'
+                            'quiz-service', 'frontend', 'prometheus'
                         ]
                         services.each { svc ->
                             sh "docker push ${REGISTRY}/${svc}:${TAG}"
@@ -153,31 +142,44 @@ pipeline {
             }
         }
 
-   stage('Deploy') {
-       steps {
-           sh """
-               # Tear down all compose-managed containers
-               REGISTRY=${REGISTRY} TAG=${TAG} \
-               docker compose down --remove-orphans || true
+  stage('Deploy') {
+      steps {
+          sh """
+              REGISTRY=${REGISTRY} TAG=${TAG} \
+              docker compose down --remove-orphans || true
 
-               # Force-remove ALL named containers that could conflict
-               docker rm -f \
-                   eureka-server config-server gateway \
-                   user-service appointment-service club-service \
-                   course-service discussion-service package-service \
-                   quiz-service frontend \
-                   sonar-db sonarqube prometheus grafana postgres || true
+              docker rm -f \
+                  eureka-server config-server gateway \
+                  user-service appointment-service club-service \
+                  course-service discussion-service package-service \
+                  quiz-service frontend \
+                  sonar-db sonarqube prometheus grafana postgres || true
 
-               # Clear stuck network
-               docker network rm englishforu-pipeline_microservices-net microservices-net || true
+              docker network rm englishforu-pipeline_microservices-net microservices-net || true
 
-               sleep 3
+              sleep 3
 
-               REGISTRY=${REGISTRY} TAG=${TAG} \
-               docker compose up -d --no-build --remove-orphans
-           """
-       }
-   }
+              # Start postgres first and wait for it
+              REGISTRY=${REGISTRY} TAG=${TAG} \
+              docker compose up -d --no-build postgres
+
+              sleep 20
+
+              # Create databases if they don't exist (safe to run every time)
+              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"GestionUserPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionUserPI')\\gexec"
+              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"GestionAppointPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionAppointPI')\\gexec"
+              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"QuizPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'QuizPI')\\gexec"
+              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"GestionPackagePI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionPackagePI')\\gexec"
+              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"DiscussionPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'DiscussionPI')\\gexec"
+              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"CoursePI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'CoursePI')\\gexec"
+              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"ClubEventPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'ClubEventPI')\\gexec"
+
+              # Now start everything else
+              REGISTRY=${REGISTRY} TAG=${TAG} \
+              docker compose up -d --no-build --remove-orphans
+          """
+      }
+  }
     }
 
     post {

@@ -167,7 +167,7 @@
       <workItem from="1777644527720" duration="239000" />
       <workItem from="1777724908484" duration="2373000" />
       <workItem from="1777813126943" duration="3220000" />
-      <workItem from="1777886712605" duration="583000" />
+      <workItem from="1777886712605" duration="586000" />
     </task>
     <task id="LOCAL-00001" summary="permit actuator health endpoint in csecurity config for apigateay to test health">
       <option name="closed" value="true" />
