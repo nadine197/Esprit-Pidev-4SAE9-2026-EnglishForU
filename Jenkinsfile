@@ -165,16 +165,18 @@ pipeline {
 
               sleep 20
 
-              # Create databases if they don't exist (safe to run every time)
-              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"GestionUserPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionUserPI')\\gexec"
-              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"GestionAppointPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionAppointPI')\\gexec"
-              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"QuizPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'QuizPI')\\gexec"
-              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"GestionPackagePI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionPackagePI')\\gexec"
-              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"DiscussionPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'DiscussionPI')\\gexec"
-              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"CoursePI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'CoursePI')\\gexec"
-              docker exec postgres psql -U postgres -c "SELECT 'CREATE DATABASE \\"ClubEventPI\\"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'ClubEventPI')\\gexec"
+              # Create databases if they don't exist
+              docker exec postgres psql -U postgres << 'EOSQL'
+  SELECT 'CREATE DATABASE "GestionUserPI"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionUserPI')\\gexec
+  SELECT 'CREATE DATABASE "GestionAppointPI"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionAppointPI')\\gexec
+  SELECT 'CREATE DATABASE "QuizPI"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'QuizPI')\\gexec
+  SELECT 'CREATE DATABASE "GestionPackagePI"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'GestionPackagePI')\\gexec
+  SELECT 'CREATE DATABASE "DiscussionPI"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'DiscussionPI')\\gexec
+  SELECT 'CREATE DATABASE "CoursePI"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'CoursePI')\\gexec
+  SELECT 'CREATE DATABASE "ClubEventPI"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'ClubEventPI')\\gexec
+  EOSQL
 
-              # Now start everything else
+              # Start everything else
               REGISTRY=${REGISTRY} TAG=${TAG} \
               docker compose up -d --no-build --remove-orphans
           """
