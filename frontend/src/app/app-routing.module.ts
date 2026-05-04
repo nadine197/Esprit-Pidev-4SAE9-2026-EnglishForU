@@ -23,6 +23,13 @@ import { AppointmentMgmtComponent } from './features/Appointment/appointment-mgm
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
 import { CourseDetailsComponent } from './features/courses/pages/course-details/course-details.component';
+import { QuizManagementComponent } from './features/admin/quiz-management/quiz-management.component';
+import { QuizComponent } from './features/quiz/quiz/quiz.component';
+import { AddQuizComponent } from './features/quiz/add-quiz/add-quiz.component';
+import { QuizDetailsComponent } from './features/quiz/quiz-details/quiz-details.component';
+import { StudentQuizzesComponent } from './features/student/student-quizzes/student-quizzes';
+import { StudentEvaluationsComponent } from './features/admin/student-evaluations/student-evaluations.component';
+import { StudentEvaluationsPageComponent } from './features/student/student-evaluations/student-evaluations.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -55,12 +62,20 @@ const routes: Routes = [
     path: 'admin', 
     component: AdminLayoutComponent, 
     canActivate: [authGuard],
+    data: { roles: ['SUPER_ADMIN', 'ADMIN'] },
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'promos', component: PromoManagementComponent },
       { path: 'payments', component: PaymentManagementComponent },
       { path: 'appointments', component: AppointmentMgmtComponent },
       { path: 'discussions', component: DiscussionMgmtComponent }, 
+      { path: 'quizzes', component: QuizManagementComponent },
+      { path: 'student-evaluations', component: StudentEvaluationsComponent },
+      { path: 'quizzes/course/:id', component: QuizComponent },
+      { path: 'quizzes/list', component: QuizComponent },
+      { path: 'quizzes/details/:id', component: QuizDetailsComponent },
+      { path: 'quizzes/add/:courseId', component: AddQuizComponent },
+      { path: 'quizzes/:quizId/add-question', component: AddQuizComponent },
       { path: 'chat', component: ChatWidgetComponent },
       { path: 'packages', component: PackageManagementComponent },
       { path: 'users/:role', component: UserListComponent },
@@ -80,13 +95,16 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
-  {
+{
   path: 'tutor',
   component: TutorLayoutComponent,
   canActivate: [authGuard],
   data: { roles: ['TUTOR'] }, // Only Tutors allowed
   children: [
     { path: 'dashboard', component: TutorDashboardComponent },
+    { path: 'student-evaluations', component: StudentEvaluationsComponent },
+    { path: 'quizzes/:quizId/add-question', component: AddQuizComponent },
+    { path: 'AddQuiz/:courseId', component: AddQuizComponent },
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
   ]
 },
@@ -96,6 +114,20 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['STUDENT'] } 
   },
+{
+    path: 'student-quizzes',
+    component: StudentQuizzesComponent,
+    canActivate: [authGuard],
+    data: { roles: ['STUDENT', 'ADMIN', 'SUPER_ADMIN'] }
+  },
+  {
+    path: 'student-evaluations',
+    component: StudentEvaluationsPageComponent,
+    canActivate: [authGuard],
+    data: { roles: ['STUDENT', 'ADMIN', 'SUPER_ADMIN'] }
+  },
+  { path: 'quiz/:id', component: QuizComponent },
+  { path: 'quizDetails/:id', component: QuizDetailsComponent },
   { path: '', redirectTo: 'main', pathMatch: 'full' }
 ];
 

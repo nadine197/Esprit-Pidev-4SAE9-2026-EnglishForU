@@ -1,7 +1,21 @@
 <!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-    <iframe title="payment dashbord" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=85b93a0e-8ffd-43a7-88fa-7ac587d05166&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730&actionBarEnabled=true" frameborder="0" allowFullScreen="true"></iframe>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+  <div *ngFor="let stat of stats" class="{{stat.color}} p-6 rounded-[24px] border border-slate-100 shadow-sm transition-transform hover:scale-105">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-2xl shadow-inner">
+        {{stat.icon}}
+      </div>
+      <div>
+        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">{{stat.label}}</p>
+        <h4 class="text-2xl font-black {{stat.text}}">{{stat.value}}</h4>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- PowerBI Report -->
+<div class="bg-white p-4 rounded-[32px] border border-slate-200 shadow-sm mb-10 overflow-hidden">
+  <iframe title="payment dashbord" width="100%" height="541" src="https://app.powerbi.com/reportEmbed?reportId=85b93a0e-8ffd-43a7-88fa-7ac587d05166&autoAuth=true&ctid=604f1a96-cbe8-43f8-abbf-f8eaf5d85730&actionBarEnabled=true" frameborder="0" allowFullScreen="true" class="rounded-[24px]"></iframe>
 </div>
 
 <!-- Recent Registrations Table -->

@@ -17,12 +17,25 @@
         Professional English language programs with certified instructors, interactive group learning, and international certifications.
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a routerLink="/signup" class="bg-[#0066FF] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2">
-          Get Started <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-        </a>
-        <a href="#features" class="bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all">
-          Learn More
-        </a>
+        <!-- Not logged in -->
+        <ng-container *ngIf="!isLoggedIn">
+          <a routerLink="/signup" class="bg-[#0066FF] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
+            Get Started <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+          </a>
+          <a href="#features" class="bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all no-underline text-center">
+            Learn More
+          </a>
+        </ng-container>
+
+        <!-- Logged in as student -->
+        <ng-container *ngIf="isLoggedIn">
+          <a routerLink="/student-quizzes" class="bg-[#0066FF] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
+            My Quizzes
+          </a>
+          <a routerLink="/student-evaluations" class="bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all no-underline text-center">
+            My Evaluations
+          </a>
+        </ng-container>
       </div>
     </div>
   </section>
@@ -46,7 +59,53 @@
     </div>
   </section>
 
-<section id="pricing" class="py-24 bg-slate-50">
+  <!-- Featured Courses Section -->
+  <section class="py-24 bg-slate-50">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+        <div class="max-w-2xl">
+          <h2 class="text-4xl font-bold text-slate-900 mb-4">Featured English Programs</h2>
+          <p class="text-slate-500">Master the language with our most popular courses, from beginner to advanced levels.</p>
+        </div>
+        <a routerLink="/courses" class="text-[#0066FF] font-bold flex items-center gap-2 hover:gap-3 transition-all">
+          View all courses <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoadingCourses" class="flex justify-center py-12">
+        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#0066FF]"></div>
+      </div>
+
+      <!-- Course Grid -->
+      <div *ngIf="!isLoadingCourses && featuredCourses.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div *ngFor="let course of featuredCourses" 
+             class="group bg-white rounded-3xl border border-slate-100 p-2 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col">
+          <div class="h-48 rounded-2xl bg-slate-50 flex items-center justify-center text-6xl group-hover:scale-105 transition-transform duration-500">
+            {{course.image}}
+          </div>
+          <div class="p-6 flex flex-col flex-1">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">{{course.title}}</h3>
+            <p class="text-slate-500 text-sm mb-6 line-clamp-2">{{course.description}}</p>
+            <div class="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+              <span class="text-sm font-bold text-slate-400">{{course.duration}}h course</span>
+              <button [routerLink]="['/coursesDetails', course.courseid]" 
+                      class="text-[#0066FF] font-bold text-sm hover:underline">
+                Details →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoadingCourses && featuredCourses.length === 0" class="text-center py-12 text-slate-400">
+        No courses available at the moment.
+      </div>
+    </div>
+  </section>
+
+<section id="pricing" class="py-24 bg-white">
   <div class="container mx-auto px-4">
     <div class="text-center mb-14">
       <h2 class="text-4xl font-black text-slate-900 mb-3">Plans that fit your goals</h2>

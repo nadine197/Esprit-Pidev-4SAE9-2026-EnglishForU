@@ -1,0 +1,220 @@
+<section class="space-y-8">
+  <header class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+    <p class="text-xs font-black uppercase tracking-[0.2em] text-[#0066FF]">Student Evaluation</p>
+    <h1 class="mt-2 text-3xl font-black text-slate-900">Manage Student Evaluations</h1>
+    <p class="mt-2 text-sm text-slate-500">
+      Create, update, and review personalized feedback for students.
+    </p>
+  </header>
+
+  <div *ngIf="errorMessage" class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+    {{ errorMessage }}
+  </div>
+  <div *ngIf="successMessage" class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+    {{ successMessage }}
+  </div>
+
+  <!-- Formulaire -->
+  <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-xl font-black text-slate-900">
+        {{ editingId == null ? 'New Evaluation' : 'Edit Evaluation' }}
+      </h2>
+      <button
+        *ngIf="editingId != null"
+        type="button"
+        class="rounded-full border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+        (click)="cancelEdit()"
+      >
+        Cancel Edit
+      </button>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <label class="text-sm font-semibold text-slate-700">
+        Student UUID *
+        <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" [(ngModel)]="form.studentId" />
+      </label>
+      <label class="text-sm font-semibold text-slate-700">
+        Student Email *
+        <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" [(ngModel)]="form.studentEmail" />
+      </label>
+      <label class="text-sm font-semibold text-slate-700">
+        Student Name *
+        <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" [(ngModel)]="form.studentName" />
+      </label>
+      <label class="text-sm font-semibold text-slate-700">
+        Quiz Attempt ID
+        <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" [(ngModel)]="form.quizAttemptId" />
+      </label>
+      <label class="text-sm font-semibold text-slate-700 md:col-span-2">
+        Evaluation Title *
+        <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" [(ngModel)]="form.title" />
+      </label>
+      <label class="text-sm font-semibold text-slate-700 md:col-span-2">
+        Feedback *
+        <textarea class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" rows="4" [(ngModel)]="form.feedback"></textarea>
+      </label>
+      <label class="text-sm font-semibold text-slate-700">
+        Strengths
+        <textarea class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" rows="3" [(ngModel)]="form.strengths"></textarea>
+      </label>
+      <label class="text-sm font-semibold text-slate-700">
+        Areas To Improve
+        <textarea class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" rows="3" [(ngModel)]="form.areasToImprove"></textarea>
+      </label>
+      <label class="text-sm font-semibold text-slate-700 md:col-span-2">
+        Recommended Actions
+        <textarea class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" rows="3" [(ngModel)]="form.recommendedActions"></textarea>
+      </label>
+      <label class="text-sm font-semibold text-slate-700 md:col-span-2">
+        Rating (1-5)
+        <input class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" [(ngModel)]="form.rating" />
+      </label>
+    </div>
+
+    <div class="mt-5 flex gap-3">
+      <button
+        type="button"
+        class="rounded-xl bg-[#0066FF] px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+        [disabled]="saving"
+        (click)="submit()"
+      >
+        {{ saving ? 'Saving...' : (editingId == null ? 'Create Evaluation' : 'Update Evaluation') }}
+      </button>
+      <button
+        type="button"
+        class="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50"
+        (click)="startCreate()"
+      >
+        Reset
+      </button>
+    </div>
+  </section>
+
+  <!-- ✅ Section AI Motivation Suggestions (PREMIUM GEMINI STYLE) -->
+  <section class="overflow-hidden rounded-[28px] border border-indigo-200 bg-white shadow-[0_15px_40px_rgba(79,70,229,0.08)]">
+    <div class="flex flex-col lg:flex-row">
+      <div class="flex-1 p-6 md:p-8">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+          </div>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-500">Intelligent Assistant</p>
+            <h2 class="text-xl font-black text-slate-900">Gemini AI Support</h2>
+          </div>
+        </div>
+
+        <p class="mt-4 text-sm leading-relaxed text-slate-500">
+          Analyze student performance data to generate professional, encouraging feedback and actionable growth steps automatically.
+        </p>
+
+        <!-- Display Raw AI Suggestion (if not JSON) -->
+        <div *ngIf="aiSuggestion && !parsedAiSuggestion" class="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-5 text-sm text-slate-700 whitespace-pre-wrap">
+          {{ aiSuggestion }}
+        </div>
+
+        <!-- Display Structured AI Suggestion (Parsed JSON) -->
+        <div *ngIf="parsedAiSuggestion" class="mt-6 space-y-4">
+          <div class="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-5">
+            <p class="text-xs font-black uppercase tracking-widest text-indigo-500 mb-2">Headline</p>
+            <p class="text-lg font-black text-slate-900 leading-tight">{{ parsedAiSuggestion.headline }}</p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+              <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Motivation Message</p>
+              <p class="text-sm text-slate-700 leading-relaxed">{{ parsedAiSuggestion.motivationMessage }}</p>
+            </div>
+            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/30 p-5">
+              <p class="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">Coach Tip</p>
+              <p class="text-sm text-emerald-800 italic leading-relaxed">"{{ parsedAiSuggestion.coachTip }}"</p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-amber-100 bg-amber-50/30 p-5">
+            <p class="text-xs font-black uppercase tracking-widest text-amber-600 mb-2">Recommended Actions</p>
+            <p class="text-sm text-amber-900 leading-relaxed">{{ parsedAiSuggestion.recommendedActionsSuggestion }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center border-t border-slate-50 bg-slate-50/30 p-8 lg:w-72 lg:border-l lg:border-t-0">
+        <button
+          type="button"
+          (click)="generateMotivationSuggestions()"
+          [disabled]="aiLoading"
+          class="group relative inline-flex h-14 w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 p-0.5 text-sm font-black text-white shadow-[0_12px_30px_rgba(79,70,229,0.2)] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+        >
+          <span class="relative flex h-full w-full items-center justify-center rounded-[14px] bg-slate-900/10 px-6 py-3 transition-all group-hover:bg-transparent">
+            <span class="mr-2" *ngIf="aiLoading">
+              <svg class="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+            {{ aiLoading ? 'Processing...' : 'Generate AI Advice' }}
+            <svg *ngIf="!aiLoading" class="ml-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Liste des évaluations -->
+  <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-xl font-black text-slate-900">All Evaluations</h2>
+      <button
+        type="button"
+        class="rounded-full border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+        (click)="loadEvaluations()"
+      >
+        Refresh
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-8 text-center text-slate-500">
+      Loading evaluations...
+    </div>
+
+    <div *ngIf="!loading && !evaluations.length" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center text-slate-500">
+      No evaluations found.
+    </div>
+
+    <div *ngIf="!loading && evaluations.length" class="space-y-3">
+      <article
+        *ngFor="let evaluation of evaluations; trackBy: trackByEvaluationId"
+        class="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+      >
+        <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h3 class="text-lg font-black text-slate-900">{{ evaluation.title }}</h3>
+            <p class="text-sm text-slate-600">{{ evaluation.studentName }} ({{ evaluation.studentEmail }})</p>
+            <p class="mt-2 text-sm text-slate-500">{{ evaluation.feedback }}</p>
+            <p class="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+              Created {{ evaluation.createdAt | date: 'medium' }}
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="rounded-full border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-white"
+              (click)="startEdit(evaluation)"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="rounded-full border border-red-300 px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-50"
+              (click)="removeEvaluation(evaluation)"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</section>
