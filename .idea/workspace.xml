@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="inhance docker compose" />
+    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,6 +25,9 @@
     &quot;accountId&quot;: &quot;4becd83c-8b93-4501-950a-5b203049eff0&quot;
   }
 }</component>
+  <component name="JpbToolWindowState">
+    <option name="isToolWindowVisible" value="false" />
+  </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -68,7 +71,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.EurekaApplication">
+  <component name="RunManager">
     <configuration name="AppointmentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Appointment" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.appointment.AppointmentApplication" />
@@ -166,8 +169,7 @@
       <workItem from="1777635079754" duration="3667000" />
       <workItem from="1777644527720" duration="239000" />
       <workItem from="1777724908484" duration="2373000" />
-      <workItem from="1777813126943" duration="3220000" />
-      <workItem from="1777886712605" duration="586000" />
+      <workItem from="1777813126943" duration="1469000" />
     </task>
     <task id="LOCAL-00001" summary="permit actuator health endpoint in csecurity config for apigateay to test health">
       <option name="closed" value="true" />
@@ -217,27 +219,14 @@
       <option name="project" value="LOCAL" />
       <updated>1777814268401</updated>
     </task>
-    <task id="LOCAL-00007" summary="add db init file and inhance docker compose">
-      <option name="closed" value="true" />
-      <created>1777814899461</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1777814899461</updated>
-    </task>
-    <task id="LOCAL-00008" summary="inhance docker compose">
-      <option name="closed" value="true" />
-      <created>1777817058650</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1777817058650</updated>
-    </task>
-    <option name="localTasksCounter" value="9" />
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="Jenkinsfile" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -256,8 +245,6 @@
     <MESSAGE value="ix: allow actuator endpoints through JWT filter" />
     <MESSAGE value="Add sonar-maven-plugin to each pom.xml&#10;□ Add micrometer-registry-prometheus to each pom.xml&#10;□ Add actuator properties to each application.properties&#10;□ Create monitoring/prometheus.yml file&#10;□ Update docker-compose.yml with sonarqube/prometheus/grafana services&#10;□ Set Docker Desktop RAM to 4GB+&#10;□ Start sonarqube first, generate token, add to Jenkins" />
     <MESSAGE value="inhance pom xml for appointment" />
-    <MESSAGE value="add db init file and inhance docker compose" />
-    <MESSAGE value="inhance docker compose" />
-    <option name="LAST_COMMIT_MESSAGE" value="inhance docker compose" />
+    <option name="LAST_COMMIT_MESSAGE" value="inhance pom xml for appointment" />
   </component>
 </project>

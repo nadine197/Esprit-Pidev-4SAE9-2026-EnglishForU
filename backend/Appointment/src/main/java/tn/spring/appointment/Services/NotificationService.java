@@ -4,6 +4,7 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,10 +20,9 @@ public class NotificationService {
     @Value("${twilio.auth_token}") private String token;
     @Value("${twilio.from_number}") private String from;
 
-    public NotificationService(JavaMailSender mailSender) {
+    public NotificationService(@Autowired(required = false) JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
-
     @PostConstruct
     public void initTwilio() {
         Twilio.init(sid, token);
@@ -35,7 +35,9 @@ public class NotificationService {
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
-            mailSender.send(message);
+            if (mailSender != null) {
+                mailSender.send(message);
+            }
             System.out.println("✅ Email envoyé à " + to);
         } catch (Exception e) {
             System.err.println("❌ Erreur Email: " + e.getMessage());
