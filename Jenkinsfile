@@ -140,26 +140,31 @@ pipeline {
             }
         }
 
-    stage('Deploy') {
-        steps {
-            sh """
-                # Tear down all compose-managed containers
-                REGISTRY=${REGISTRY} TAG=${TAG} \
-                docker compose down --remove-orphans || true
+   stage('Deploy') {
+       steps {
+           sh """
+               # Tear down all compose-managed containers
+               REGISTRY=${REGISTRY} TAG=${TAG} \
+               docker compose down --remove-orphans || true
 
-                # Force-remove any surviving containers by name
-                docker rm -f sonar-db sonarqube prometheus grafana postgres || true
+               # Force-remove ALL named containers that could conflict
+               docker rm -f \
+                   eureka-server config-server gateway \
+                   user-service appointment-service club-service \
+                   course-service discussion-service package-service \
+                   quiz-service frontend \
+                   sonar-db sonarqube prometheus grafana postgres || true
 
-                # Clear stuck network
-                docker network rm englishforu-pipeline_microservices-net || true
+               # Clear stuck network
+               docker network rm englishforu-pipeline_microservices-net microservices-net || true
 
-                sleep 3
+               sleep 3
 
-                REGISTRY=${REGISTRY} TAG=${TAG} \
-                docker compose up -d --no-build --remove-orphans
-            """
-        }
-    }
+               REGISTRY=${REGISTRY} TAG=${TAG} \
+               docker compose up -d --no-build --remove-orphans
+           """
+       }
+   }
     }
 
     post {
