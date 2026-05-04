@@ -71,6 +71,19 @@ pipeline {
                 stage('user-service') {
                     steps { script { buildService('user-service', './backend/user-management') } }
                 }
+                stage('postgres') {
+                    steps {
+                        sh """
+                            docker build \
+                                --tag ${REGISTRY}/postgres:${TAG} \
+                                --file ./postgres-init/Dockerfile.postgres \
+                                --label "git.commit=${env.GIT_COMMIT ?: 'local'}" \
+                                --label "build.number=${BUILD_NUMBER}" \
+                                ./postgres-init
+                        """
+                    }
+                }
+
                 stage('appointment-service') {
                     steps { script { buildService('appointment-service', './backend/Appointment') } }
                 }
@@ -120,7 +133,7 @@ pipeline {
                             'eureka-server', 'config-server', 'gateway',
                             'user-service', 'appointment-service', 'club-service',
                             'course-service', 'discussion-service', 'package-service',
-                            'quiz-service', 'frontend', 'prometheus'
+                            'quiz-service', 'frontend', 'prometheus', 'postgres'
                         ]
                         services.each { svc ->
                             sh "docker push ${REGISTRY}/${svc}:${TAG}"
