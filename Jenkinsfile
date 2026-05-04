@@ -142,56 +142,43 @@ pipeline {
             }
         }
 
-         stage('Deploy') {
-             steps {
-                 // Write SQL to Jenkins workspace (accessible to Jenkins container)
-                 writeFile file: 'create_dbs.sql', text: '''
-         DO $body$
-         BEGIN
-           IF NOT EXISTS (SELECT FROM pg_database WHERE datname = \'GestionUserPI\') THEN CREATE DATABASE "GestionUserPI"; END IF;
-           IF NOT EXISTS (SELECT FROM pg_database WHERE datname = \'GestionAppointPI\') THEN CREATE DATABASE "GestionAppointPI"; END IF;
-           IF NOT EXISTS (SELECT FROM pg_database WHERE datname = \'QuizPI\') THEN CREATE DATABASE "QuizPI"; END IF;
-           IF NOT EXISTS (SELECT FROM pg_database WHERE datname = \'GestionPackagePI\') THEN CREATE DATABASE "GestionPackagePI"; END IF;
-           IF NOT EXISTS (SELECT FROM pg_database WHERE datname = \'DiscussionPI\') THEN CREATE DATABASE "DiscussionPI"; END IF;
-           IF NOT EXISTS (SELECT FROM pg_database WHERE datname = \'CoursePI\') THEN CREATE DATABASE "CoursePI"; END IF;
-           IF NOT EXISTS (SELECT FROM pg_database WHERE datname = \'ClubEventPI\') THEN CREATE DATABASE "ClubEventPI"; END IF;
-         END
-         $body$;
-         '''
-                 sh """
-                     REGISTRY=${REGISTRY} TAG=${TAG} \
-                     docker compose down --remove-orphans || true
+      stage('Deploy') {
+          steps {
+              sh """
+                  REGISTRY=${REGISTRY} TAG=${TAG} \
+                  docker compose down --remove-orphans || true
 
-                     docker rm -f \
-                         eureka-server config-server gateway \
-                         user-service appointment-service club-service \
-                         course-service discussion-service package-service \
-                         quiz-service frontend \
-                         sonar-db sonarqube prometheus grafana postgres || true
+                  docker rm -f \
+                      eureka-server config-server gateway \
+                      user-service appointment-service club-service \
+                      course-service discussion-service package-service \
+                      quiz-service frontend \
+                      sonar-db sonarqube prometheus grafana postgres || true
 
-                     docker network rm englishforu-pipeline_microservices-net microservices-net || true
+                  docker network rm englishforu-pipeline_microservices-net microservices-net || true
 
-                     sleep 3
+                  sleep 3
 
-                     # Start postgres first
-                     REGISTRY=${REGISTRY} TAG=${TAG} \
-                     docker compose up -d --no-build postgres
+                  REGISTRY=${REGISTRY} TAG=${TAG} \
+                  docker compose up -d --no-build postgres
 
-                     # Wait for postgres to be ready
-                     sleep 20
+                  sleep 25
 
-                     # Pipe SQL directly into postgres container via stdin (no file copy needed)
-                     docker exec -i postgres psql -U postgres < create_dbs.sql
+                  docker exec postgres psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='GestionUserPI'" | grep -q 1 || docker exec postgres psql -U postgres -c "CREATE DATABASE \\"GestionUserPI\\""
+                  docker exec postgres psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='GestionAppointPI'" | grep -q 1 || docker exec postgres psql -U postgres -c "CREATE DATABASE \\"GestionAppointPI\\""
+                  docker exec postgres psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='QuizPI'" | grep -q 1 || docker exec postgres psql -U postgres -c "CREATE DATABASE \\"QuizPI\\""
+                  docker exec postgres psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='GestionPackagePI'" | grep -q 1 || docker exec postgres psql -U postgres -c "CREATE DATABASE \\"GestionPackagePI\\""
+                  docker exec postgres psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='DiscussionPI'" | grep -q 1 || docker exec postgres psql -U postgres -c "CREATE DATABASE \\"DiscussionPI\\""
+                  docker exec postgres psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='CoursePI'" | grep -q 1 || docker exec postgres psql -U postgres -c "CREATE DATABASE \\"CoursePI\\""
+                  docker exec postgres psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='ClubEventPI'" | grep -q 1 || docker exec postgres psql -U postgres -c "CREATE DATABASE \\"ClubEventPI\\""
 
-                     # Verify databases were created
-                     docker exec postgres psql -U postgres -c "\\l"
+                  docker exec postgres psql -U postgres -c "\\l"
 
-                     # Start all other services
-                     REGISTRY=${REGISTRY} TAG=${TAG} \
-                     docker compose up -d --no-build --remove-orphans
-                 """
-             }
-         }
+                  REGISTRY=${REGISTRY} TAG=${TAG} \
+                  docker compose up -d --no-build --remove-orphans
+              """
+          }
+      }
     }
 
     post {
