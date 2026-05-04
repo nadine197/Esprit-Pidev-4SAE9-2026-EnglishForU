@@ -140,21 +140,26 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh """
-                    REGISTRY=${REGISTRY} TAG=${TAG} \
-                    docker compose down --remove-orphans || true
+    stage('Deploy') {
+        steps {
+            sh """
+                # Tear down all compose-managed containers
+                REGISTRY=${REGISTRY} TAG=${TAG} \
+                docker compose down --remove-orphans || true
 
-                    docker rm -f sonar-db sonarqube prometheus grafana || true
+                # Force-remove any surviving containers by name
+                docker rm -f sonar-db sonarqube prometheus grafana postgres || true
 
-                    sleep 3
+                # Clear stuck network
+                docker network rm englishforu-pipeline_microservices-net || true
 
-                    REGISTRY=${REGISTRY} TAG=${TAG} \
-                    docker compose up -d --no-build --remove-orphans
-                """
-            }
+                sleep 3
+
+                REGISTRY=${REGISTRY} TAG=${TAG} \
+                docker compose up -d --no-build --remove-orphans
+            """
         }
+    }
     }
 
     post {

@@ -1,4 +1,4 @@
-version: "3.9"
+name: englishforu-pipeline
 
 x-eureka-only: &eureka-only
   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
@@ -41,7 +41,7 @@ services:
       start_period: 20s
 
   eureka-server:
-    image: ${REGISTRY:-local}/eureka-server:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/eureka-server:${TAG:-latest}
     container_name: eureka-server
     restart: unless-stopped
     ports:
@@ -63,7 +63,7 @@ services:
       start_period: 60s
 
   config-server:
-    image: ${REGISTRY:-local}/config-server:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/config-server:${TAG:-latest}
     container_name: config-server
     restart: unless-stopped
     ports:
@@ -88,7 +88,7 @@ services:
       start_period: 60s
 
   gateway:
-    image: ${REGISTRY:-local}/gateway:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/gateway:${TAG:-latest}
     container_name: gateway
     restart: unless-stopped
     ports:
@@ -115,7 +115,7 @@ services:
       start_period: 90s
 
   user-service:
-    image: ${REGISTRY:-local}/user-service:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/user-service:${TAG:-latest}
     container_name: user-service
     restart: unless-stopped
     ports:
@@ -145,7 +145,7 @@ services:
       start_period: 90s
 
   appointment-service:
-    image: ${REGISTRY:-local}/appointment-service:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/appointment-service:${TAG:-latest}
     container_name: appointment-service
     restart: unless-stopped
     ports:
@@ -175,7 +175,7 @@ services:
       start_period: 90s
 
   club-service:
-    image: ${REGISTRY:-local}/club-service:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/club-service:${TAG:-latest}
     container_name: club-service
     restart: unless-stopped
     ports:
@@ -205,7 +205,7 @@ services:
       start_period: 90s
 
   course-service:
-    image: ${REGISTRY:-local}/course-service:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/course-service:${TAG:-latest}
     container_name: course-service
     restart: unless-stopped
     ports:
@@ -238,7 +238,7 @@ services:
       start_period: 90s
 
   discussion-service:
-    image: ${REGISTRY:-local}/discussion-service:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/discussion-service:${TAG:-latest}
     container_name: discussion-service
     restart: unless-stopped
     ports:
@@ -268,7 +268,7 @@ services:
       start_period: 120s
 
   package-service:
-    image: ${REGISTRY:-local}/package-service:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/package-service:${TAG:-latest}
     container_name: package-service
     restart: unless-stopped
     ports:
@@ -298,7 +298,7 @@ services:
       start_period: 90s
 
   quiz-service:
-    image: ${REGISTRY:-local}/quiz-service:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/quiz-service:${TAG:-latest}
     container_name: quiz-service
     restart: unless-stopped
     ports:
@@ -329,7 +329,7 @@ services:
       start_period: 90s
 
   frontend:
-    image: ${REGISTRY:-local}/frontend:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/frontend:${TAG:-latest}
     container_name: frontend
     restart: unless-stopped
     ports:
@@ -390,7 +390,7 @@ services:
     build:
       context: ./monitoring
       dockerfile: Dockerfile.prometheus
-    image: ${REGISTRY:-local}/prometheus:${TAG:-latest}
+    image: ${REGISTRY:-khalilsahnoun}/prometheus:${TAG:-latest}
     container_name: prometheus
     restart: unless-stopped
     ports:
@@ -417,7 +417,6 @@ services:
 networks:
   microservices-net:
     driver: bridge
-    name: microservices-net
 
 volumes:
   postgres_data:
