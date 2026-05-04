@@ -34,6 +34,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Autoriser OPTIONS sur toutes les routes (pré-flight)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/error").permitAll() // <--- AJOUTE CETTE LIGNE
 
                         // ✅ Endpoints publics (pas besoin de token)

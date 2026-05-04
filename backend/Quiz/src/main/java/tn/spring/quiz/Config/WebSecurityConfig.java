@@ -29,7 +29,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // ✅ Autoriser OPTIONS (pré-flight) pour n'importe quelle URL
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        
+                        .requestMatchers("/actuator/prometheus").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         // ✅ PUBLIC GROQ ENDPOINTS - Allow any user to interact with Groq AI
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/evaluations/motivation-suggestions").permitAll()
 
