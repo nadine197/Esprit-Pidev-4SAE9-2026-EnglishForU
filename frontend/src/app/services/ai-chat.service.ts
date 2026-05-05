@@ -11,7 +11,7 @@ export interface ChatMessage {
 @Injectable({ providedIn: 'root' })
 export class AiChatService {
   private apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
-  private apiKey = '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';
+  private apiKey = '';
   private gatewayUrl = environment.gatewayUrl;
   private conversationHistory: ChatMessage[] = [];
   private httpDirect: HttpClient;
