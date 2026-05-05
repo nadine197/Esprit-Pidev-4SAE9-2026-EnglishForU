@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="" />
+    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="inhance pom xml for appointment">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,7 +54,7 @@
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;Spring Boot.EurekaApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;fetcher/fixfromzip&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -71,7 +75,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.AppointmentApplication">
     <configuration name="AppointmentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Appointment" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.appointment.AppointmentApplication" />
@@ -170,6 +174,8 @@
       <workItem from="1777644527720" duration="239000" />
       <workItem from="1777724908484" duration="2373000" />
       <workItem from="1777813126943" duration="1469000" />
+      <workItem from="1777974757991" duration="738000" />
+      <workItem from="1778011200228" duration="685000" />
     </task>
     <task id="LOCAL-00001" summary="permit actuator health endpoint in csecurity config for apigateay to test health">
       <option name="closed" value="true" />
