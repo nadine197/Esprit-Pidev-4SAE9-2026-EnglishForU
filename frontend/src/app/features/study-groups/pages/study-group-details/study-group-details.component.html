@@ -1,0 +1,39 @@
+<div *ngIf="group" class="details-card">
+
+  <h2>{{group.name}}</h2>
+
+  <p><strong>ID:</strong> {{group.groupId}}</p>
+  <p><strong>Level:</strong> {{group.level}}</p>
+  <p><strong>Location:</strong> {{group.location}}</p>
+  <p><strong>Max Capacity:</strong> {{group.maxCapacity}}</p>
+  <p><strong>Start Date:</strong> {{group.startdate | date}}</p>
+  <p><strong>End Date:</strong> {{group.enddate | date}}</p>
+  <p><strong>Status:</strong> {{group.status}}</p>
+  <p><strong>Course ID:</strong> {{group.courseId}}</p>
+  <p><strong>Tutor ID:</strong> {{group.tutorId}}</p>
+
+  <div>
+    <strong>Students:</strong>
+    <ul>
+      <li *ngFor="let s of group.studentsIds">
+        {{s}}
+      </li>
+    </ul>
+  </div>
+
+  <button
+    [routerLink]="['/study-groups/edit', group.groupId]"
+    class="btn-edit">
+    Edit
+  </button>
+
+</div>
+
+<!-- ✅ Chatbot avec contexte -->
+<button class="chatbot-floating-btn" (click)="showChatbot = !showChatbot">
+  💬
+</button>
+
+<div class="chatbot-box-details" *ngIf="showChatbot">
+  <app-chatbot [groupId]="group.groupId"></app-chatbot>
+</div>

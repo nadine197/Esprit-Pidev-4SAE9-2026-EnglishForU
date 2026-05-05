@@ -1,0 +1,49 @@
+<router-outlet></router-outlet>
+
+<ng-container *ngIf="isUserConnected()">
+
+  <div class="fixed bottom-6 right-6 z-[10000] flex flex-col items-end">
+    <button (click)="toggleChat()"
+            class="w-14 h-14 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-all active:scale-95"
+            [ngClass]="chatMode === 'none' ? 'bg-[#0066FF]' : 'bg-slate-800'">
+      <span *ngIf="chatMode === 'none'" class="text-2xl">💬</span>
+      <span *ngIf="chatMode !== 'none'" class="text-xl font-bold text-white">×</span>
+    </button>
+  </div>
+
+  <div *ngIf="chatMode === 'selector'"
+       class="fixed bottom-24 right-6 w-[280px] bg-white shadow-2xl rounded-[24px] border border-slate-100 z-[9999] overflow-hidden">
+    <div class="p-5 bg-slate-900 text-white">
+      <p class="font-bold text-base">Chat</p>
+      <p class="text-[11px] text-slate-400 mt-0.5">Choose how you want to chat</p>
+    </div>
+    <div class="p-3 space-y-2">
+      <button (click)="selectChat('ai')"
+              class="w-full flex items-center gap-3 p-4 rounded-2xl border border-slate-100 hover:border-purple-400 hover:bg-purple-50/50 transition-all text-left group">
+        <div class="w-11 h-11 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform">
+          🤖
+        </div>
+        <div>
+          <p class="font-bold text-slate-800 text-sm">AI Assistant</p>
+          <p class="text-[11px] text-slate-400">Get help finding clubs & events</p>
+        </div>
+        <svg class="ml-auto text-slate-300 group-hover:text-purple-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+      <button (click)="selectChat('group')"
+              class="w-full flex items-center gap-3 p-4 rounded-2xl border border-slate-100 hover:border-blue-400 hover:bg-blue-50/50 transition-all text-left group">
+        <div class="w-11 h-11 bg-[#0066FF] rounded-full flex items-center justify-center text-lg shrink-0 group-hover:scale-110 transition-transform">
+          💬
+        </div>
+        <div>
+          <p class="font-bold text-slate-800 text-sm">Group Chat</p>
+          <p class="text-[11px] text-slate-400">Talk with your study groups</p>
+        </div>
+        <svg class="ml-auto text-slate-300 group-hover:text-blue-500 transition-colors shrink-0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </div>
+
+  <app-ai-chat-widget [isOpen]="chatMode === 'ai'"></app-ai-chat-widget>
+  <app-chat-widget [isOpen]="chatMode === 'group'"></app-chat-widget>
+
+</ng-container>

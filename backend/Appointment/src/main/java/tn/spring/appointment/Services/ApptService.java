@@ -1,0 +1,135 @@
+package tn.spring.appointment.Services;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import tn.spring.appointment.Enums.ApptStatus;
+import tn.spring.appointment.Enums.LocationType;
+import tn.spring.appointment.Models.Appointment;
+import tn.spring.appointment.Models.Availability;
+import tn.spring.appointment.Models.DiscussionGroup;
+import tn.spring.appointment.Repositories.ApptRepository;
+import tn.spring.appointment.Repositories.AvailabilityRepository;
+import tn.spring.appointment.Repositories.GroupRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.Random;
+
+@Service
+public class ApptService {
+
+    private final ApptRepository apptRepository;
+    private final AvailabilityRepository availabilityRepository;
+    private final NotificationService notificationService;
+    private final GroupRepository groupRepository;
+
+    public ApptService(ApptRepository apptRepository, AvailabilityRepository availabilityRepository, NotificationService notificationService, GroupRepository groupRepository) {
+        this.apptRepository = apptRepository;
+        this.availabilityRepository = availabilityRepository;
+        this.notificationService = notificationService;
+        this.groupRepository = groupRepository;
+    }
+
+    public Appointment book(Appointment appt) {
+        appt.setStatus(ApptStatus.PENDING);
+        // Génération du code d'accès à 6 chiffres
+        String code = String.format("%06d", new Random().nextInt(1000000));
+        appt.setAccessCode(code);
+        return apptRepository.save(appt);
+    }
+
+    public Appointment verifyAccess(String email, String code) {
+        return apptRepository.findByVisitorEmailAndAccessCode(email, code)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Email or Access Code"));
+    }
+
+    public List<Availability> getAvailableSlots() {
+        return availabilityRepository.findByIsBookedFalse();
+    }
+
+    public Availability addAvailability(Availability slot) {
+        if (slot.getEndTime().isBefore(slot.getStartTime())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "End time must be after start time");
+        }
+        slot.setIsBooked(false);
+        return availabilityRepository.save(slot);
+    }
+
+    public Page<Appointment> findAllPaged(String search, Pageable pageable) {
+        if (search == null || search.isEmpty()) {
+            return apptRepository.findAll(pageable);
+        }
+        return apptRepository.findByVisitorNameContainingIgnoreCaseOrVisitorEmailContainingIgnoreCase(search, search, pageable);
+    }
+
+    @Transactional
+    public Appointment updateStatus(UUID id, ApptStatus status, String result, String score, Integer cheatCount) {
+        Appointment appt = apptRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        appt.setStatus(status);
+        if (result != null) appt.setLevelResult(result);
+        if (score != null) appt.setQcmScore(score);
+
+        // Enregistrement de la sécurité (Anti-triche)
+        appt.setTabSwitchCount(cheatCount != null ? cheatCount : 0);
+
+        Appointment saved = apptRepository.save(appt);
+
+        String subject = "EnglishForU - Update on your Appointment";
+        String message = "Hello " + appt.getVisitorName() + ",\n\n";
+
+        if (status == ApptStatus.CONFIRMED) {
+            message += "Your placement test is CONFIRMED.\n";
+            message += "Mode: " + appt.getLocationType() + "\n";
+            message += "Date: " + appt.getAppointmentDate() + "\n\n";
+            message += "YOUR ACCESS CODE: " + appt.getAccessCode() + "\n";
+            message += "Use this code on our homepage to start your test.";
+        }
+        else if (status == ApptStatus.COMPLETED) {
+            message += "Congratulations! You have completed your test.\n";
+            message += "Score: " + score + "\n";
+            message += "Level: " + result + "\n";
+
+            if (cheatCount != null && cheatCount > 0) {
+                message += "\nNote: Our system detected that you left the test page " + cheatCount + " time(s).";
+            }
+        }
+
+        notificationService.sendEmail(appt.getVisitorEmail(), subject, message);
+        return saved;
+    }
+
+    @Transactional
+    public Appointment reschedule(UUID id, LocalDateTime newDate) {
+        Appointment appt = apptRepository.findById(id).orElseThrow();
+        appt.setAppointmentDate(newDate);
+        Appointment saved = apptRepository.save(appt);
+
+        String text = "Your EnglishForU test has been rescheduled to: " + newDate;
+        notificationService.sendEmail(appt.getVisitorEmail(), "Appointment Rescheduled", text);
+        notificationService.sendSms(appt.getVisitorPhone(), text);
+
+        return saved;
+    }
+
+    // ✅ FIX : Méthode renommée et mise à jour pour utiliser l'Email
+    public List<DiscussionGroup> getGroupsByUserEmail(String email) {
+        // Appelle la méthode correcte définie dans le GroupRepository
+        return groupRepository.findByTutorEmailOrStudentEmailsContaining(email, email);
+    }
+
+    public Page<Appointment> findAllPagedAdvanced(String search, ApptStatus status, LocationType location, Boolean suspicious, Pageable pageable) {
+        String searchPattern = null;
+        if (search != null && !search.trim().isEmpty()) {
+            searchPattern = "%" + search.trim().toLowerCase() + "%";
+        }
+        return apptRepository.findAllWithFilters(searchPattern, status, location, suspicious, pageable);
+    }
+}

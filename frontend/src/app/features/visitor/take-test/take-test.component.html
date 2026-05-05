@@ -1,0 +1,66 @@
+<div class="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4"
+     (copy)="$event.preventDefault()" 
+     (paste)="$event.preventDefault()" 
+     (contextmenu)="$event.preventDefault()">
+  
+  <div class="w-full max-w-2xl bg-white rounded-[40px] shadow-2xl border border-slate-100 p-8 md:p-12 relative overflow-hidden">
+    
+    <!-- ÉTAT : EN COURS -->
+    <div *ngIf="!testFinished">
+      <div class="flex justify-between items-center mb-6">
+        <span class="text-[10px] font-black uppercase text-blue-600 tracking-widest flex items-center gap-2">
+          <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+          Security Active
+        </span>
+        <span class="text-xs font-bold text-slate-400">Question {{currentQuestionIndex + 1}} / {{questions.length}}</span>
+      </div>
+
+      <!-- Barre de progression -->
+      <div class="w-full h-1.5 bg-slate-100 rounded-full mb-10">
+        <div class="h-full bg-blue-600 rounded-full transition-all duration-500" 
+             [style.width.%]="((currentQuestionIndex + 1) / questions.length) * 100"></div>
+      </div>
+
+      <h2 class="text-2xl font-black text-slate-900 mb-8">
+        {{ questions[currentQuestionIndex].q }}
+      </h2>
+
+      <div class="grid grid-cols-1 gap-4">
+        <button *ngFor="let option of questions[currentQuestionIndex].options"
+                (click)="selectOption(option)"
+                class="w-full text-left p-5 border-2 border-slate-100 rounded-2xl font-bold text-slate-600 hover:border-blue-600 hover:bg-blue-50 hover:text-blue-600 transition-all">
+          {{ option }}
+        </button>
+      </div>
+
+      <p class="mt-8 text-center text-[10px] text-slate-400 font-medium uppercase tracking-widest">
+        Note: Leaving this page will be reported to the admin.
+      </p>
+    </div>
+
+    <!-- ÉTAT : TERMINÉ -->
+    <div *ngIf="testFinished" class="text-center py-10 animate-in zoom-in duration-500">
+      <div class="w-24 h-24 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-8 text-4xl">🎓</div>
+      
+      <h2 class="text-4xl font-black text-slate-900 mb-2">Test Finished!</h2>
+      <p class="text-slate-500 mb-10">Your results have been securely sent to the administration.</p>
+      
+      <div class="grid grid-cols-2 gap-4 mb-10">
+        <div class="bg-slate-50 rounded-3xl p-6 border border-slate-100">
+          <span class="text-[10px] font-black uppercase text-slate-400 block mb-1">Correct Answers</span>
+          <div class="text-3xl font-black text-slate-900">{{score}} / {{questions.length}}</div>
+        </div>
+        <div class="bg-blue-50 rounded-3xl p-6 border border-blue-100">
+          <span class="text-[10px] font-black uppercase text-blue-400 block mb-1">Your Level</span>
+          <div class="text-xl font-black text-blue-600">{{finalLevel}}</div>
+        </div>
+      </div>
+
+      <button (click)="goHome()" 
+              class="h-16 w-full bg-slate-900 text-white rounded-2xl font-black hover:bg-slate-800 transition-all shadow-xl shadow-slate-200">
+        GO BACK HOME
+      </button>
+    </div>
+
+  </div>
+</div>
