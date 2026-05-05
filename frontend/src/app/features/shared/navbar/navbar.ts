@@ -11,12 +11,21 @@ export class NavbarComponent implements OnInit {
   currentUser: any = null; // Ajouté pour corriger l'erreur
 
   // Ajouté pour corriger l'erreur navLinks
+  get quizPath() {
+    return '/student-quizzes';
+  }
+
+  get evaluationPath() {
+    return '/student-evaluations';
+  }
+
   navLinks = [
     { label: "Courses", path: "/courses", fragment: '' },
     { label: "Pricing", path: "/", fragment: "pricing" },
-    { label: "Testimonials", path: "/", fragment: "testimonials" },
+    { label: "Quizzes", path: null, dynamic: 'quiz' },
+    { label: "Evaluations", path: null, dynamic: 'evaluation' },
     { label: "Contact", path: "/", fragment: "footer" },
-          { label: "Book a Test", path: "/book-test" },
+    { label: "Book a Test", path: "/book-test" },
   ];
 
   constructor(private authService: AuthService, private router: Router) {}

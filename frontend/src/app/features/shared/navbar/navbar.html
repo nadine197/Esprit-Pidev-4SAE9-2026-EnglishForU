@@ -10,9 +10,17 @@
 
     <!-- Desktop Nav Links -->
     <nav class="hidden items-center gap-8 md:flex">
-      <a *ngFor="let link of navLinks" [routerLink]="link.path" [fragment]="link.fragment" class="text-sm font-medium text-slate-500 hover:text-[#0066FF] transition-colors no-underline">
-        {{ link.label }}
-      </a>
+      <ng-container *ngFor="let link of navLinks">
+        <a *ngIf="!link.dynamic" [routerLink]="link.path" [fragment]="link.fragment" class="text-sm font-medium text-slate-500 hover:text-[#0066FF] transition-colors no-underline">
+          {{ link.label }}
+        </a>
+        <a *ngIf="link.dynamic === 'quiz'" [routerLink]="quizPath" class="text-sm font-medium text-slate-500 hover:text-[#0066FF] transition-colors no-underline">
+          {{ link.label }}
+        </a>
+        <a *ngIf="link.dynamic === 'evaluation'" [routerLink]="evaluationPath" class="text-sm font-medium text-slate-500 hover:text-[#0066FF] transition-colors no-underline">
+          {{ link.label }}
+        </a>
+      </ng-container>
     </nav>
 
     <div class="flex items-center gap-3">

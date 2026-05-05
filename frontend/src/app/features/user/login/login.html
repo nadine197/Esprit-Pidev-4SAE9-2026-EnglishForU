@@ -61,6 +61,10 @@
           class="w-full h-13 bg-[#0066FF] text-white rounded-2xl font-bold text-base hover:bg-[#0052cc] transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-blue-500/25 mt-2">
           Sign In
         </button>
+
+        <p *ngIf="errorMessage" class="text-sm font-medium text-red-600 text-center">
+          {{ errorMessage }}
+        </p>
       </form>
 
       <!-- Divider -->

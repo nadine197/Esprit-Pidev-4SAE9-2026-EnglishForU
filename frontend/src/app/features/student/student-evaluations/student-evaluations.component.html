@@ -1,0 +1,78 @@
+<div class="min-h-screen bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)]">
+  <app-navbar></app-navbar>
+
+  <section class="px-4 pb-20 pt-14">
+    <div class="mx-auto max-w-5xl">
+      <header class="rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
+        <p class="text-xs font-black uppercase tracking-[0.2em] text-[#0066FF]">My Evaluations</p>
+        <h1 class="mt-2 text-4xl font-black text-slate-900">
+          Learning Feedback{{ currentUser?.name ? ', ' + currentUser.name : '' }}
+        </h1>
+        <p class="mt-3 text-sm leading-7 text-slate-500">
+          Review the evaluation notes shared by your tutors and admins, and use them to improve your next quiz attempt.
+        </p>
+      </header>
+
+      <div *ngIf="loading" class="mt-6 rounded-[26px] border border-slate-200 bg-white px-6 py-10 text-center text-slate-500 shadow-sm">
+        Loading your evaluations...
+      </div>
+
+      <div *ngIf="!loading && errorMessage" class="mt-6 rounded-[26px] border border-red-200 bg-red-50 px-6 py-4 text-sm font-medium text-red-700 shadow-sm">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="!loading && !errorMessage && !evaluations.length" class="mt-6 rounded-[26px] border border-dashed border-slate-200 bg-white px-6 py-10 text-center shadow-sm">
+        <h2 class="text-xl font-black text-slate-900">No evaluations yet</h2>
+        <p class="mt-2 text-sm text-slate-500">
+          Once your tutor adds feedback, it will appear here.
+        </p>
+      </div>
+
+      <div *ngIf="!loading && evaluations.length" class="mt-6 space-y-4">
+        <article
+          *ngFor="let evaluation of evaluations; trackBy: trackByEvaluationId"
+          class="rounded-[26px] border border-slate-200 bg-white p-6 shadow-sm"
+        >
+          <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900">{{ evaluation.title }}</h2>
+              <p class="mt-2 text-sm text-slate-500">{{ evaluation.feedback }}</p>
+              <p class="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                Shared {{ evaluation.createdAt | date: 'medium' }}
+              </p>
+            </div>
+
+            <div class="flex flex-col items-start gap-2 md:items-end">
+              <span *ngIf="evaluation.rating != null" class="rounded-full bg-blue-50 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-[#0066FF]">
+                Rating: {{ evaluation.rating }}/5
+              </span>
+              <span *ngIf="evaluation.quizTitle" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                {{ evaluation.quizTitle }}
+              </span>
+              <span *ngIf="evaluation.scoreSnapshot != null" class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Score {{ evaluation.scoreSnapshot }}%
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-4 grid gap-3 md:grid-cols-3">
+            <div *ngIf="evaluation.strengths" class="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-900">
+              <p class="text-xs font-black uppercase tracking-[0.14em] text-emerald-700">Strengths</p>
+              <p class="mt-1">{{ evaluation.strengths }}</p>
+            </div>
+            <div *ngIf="evaluation.areasToImprove" class="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">
+              <p class="text-xs font-black uppercase tracking-[0.14em] text-amber-700">Areas To Improve</p>
+              <p class="mt-1">{{ evaluation.areasToImprove }}</p>
+            </div>
+            <div *ngIf="evaluation.recommendedActions" class="rounded-xl bg-sky-50 p-3 text-sm text-sky-900">
+              <p class="text-xs font-black uppercase tracking-[0.14em] text-sky-700">Recommended Actions</p>
+              <p class="mt-1">{{ evaluation.recommendedActions }}</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <app-footer></app-footer>
+</div>

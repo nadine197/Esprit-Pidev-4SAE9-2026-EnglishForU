@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
@@ -12,29 +18,45 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('token');
+    const isAuthEndpoint = req.url.includes('/api/auth/');
 
-    let authReq = req;
-    if (token) {
-      authReq = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
+    const authReq = token && !isAuthEndpoint
+      ? req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+      : req;
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 || error.status === 403) {
-          const isLoggedIn = !!localStorage.getItem('token');
-          if (!isLoggedIn) {
-            // Session truly expired or not logged in — redirect
-            this.authService.logout();
-            this.router.navigate(['/login']);
-          }
-          // If user is still logged in, a background request (e.g. chat-widget)
-          // got a 401 — do NOT redirect, just propagate the error silently
+        const isUnauthorized = error.status === 401 || error.status === 403;
+        const isRefreshCall = req.url.includes('/api/auth/refresh');
+
+        if (!isUnauthorized || isRefreshCall) {
+          return throwError(() => error);
         }
-        return throwError(() => error);
+
+        return this.authService.refreshToken().pipe(
+          switchMap((res: any) => {
+            const newToken = res?.token || localStorage.getItem('token');
+            if (!newToken) {
+              this.authService.logout();
+              return throwError(() => error);
+            }
+
+            const retriedReq = req.clone({
+              setHeaders: {
+                Authorization: `Bearer ${newToken}`
+              }
+            });
+            return next.handle(retriedReq);
+          }),
+          catchError(() => {
+            this.authService.logout();
+            return throwError(() => error);
+          })
+        );
       })
     );
   }
