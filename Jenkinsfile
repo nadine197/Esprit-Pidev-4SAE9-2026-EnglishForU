@@ -46,9 +46,9 @@ pipeline {
                                 cd ${svc.path}
                                 mvn sonar:sonar \
                                     -Dsonar.projectKey=${svc.name} \
-                                    -Dsonar.host.url=http://sonarqube:9000 \
+                                    -Dsonar.host.url=http://localhost:9000 \
                                     -Dsonar.token=${SONAR_TOKEN} \
-                                    -DskipTests -B || true
+                                    -DskipTests -B 
                                 cd -
                             """
                         }
