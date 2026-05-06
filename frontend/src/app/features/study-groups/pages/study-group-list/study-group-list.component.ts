@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { StudyGroupService } from '../../../../services/study-group.service';
 import { StudyGroup } from '../../models/study-group';
 import {
   StudyGroupNotificationService,
   GroupNotification
 } from '../../../../services/study-group-notification.service';
+import { StudyGroupService } from 'src/app/services/study-group.service';
 
 @Component({
   selector: 'app-study-group-list',

@@ -4,34 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="config twilio account sid for appointment service">
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/sidebar/sidebar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/sidebar/sidebar.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/tutor-sidebar/tutor-sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/tutor-sidebar/tutor-sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/student/student-home/student-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/student/student-home/student-home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/guards/auth.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/guards/auth.interceptor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/tsconfig.app.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/tsconfig.app.json" afterDir="false" />
-    </list>
+    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="permit container front acces gateway permit *" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -243,6 +216,7 @@
       <workItem from="1775908493807" duration="2744000" />
       <workItem from="1777976924169" duration="2751000" />
       <workItem from="1778002547002" duration="413000" />
+      <workItem from="1778014607495" duration="220000" />
     </task>
     <task id="LOCAL-00001" summary="add name to servcie in app properties to label it in prometheus">
       <option name="closed" value="true" />
@@ -260,7 +234,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778002922425</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="permit container front acces gateway permit *">
+      <option name="closed" value="true" />
+      <created>1778014742653</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778014742653</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -269,6 +251,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add name to servcie in app properties to label it in prometheus" />
     <MESSAGE value="config twilio account sid for appointment service" />
-    <option name="LAST_COMMIT_MESSAGE" value="config twilio account sid for appointment service" />
+    <MESSAGE value="permit container front acces gateway permit *" />
+    <option name="LAST_COMMIT_MESSAGE" value="permit container front acces gateway permit *" />
   </component>
 </project>

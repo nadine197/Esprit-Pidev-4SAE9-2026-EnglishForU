@@ -21,7 +21,9 @@
             ],
             "allowedCommonJsDependencies": [
     "sockjs-client",
-    "@stomp/stompjs"
+    "@stomp/stompjs",
+    "leaflet",
+    "chart.js"
   ],
             "tsConfig": "tsconfig.app.json",
             "assets": [

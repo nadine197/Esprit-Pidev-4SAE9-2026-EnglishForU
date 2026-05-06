@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './guards/auth.interceptor';
 
@@ -23,6 +22,8 @@ import { CheckoutComponent } from './features/checkout/checkout.component';
 import { PaymentResultComponent } from './features/payment-result/payment-result.component';
 import { PaymentManagementComponent } from './features/payment-management/payment-management.component';
 import { ChatWidgetComponent } from './features/shared/chat-widget/chat-widget';
+import { AiChatWidgetComponent } from './features/shared/ai-chat-widget/ai-chat-widget';
+import { FormatAiMessagePipe } from './pipes/format-ai-message.pipe';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { AppointmentModule } from './features/Appointment/appointment.module';
 import { VisitorModule } from './features/visitor/visitor.module';
@@ -44,6 +45,8 @@ import { StudentEvaluationsPageComponent } from './features/student/student-eval
     PaymentResultComponent,
     PaymentManagementComponent,
     ChatWidgetComponent,
+    AiChatWidgetComponent,
+    FormatAiMessagePipe,
     DiscussionMgmtComponent,
     QuizManagementComponent,
     QuizComponent,
@@ -64,8 +67,10 @@ import { StudentEvaluationsPageComponent } from './features/student/student-eval
     UserModule,
     AdminModule,
     TutorModule,
-  
+
     StudentModule,
+    ReactiveFormsModule,
+    FormsModule,
     AppointmentModule,
     VisitorModule,
 

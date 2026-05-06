@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { StudyGroupService } from '../../../services/study-group.service';
+import { StudyGroupService } from 'src/app/services/study-group.service';
 
 interface Message {
   role: 'user' | 'bot';

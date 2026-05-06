@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
- title = 'EnglishForU';
+  title = 'EnglishForU';
+  chatMode: 'none' | 'selector' | 'ai' | 'group' = 'none';
 
   constructor(private router: Router) {}
 
@@ -16,8 +17,22 @@ export class AppComponent {
   isUserConnected(): boolean {
     const user = localStorage.getItem('user');
     const token = localStorage.getItem('token');
-    
-    // Si on a un utilisateur ET un token, on considère qu'il est connecté
     return user !== null && token !== null;
+  }
+
+  toggleChat() {
+    if (this.chatMode === 'none') {
+      this.chatMode = 'selector';
+    } else {
+      this.chatMode = 'none';
+    }
+  }
+
+  selectChat(mode: 'ai' | 'group') {
+    this.chatMode = mode;
+  }
+
+  backToSelector() {
+    this.chatMode = 'selector';
   }
 }

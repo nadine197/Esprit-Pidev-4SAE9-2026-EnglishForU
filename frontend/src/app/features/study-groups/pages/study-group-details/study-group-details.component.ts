@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StudyGroupService } from '../../../../services/study-group.service';
+import { StudyGroupService } from 'src/app/services/study-group.service';
 import { StudyGroup } from '../../models/study-group';
 import { StudyGroupNotificationService } from '../../../../services/study-group-notification.service';
 

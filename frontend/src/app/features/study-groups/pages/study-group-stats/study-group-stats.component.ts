@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { StudyGroupService } from '../../../../services/study-group.service';
+import { StudyGroupService } from 'src/app/services/study-group.service';
 
 @Component({
   selector: 'app-study-group-stats',

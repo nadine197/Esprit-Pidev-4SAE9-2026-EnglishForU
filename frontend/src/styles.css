@@ -22,3 +22,10 @@ body {
   font-family: 'Inter', sans-serif;
   margin: 0;
 }
+
+.ai-link {
+  color: #7c3aed;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
