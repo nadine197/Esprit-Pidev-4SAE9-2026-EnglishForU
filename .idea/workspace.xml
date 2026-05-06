@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="merge quiz and clube event" />
+    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="merge with club event in main" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,7 +50,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.EurekaApplication.executor": "Run",
-    "git-widget-placeholder": "yasmine",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/4 eme Esprit/PI/new main/Esprit-Pidev-4SAE9-2026-EnglishForU",
     "node.js.detected.package.eslint": "true",
@@ -59,7 +59,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.configurations.included.in.services": "true",
-    "ts.external.directory.path": "C:\\4 eme Esprit\\PI\\branch fetched from zip\\Esprit-Pidev-4SAE9-2026-EnglishForU\\frontend\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -232,7 +232,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778065854957</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="merge with club event in main">
+      <option name="closed" value="true" />
+      <created>1778067785964</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1778067785964</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -260,6 +268,7 @@
     <MESSAGE value="inhance pom xml for appointment" />
     <MESSAGE value="merge with main" />
     <MESSAGE value="merge quiz and clube event" />
-    <option name="LAST_COMMIT_MESSAGE" value="merge quiz and clube event" />
+    <MESSAGE value="merge with club event in main" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge with club event in main" />
   </component>
 </project>
