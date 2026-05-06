@@ -1,0 +1,116 @@
+<div class="mx-auto max-w-4xl space-y-6 rounded-xl bg-white p-6">
+  <div *ngIf="noticeMessage" class="rounded-2xl px-4 py-4 text-sm font-medium"
+       [ngClass]="{
+         'border border-emerald-200 bg-emerald-50 text-emerald-700': noticeTone === 'success',
+         'border border-red-200 bg-red-50 text-red-700': noticeTone === 'error',
+         'border border-slate-200 bg-slate-50 text-slate-700': noticeTone !== 'success' && noticeTone !== 'error'
+       }">
+    {{ noticeMessage }}
+  </div>
+
+  <div>
+    <h2 class="text-2xl font-bold text-slate-900">
+      {{ quiz?.title || 'Loading...' }}
+    </h2>
+    <p class="mt-2 text-sm text-slate-500">Passing Score: {{ quiz?.passingScore }}%</p>
+  </div>
+
+  <div *ngIf="completionTitle" class="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-5">
+    <h3 class="text-lg font-black text-slate-900">{{ completionTitle }}</h3>
+    <p class="mt-2 text-sm leading-6 text-slate-700">{{ completionMessage }}</p>
+  </div>
+
+  <div class="space-y-6">
+    <div *ngFor="let q of (isEditMode ? (editedQuiz?.questions || []) : (quiz?.questions || [])); let i = index" class="rounded-2xl border border-slate-200 p-5">
+      <div *ngIf="!isEditMode">
+        <h4 class="text-lg font-bold text-slate-900">Q{{ i + 1 }}. {{ q.text }}</h4>
+
+        <div class="mt-4 space-y-3">
+          <label
+            *ngFor="let a of q.answers"
+            class="flex cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition-all"
+            [ngClass]="{
+              'border-blue-300 bg-blue-50': selectedAnswers[q.id] === a.id,
+              'border-emerald-300 bg-emerald-50': showCorrectAnswerMap[q.id] && correctAnswersMap[q.id] === a.id,
+              'border-slate-200 bg-white': selectedAnswers[q.id] !== a.id && (!showCorrectAnswerMap[q.id] || correctAnswersMap[q.id] !== a.id)
+            }"
+          >
+            <input
+              type="radio"
+              [name]="'q' + q.id"
+              [checked]="selectedAnswers[q.id] === a.id"
+              [disabled]="submitDisabled"
+              (change)="selectAnswer(q.id, a.id)"
+            />
+            <div class="flex-1">
+              <div class="text-sm font-medium text-slate-800">{{ a.text }}</div>
+              <div *ngIf="showCorrectAnswerMap[q.id] && correctAnswersMap[q.id] === a.id" class="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">
+                Correct answer
+              </div>
+              <div *ngIf="showCorrectAnswerMap[q.id] && selectedAnswers[q.id] === a.id && correctAnswersMap[q.id] !== a.id" class="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-amber-700">
+                Your answer
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div *ngIf="isEditMode" class="space-y-3">
+        <input [(ngModel)]="q.text" placeholder="Question" class="w-full rounded-xl border border-slate-200 px-4 py-3">
+
+        <div *ngFor="let a of q.answers; let ai = index" class="flex items-center gap-3">
+          <input [(ngModel)]="a.text" class="flex-1 rounded-xl border border-slate-200 px-4 py-3">
+          <label class="flex items-center gap-2 text-sm text-slate-600">
+            <input type="checkbox" [(ngModel)]="a.correct">
+            Correct
+          </label>
+          <button type="button" (click)="deleteAnswer(i, ai)" class="rounded-xl border border-red-200 px-3 py-2 text-sm font-bold text-red-600">
+            X
+          </button>
+        </div>
+
+        <div class="flex flex-wrap gap-3 pt-2">
+          <button type="button" (click)="addAnswer(q)" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700">
+            + Answer
+          </button>
+          <button type="button" (click)="deleteQuestion(q.id, i)" class="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600">
+            Delete Question
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button *ngIf="isEditMode" type="button" (click)="addQuestion()" class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700">
+    + Add Question
+  </button>
+
+  <div *ngIf="!isAdminQuizContext && (quiz?.questions?.length || 0) > 0" class="flex flex-wrap items-center gap-3">
+    <button
+      type="button"
+      (click)="submitQuiz()"
+      [disabled]="submitDisabled"
+      class="rounded-2xl bg-[#0066FF] px-6 py-3 text-sm font-bold text-white transition-all hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      {{ submitDisabled ? 'Submitting...' : 'Submit Quiz' }}
+    </button>
+
+    <button
+      *ngIf="passedQuiz"
+      type="button"
+      (click)="generateCertificate()"
+      [disabled]="certificateDownloading"
+      class="rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-3 text-sm font-bold text-emerald-700 transition-all hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      {{ certificateDownloading ? 'Preparing...' : 'Download Certificate' }}
+    </button>
+
+    <span *ngIf="passedQuiz" class="text-sm text-emerald-700">
+      We also send the certificate to your email with a QR code containing the certificate information.
+    </span>
+
+    <span *ngIf="!allQuestionsAnswered" class="text-sm text-amber-700">
+      Answer all questions to save your responses.
+    </span>
+  </div>
+</div>

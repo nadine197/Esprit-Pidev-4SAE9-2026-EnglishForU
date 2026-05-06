@@ -19,13 +19,26 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  private extractAccessToken(res: any): string | null {
+    return res?.token ?? res?.accessToken ?? res?.jwt ?? null;
+  }
+
+  private extractRefreshToken(res: any): string | null {
+    return res?.refreshToken ?? null;
+  }
+
   login(credentials: any): Observable<any> {
-  return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+  return this.http.post<any>(`${this.apiUrl}/login`, credentials, { withCredentials: true }).pipe(
     tap((res: any) => {
-      if (res && res.token) {
-        localStorage.setItem('token', res.token);
+      const token = this.extractAccessToken(res);
+      const refreshToken = this.extractRefreshToken(res);
+      if (token) {
+        localStorage.setItem('token', token);
         // Save the user object so the Guards and Components can see the Role
         localStorage.setItem('user', JSON.stringify(res.user)); 
+      }
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
       }
     })
   );
@@ -38,9 +51,27 @@ getUser() {
   return user ? JSON.parse(user) : null;
 }
 
+  refreshToken(): Observable<any> {
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+    const body = storedRefreshToken ? { refreshToken: storedRefreshToken } : {};
+    return this.http.post<any>(`${this.apiUrl}/refresh`, body, { withCredentials: true }).pipe(
+      tap((res: any) => {
+        const token = this.extractAccessToken(res);
+        const refreshToken = this.extractRefreshToken(res);
+        if (token) {
+          localStorage.setItem('token', token);
+        }
+        if (refreshToken) {
+          localStorage.setItem('refreshToken', refreshToken);
+        }
+      })
+    );
+  }
+
   // 3. AJOUTER cette méthode
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   }
 

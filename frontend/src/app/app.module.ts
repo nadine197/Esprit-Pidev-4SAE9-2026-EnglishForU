@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './features/shared/shared.module';
 
-import { CoursesComponent } from './features/courses/courses';
+
 
 import { UserModule } from './features/user-module';
 import { AdminModule } from './features/admin/admin-module';
@@ -27,11 +27,18 @@ import { FormatAiMessagePipe } from './pipes/format-ai-message.pipe';
 import { DiscussionMgmtComponent } from './features/discussion-mgmt/discussion-mgmt';
 import { AppointmentModule } from './features/Appointment/appointment.module';
 import { VisitorModule } from './features/visitor/visitor.module';
+import { QuizManagementComponent } from './features/admin/quiz-management/quiz-management.component';
+import { QuizComponent } from './features/quiz/quiz/quiz.component';
+import { AddQuizComponent } from './features/quiz/add-quiz/add-quiz.component';
+import { QuizDetailsComponent } from './features/quiz/quiz-details/quiz-details.component';
+import { StudentQuizzesComponent } from './features/student/student-quizzes/student-quizzes';
+import { StudentEvaluationsComponent } from './features/admin/student-evaluations/student-evaluations.component';
+import { StudentEvaluationsPageComponent } from './features/student/student-evaluations/student-evaluations.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CoursesComponent,
+
     PromoManagementComponent,
     PackageManagementComponent,
     CheckoutComponent,
@@ -41,6 +48,13 @@ import { VisitorModule } from './features/visitor/visitor.module';
     AiChatWidgetComponent,
     FormatAiMessagePipe,
     DiscussionMgmtComponent,
+    QuizManagementComponent,
+    QuizComponent,
+    AddQuizComponent,
+    QuizDetailsComponent,
+    StudentQuizzesComponent,
+    StudentEvaluationsComponent,
+    StudentEvaluationsPageComponent
   ],
   imports: [
     BrowserModule,

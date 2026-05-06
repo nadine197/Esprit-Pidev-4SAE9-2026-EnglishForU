@@ -10,6 +10,10 @@
         <option value="$PROJECT_DIR$/Gateway/pom.xml" />
         <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
         <option value="$PROJECT_DIR$/course-service/pom.xml" />
+        <option value="$PROJECT_DIR$/package_service/pom.xml" />
+        <option value="$PROJECT_DIR$/discussion-service/pom.xml" />
+        <option value="$PROJECT_DIR$/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/ClubEvent/pom.xml" />
       </list>
     </option>
   </component>

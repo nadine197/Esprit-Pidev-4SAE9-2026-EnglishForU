@@ -44,11 +44,11 @@ pipeline {
                         services.each { svc ->
                             sh """
                                 cd ${svc.path}
-                                mvn sonar:sonar \
+                                mvn clean verify sonar:sonar \
                                     -Dsonar.projectKey=${svc.name} \
                                     -Dsonar.host.url=http://sonarqube:9000 \
                                     -Dsonar.token=${SONAR_TOKEN} \
-                                    -DskipTests -B || true
+                                    -DskipTests -B 
                                 cd -
                             """
                         }

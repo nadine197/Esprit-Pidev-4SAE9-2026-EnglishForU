@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PackageOfferResponse } from 'src/app/models/package.models';
 import { PackageOfferService } from 'src/app/services/PackageService/package-offer.service';
+import { CourseService } from 'src/app/services/course.service';
+import { Course } from '../../courses/models/courses';
+import { AuthService } from '../../../services/auth.service';
 
 type UiPackageCard = {
   id: number;
   name: string;
-  price: number;        // number
+  price: number;
   popular: boolean;
   features: string[];
   durationLabel: string;
@@ -22,9 +25,11 @@ export class MainComponent implements OnInit {
 
   isLoadingPackages = false;
   packagesError: string | null = null;
+  isLoadingCourses = false;
 
   // This is what your template uses
   packages: UiPackageCard[] = [];
+  featuredCourses: any[] = [];
 
   features = [
     { title: 'Expert-Led Courses', desc: 'Comprehensive English programs designed by certified instructors.', icon: 'book' },
@@ -39,10 +44,44 @@ export class MainComponent implements OnInit {
     { name: 'Maria Rodriguez', role: 'General English', content: 'Starting from scratch, I’m now confidently speaking.' }
   ];
 
-  constructor(private router: Router,private packageOfferService: PackageOfferService) {}
+  isLoggedIn = false;
+
+  constructor(
+    private router: Router,
+    private packageOfferService: PackageOfferService,
+    private courseService: CourseService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
     this.loadActivePackages();
+    this.loadFeaturedCourses();
+  }
+
+  loadFeaturedCourses() {
+    this.isLoadingCourses = true;
+    this.courseService.getAll().subscribe({
+      next: (courses) => {
+        this.featuredCourses = courses.slice(0, 3).map(c => ({
+          ...c,
+          image: this.getRandomEmoji(c.title)
+        }));
+        this.isLoadingCourses = false;
+      },
+      error: (err) => {
+        console.error('Failed to load featured courses', err);
+        this.isLoadingCourses = false;
+      }
+    });
+  }
+
+  private getRandomEmoji(title: string): string {
+    const emojis = ['📚', '🎓', '💼', '🗣️', '📝', '🌟'];
+    let h = 0;
+    for(let i = 0; i < title.length; i++)
+        h = Math.imul(31, h) + title.charCodeAt(i) | 0;
+    return emojis[Math.abs(h) % emojis.length];
   }
 loadActivePackages(): void {
   this.isLoadingPackages = true;

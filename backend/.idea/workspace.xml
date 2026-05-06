@@ -4,15 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/clients/CourseClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/clients/StudyGroupDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/tn/spring/course/Clients/DiscussionClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Appointment/documentation/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Appointment/documentation/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Appointment/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Appointment/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/AppointmentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/AppointmentApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/Controllers/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/Controllers/GroupController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/pom.xml" afterDir="false" />
+    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="config twilio account sid for appointment service">
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/admin/dashboard/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/courses/courses.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/navbar/navbar.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/sidebar/sidebar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/sidebar/sidebar.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/shared/tutor-sidebar/tutor-sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/shared/tutor-sidebar/tutor-sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/student/student-home/student-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/student/student-home/student-home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/login/login.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/user/main/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/guards/auth.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/guards/auth.interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/tsconfig.app.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/tsconfig.app.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,39 +81,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.EurekaApplication.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.AppointmentApplication.executor": "Run",
-    "Spring Boot.CourseApplication.executor": "Run",
-    "Spring Boot.EurekaApplication.executor": "Run",
-    "Spring Boot.GatewayApplication (1).executor": "Run",
-    "Spring Boot.GatewayApplication.executor": "Run",
-    "Spring Boot.PackageApplication.executor": "Run",
-    "Spring Boot.UserApplication.executor": "Run",
-    "git-widget-placeholder": "AppointmentServer",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/khali/OneDrive/Bureau/Esprit-Pidev-4SAE9-2026-EnglishForU/backend",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.3034483",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.EurekaApplication.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AppointmentApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.CourseApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EurekaApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayApplication (1).executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.PackageApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/khali/OneDrive/Bureau/Esprit-Pidev-4SAE9-2026-EnglishForU/backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.3034483&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
   <component name="RunManager" selected="Spring Boot.CourseApplication">
     <configuration name="AppointmentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
@@ -107,6 +136,14 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClubEventApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="ClubEvent" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.clubevent.ClubEventApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -190,7 +227,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
       </set>
     </attachedChunks>
   </component>
@@ -203,10 +241,34 @@
       <option name="presentableId" value="Default" />
       <updated>1775908492262</updated>
       <workItem from="1775908493807" duration="2744000" />
+      <workItem from="1777976924169" duration="2751000" />
+      <workItem from="1778002547002" duration="413000" />
     </task>
+    <task id="LOCAL-00001" summary="add name to servcie in app properties to label it in prometheus">
+      <option name="closed" value="true" />
+      <created>1777977260903</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1777977260903</updated>
+    </task>
+    <task id="LOCAL-00002" summary="config twilio account sid for appointment service">
+      <option name="closed" value="true" />
+      <created>1778002922425</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1778002922425</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add name to servcie in app properties to label it in prometheus" />
+    <MESSAGE value="config twilio account sid for appointment service" />
+    <option name="LAST_COMMIT_MESSAGE" value="config twilio account sid for appointment service" />
   </component>
 </project>
