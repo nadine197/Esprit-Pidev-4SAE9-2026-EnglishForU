@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StudyGroupService } from '../../../../services/study-group.service';
 import { StudyGroup } from '../../models/study-group';
+import { StudyGroupService } from 'src/app/services/study-group.service';
 
 function uuidValidator(control: AbstractControl): ValidationErrors | null {
   const val = control.value;
