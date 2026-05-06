@@ -30,10 +30,10 @@ import { MyTicketsComponent } from './my-tickets/my-tickets';
     MyTicketsComponent
   ],
   imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule,
-    FormsModule,
+    CommonModule,   // Fixes ngClass, ngIf, ngFor
+    SharedModule,   // Fixes <app-navbar> and <app-footer>
+    RouterModule,  // Fixes routerLink
+     FormsModule,
     ReactiveFormsModule
   ]
 })

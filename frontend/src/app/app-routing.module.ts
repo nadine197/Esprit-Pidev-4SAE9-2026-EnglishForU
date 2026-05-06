@@ -61,29 +61,29 @@ const routes: Routes = [
   { path: 'payment-result', component: PaymentResultComponent },
   { path: 'book-test', component: BookTestComponent },
   { path: 'take-test', component: TakeTestComponent },
-  { 
-    path: 'admin', 
-    component: AdminLayoutComponent, 
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'promos', component: PromoManagementComponent },
       { path: 'payments', component: PaymentManagementComponent },
       { path: 'appointments', component: AppointmentMgmtComponent },
-      { path: 'discussions', component: DiscussionMgmtComponent }, 
+      { path: 'discussions', component: DiscussionMgmtComponent },
       { path: 'chat', component: ChatWidgetComponent },
       { path: 'packages', component: PackageManagementComponent },
       { path: 'users/:role', component: UserListComponent },
-      { 
-        path: 'courses', 
+      {
+        path: 'courses',
         loadChildren: () => import('./features/courses/courses.module').then(m => m.CoursesModule)
       },
-      { 
-        path: 'contents', 
+      {
+        path: 'contents',
         loadChildren: () => import('./features/contents/contents.module').then(m => m.ContentsModule)
       },
-      { 
-        path: 'study-groups', 
+      {
+        path: 'study-groups',
         loadChildren: () => import('./features/study-groups/study-groups.module').then(m => m.StudyGroupsModule)
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }

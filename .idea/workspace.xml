@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/backend.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Appointment/src/main/java/tn/spring/appointment/clients/CourseClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/Appointment/src/main/java/tn/spring/appointment/clients/StudyGroupDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/ClubEventApplication.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Communication/UserClient.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Config/CloudinaryConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Config/SecurityConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Config/WebConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Controllers/ClubController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Controllers/EventController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Controllers/FeedbackController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Controllers/ImageUploadController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Controllers/PaymentController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Enums/RequestStatus.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Filters/JwtAuthenticationFilter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Filters/JwtService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/Club$ClubBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/Club.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/ClubMembership$ClubMembershipBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/ClubMembership.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/Event$EventBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/Event.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/EventParticipation$EventParticipationBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/EventParticipation.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Models/Feedback.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Repositories/ClubMembershipRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Repositories/ClubRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Repositories/EventParticipationRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Repositories/EventRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Repositories/FeedbackRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Services/ClubService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Services/EmailService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Services/EventService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Services/FeedbackService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Services/PdfService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Services/StripeService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/classes/tn/spring/clubevent/Services/SupabaseStorageService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/test-classes/tn/spring/clubevent/Controllers/ClubControllerIntegrationTest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/ClubEvent/target/test-classes/tn/spring/clubevent/Services/FeedbackServiceTest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/DiscussionServiceApplication.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/config/CorsConfig$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/config/CorsConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/controllers/DiscussionController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/CreateDiscussionCommentRequest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/CreateDiscussionPostRequest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/CreateDiscussionReactionRequest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/DiscussionCommentResponse$DiscussionCommentResponseBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/DiscussionCommentResponse.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/DiscussionPostResponse$DiscussionPostResponseBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/DiscussionPostResponse.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/DiscussionReactionResponse$DiscussionReactionResponseBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/dtos/DiscussionReactionResponse.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/enums/DiscussionPostType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/enums/DiscussionReactionType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/enums/DiscussionScope.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/models/DiscussionComment$DiscussionCommentBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/models/DiscussionComment.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/models/DiscussionPost$DiscussionPostBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/models/DiscussionPost.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/models/DiscussionReaction$DiscussionReactionBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/models/DiscussionReaction.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/repositories/DiscussionCommentRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/repositories/DiscussionPostRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/repositories/DiscussionReactionRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/security/AuthenticatedUser.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/security/JwtUserContextResolver.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/services/DiscussionService$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/services/DiscussionService$MediaPayload.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/classes/tn/spring/discussion/services/DiscussionService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/surefire-reports/TEST-tn.spring.discussion.DiscussionFeatureIntegrationTest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/surefire-reports/tn.spring.discussion.DiscussionFeatureIntegrationTest.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/test-classes/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/test-classes/tn/spring/discussion/DiscussionFeatureIntegrationTest.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/discussion-service/target/test-discussion-uploads/db5b0307-f6ce-495b-a6e7-eed5c5c5643e.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/ClubEvent/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/ClubEvent/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Gateway/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/config-server/src/main/resources/configs/Gateway.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config-server/src/main/resources/configs/Gateway.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-management/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-management/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/shared/chat-widget/chat-widget.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/shared/chat-widget/chat-widget.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/shared/chat-widget/chat-widget.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/shared/chat-widget/chat-widget.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/student/student-home/student-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/student/student-home/student-home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/student/student-home/student-home.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/student/student-home/student-home.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/student/student.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/student/student.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/study-groups/models/study-group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/study-groups/models/study-group.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-audit/study-group-audit.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-audit/study-group-audit.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-calendar/study-group-calendar.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-calendar/study-group-calendar.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-details/study-group-details.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-details/study-group-details.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-form/study-group-form.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-form/study-group-form.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-list/study-group-list.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-list/study-group-list.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-stats/study-group-stats.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/study-groups/pages/study-group-stats/study-group-stats.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/study-group-notification.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/services/study-group-notification.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/study-group.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/services/study-group.service.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/study-group.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/services/study-group.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;khalilsahnoun123&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/nadine197/Esprit-Pidev-4SAE9-2026-EnglishForU.git&quot;,
+    &quot;accountId&quot;: &quot;4becd83c-8b93-4501-950a-5b203049eff0&quot;
+  }
+}</component>
+  <component name="JpbToolWindowState">
+    <option name="isToolWindowVisible" value="false" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3C7mHzuKR2KKGbfA1HYZc6vj88h" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.Appointment [clean].executor": "Run",
+    "Maven.Appointment [compile].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.EurekaApplication.executor": "Run",
+    "git-widget-placeholder": "Merging yasmine",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "ts.external.directory.path": "C:\\4 eme Esprit\\PI\\branch fetched from zip\\Esprit-Pidev-4SAE9-2026-EnglishForU\\frontend\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.AppointmentApplication">
+    <configuration name="AppointmentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Appointment" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.appointment.AppointmentApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClubEventApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="ClubEvent" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.clubevent.ClubEventApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.configserver.ConfigServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CourseApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Course" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.course.CourseApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DiscussionServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="discussion-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.discussion.DiscussionServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eureka" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.eureka.EurekaApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.gateway.GatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PackageApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Package" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.packagee.PackageApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="QuizApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="Quiz" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.quiz.QuizApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="User" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="tn.spring.user.UserApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6dd4e04b-fa4f-4ee8-bd25-731146dcfea0" name="Changes" comment="" />
+      <created>1775744901207</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1775744901207</updated>
+      <workItem from="1775744902313" duration="67000" />
+      <workItem from="1777633295722" duration="1750000" />
+      <workItem from="1777635079754" duration="3667000" />
+      <workItem from="1777644527720" duration="239000" />
+      <workItem from="1777724908484" duration="2373000" />
+      <workItem from="1777813126943" duration="1469000" />
+      <workItem from="1778062407702" duration="2267000" />
+    </task>
+    <task id="LOCAL-00001" summary="permit actuator health endpoint in csecurity config for apigateay to test health">
+      <option name="closed" value="true" />
+      <created>1777633456903</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1777633456903</updated>
+    </task>
+    <task id="LOCAL-00002" summary="health check pass on either 200 or 403 for gateway micro servcie">
+      <option name="closed" value="true" />
+      <created>1777633688406</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1777633688406</updated>
+    </task>
+    <task id="LOCAL-00003" summary="ix: allow actuator endpoints through JWT filter">
+      <option name="closed" value="true" />
+      <created>1777636934775</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1777636934775</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add sonar-maven-plugin to each pom.xml&#10;□ Add micrometer-registry-prometheus to each pom.xml&#10;□ Add actuator properties to each application.properties&#10;□ Create monitoring/prometheus.yml file&#10;□ Update docker-compose.yml with sonarqube/prometheus/grafana services&#10;□ Set Docker Desktop RAM to 4GB+&#10;□ Start sonarqube first, generate token, add to Jenkins">
+      <option name="closed" value="true" />
+      <created>1777640225264</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1777640225264</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Add sonar-maven-plugin to each pom.xml&#10;□ Add micrometer-registry-prometheus to each pom.xml&#10;□ Add actuator properties to each application.properties&#10;□ Create monitoring/prometheus.yml file&#10;□ Update docker-compose.yml with sonarqube/prometheus/grafana services&#10;□ Set Docker Desktop RAM to 4GB+&#10;□ Start sonarqube first, generate token, add to Jenkins">
+      <option name="closed" value="true" />
+      <created>1777640330698</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1777640330698</updated>
+    </task>
+    <task id="LOCAL-00006" summary="inhance pom xml for appointment">
+      <option name="closed" value="true" />
+      <created>1777814268401</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1777814268401</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="Jenkinsfile" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="permit actuator health endpoint in csecurity config for apigateay to test health" />
+    <MESSAGE value="health check pass on either 200 or 403 for gateway micro servcie" />
+    <MESSAGE value="ix: allow actuator endpoints through JWT filter" />
+    <MESSAGE value="Add sonar-maven-plugin to each pom.xml&#10;□ Add micrometer-registry-prometheus to each pom.xml&#10;□ Add actuator properties to each application.properties&#10;□ Create monitoring/prometheus.yml file&#10;□ Update docker-compose.yml with sonarqube/prometheus/grafana services&#10;□ Set Docker Desktop RAM to 4GB+&#10;□ Start sonarqube first, generate token, add to Jenkins" />
+    <MESSAGE value="inhance pom xml for appointment" />
+    <option name="LAST_COMMIT_MESSAGE" value="inhance pom xml for appointment" />
+  </component>
+</project>

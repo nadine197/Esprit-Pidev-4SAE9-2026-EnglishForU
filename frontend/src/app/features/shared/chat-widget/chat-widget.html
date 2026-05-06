@@ -1,11 +1,11 @@
 <div *ngIf="isOpen"
      class="fixed bottom-24 right-6 left-auto w-[370px] h-[540px] bg-white shadow-2xl rounded-[30px] border border-slate-100 z-[9999] flex flex-col overflow-hidden">
-  
+
   <!-- VUE 1 : LISTE DES GROUPES -->
   <div *ngIf="!selectedGroup" class="flex flex-col h-full">
     <div class="bg-slate-900 p-6 text-white shrink-0 font-bold text-lg">My Discussions</div>
     <div class="flex-1 overflow-y-auto p-3 bg-slate-50/50">
-      <div *ngFor="let g of groups" (click)="selectGroup(g)" 
+      <div *ngFor="let g of groups" (click)="selectGroup(g)"
            class="p-4 bg-white rounded-2xl mb-2 cursor-pointer shadow-sm flex items-center gap-3 border border-transparent hover:border-[#0066FF] transition-all">
         <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-black text-xs shrink-0">{{ g.groupName.substring(0,1).toUpperCase() }}</div>
         <div class="font-bold text-slate-700 truncate">{{ g.groupName }}</div>
@@ -39,7 +39,7 @@
     <div #scrollMe class="flex-1 overflow-y-auto p-4 space-y-8 bg-slate-50/30 overflow-x-hidden">
       <div *ngFor="let m of messages" class="flex w-full items-start gap-2" [class.flex-row-reverse]="m.senderId === currentUser.email">
         <div class="max-w-[75%] flex flex-col" [class.items-end]="m.senderId === currentUser.email">
-          
+
           <!-- Nom + Actions -->
           <div class="flex items-center gap-2 mb-1">
             <span class="text-[10px] text-slate-400 font-black uppercase">{{ m.senderName }}</span>
@@ -51,7 +51,7 @@
               <button *ngIf="m.senderId === currentUser.email" (click)="onDeleteMsg(m)" class="text-[10px] text-red-400">🗑️</button>
             </div>
           </div>
-          
+
           <div *ngIf="m.replyToId" class="bg-white/70 p-2 rounded-t-xl border-l-2 border-[#0066FF] text-[9px] w-full truncate italic mb-[-2px]">{{ m.replyToText }}</div>
 
           <div class="relative">

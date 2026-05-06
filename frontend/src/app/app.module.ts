@@ -53,7 +53,7 @@ import { VisitorModule } from './features/visitor/visitor.module';
     UserModule,
     AdminModule,
     TutorModule,
-  
+
     StudentModule,
     ReactiveFormsModule,
     FormsModule,

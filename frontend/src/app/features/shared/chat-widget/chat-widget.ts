@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DiscussionService } from '../../../services/discussion.service';
-import { ChatService } from '../../../services/chat.service'; 
+import { ChatService } from '../../../services/chat.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -15,22 +15,22 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   // --- ÉTAT INTERFACE ---
   @Input() isOpen = false;
   unreadCount = 0;
-  groups: any[] = []; 
+  groups: any[] = [];
   currentUser: any;
-  selectedGroup: any = null; 
+  selectedGroup: any = null;
 
   // --- DONNÉES CHAT ---
-  messages: any[] = [];      
+  messages: any[] = [];
   newMessage: string = '';
-  pinnedMessage: any = null; 
-  
+  pinnedMessage: any = null;
+
   // --- ÉTATS AVANCÉS ---
-  replyingTo: any = null; 
+  replyingTo: any = null;
   isEditing = false;
   editingMsgId: string | null = null;
   typingUser: string | null = null;
   typingTimer: any;
-  
+
   private messageSub?: Subscription;
 
   constructor(
@@ -54,8 +54,8 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   loadMyDiscussions() {
     if (!this.currentUser) return;
     const email = this.currentUser.email;
-    const obs = this.currentUser.role === 'ADMIN' 
-      ? this.discussionService.getAllGroups() 
+    const obs = this.currentUser.role === 'ADMIN'
+      ? this.discussionService.getAllGroups()
       : this.discussionService.getMyGroupsByEmail(email);
 
     obs.subscribe({ next: (data: any) => {
@@ -85,17 +85,17 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
       if (incomingMsg.content === "DELETED_SIGNAL") {
         if (index !== -1) this.messages.splice(index, 1);
         if (this.pinnedMessage?.id === incomingMsg.id) this.pinnedMessage = null;
-      } 
+      }
       else if (index !== -1) {
         this.messages[index] = { ...this.messages[index], ...incomingMsg };
         if (incomingMsg.isPinned) this.pinnedMessage = incomingMsg;
         else if (this.pinnedMessage?.id === incomingMsg.id) this.pinnedMessage = null;
-      } 
+      }
       else {
         this.messages.push(incomingMsg);
         this.scrollToBottom();
       }
-    } 
+    }
     // CAS B : Notification (Si bulle fermée ou autre groupe)
     else if (incomingMsg.senderId !== this.currentUser.email && incomingMsg.content !== "DELETED_SIGNAL") {
       this.unreadCount++;
@@ -108,7 +108,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   selectGroup(group: any) {
     this.selectedGroup = group;
     this.messages = [];
-    this.unreadCount = 0; 
+    this.unreadCount = 0;
     this.pinnedMessage = null;
     this.cancelReply();
     this.cancelEdit();
@@ -152,7 +152,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
         chatMsg.replyToUser = this.replyingTo.senderName;
       }
       this.chatService.sendMessage(this.selectedGroup.id, chatMsg);
-      this.newMessage = ''; 
+      this.newMessage = '';
       this.cancelReply();
       this.chatService.sendTypingStatus(this.selectedGroup.id, this.currentUser.name, false);
     }
@@ -188,7 +188,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
       formData.append('file', file);
       this.http.post('http://localhost:8090/api/discussions/files/upload', formData, { responseType: 'text' })
         .subscribe(url => {
-          const msg = { 
+          const msg = {
             groupId: this.selectedGroup.id, senderId: this.currentUser.email, senderName: this.currentUser.name,
             content: "📁 Shared a file: " + file.name, fileUrl: url, fileName: file.name, timestamp: new Date()
           };
@@ -203,17 +203,17 @@ export class ChatWidgetComponent implements OnInit, OnDestroy {
   cancelReply() { this.replyingTo = null; }
   setupEdit(m: any) { this.replyingTo = null; this.isEditing = true; this.editingMsgId = m.id; this.newMessage = m.content; }
   cancelEdit() { this.isEditing = false; this.editingMsgId = null; this.newMessage = ''; }
-  
+
   toggleChat() {
     this.isOpen = !this.isOpen;
     if (this.isOpen) this.unreadCount = 0;
   }
 
-  goBack() { 
-    this.selectedGroup = null; 
-    this.typingUser = null; 
-    this.cancelEdit(); 
-    this.cancelReply(); 
+  goBack() {
+    this.selectedGroup = null;
+    this.typingUser = null;
+    this.cancelEdit();
+    this.cancelReply();
   }
 
   private cleanup() { this.chatService.disconnect(); if (this.messageSub) this.messageSub.unsubscribe(); }
