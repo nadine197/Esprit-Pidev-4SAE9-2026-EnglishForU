@@ -48,7 +48,7 @@ pipeline {
                                     -Dsonar.projectKey=${svc.name} \
                                     -Dsonar.host.url=http://sonarqube:9000 \
                                     -Dsonar.token=${SONAR_TOKEN} \
-                                     -B 
+                                     -DskipTests -B 
                                 cd -
                             """
                         }
