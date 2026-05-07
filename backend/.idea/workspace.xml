@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="permit container front acces gateway permit *" />
+    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="fix appointment name">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/clients/CourseClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Appointment/src/main/java/tn/spring/appointment/clients/StudyGroupDTO.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,6 +61,8 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.EurekaApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Appointment [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Appointment [compile].executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
@@ -98,7 +104,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.CourseApplication">
+  <component name="RunManager">
     <configuration name="AppointmentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
       <module name="Appointment" />
@@ -189,11 +195,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.EurekaApplication" />
         <item itemvalue="Spring Boot.CourseApplication" />
         <item itemvalue="Spring Boot.AppointmentApplication" />
         <item itemvalue="Spring Boot.UserApplication" />
         <item itemvalue="Spring Boot.GatewayApplication (1)" />
-        <item itemvalue="Spring Boot.EurekaApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -217,6 +223,9 @@
       <workItem from="1777976924169" duration="2751000" />
       <workItem from="1778002547002" duration="413000" />
       <workItem from="1778014607495" duration="220000" />
+      <workItem from="1778069026005" duration="1398000" />
+      <workItem from="1778070465074" duration="228000" />
+      <workItem from="1778149672038" duration="1466000" />
     </task>
     <task id="LOCAL-00001" summary="add name to servcie in app properties to label it in prometheus">
       <option name="closed" value="true" />
@@ -242,7 +251,23 @@
       <option name="project" value="LOCAL" />
       <updated>1778014742653</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="worspace idea">
+      <option name="closed" value="true" />
+      <created>1778069470100</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1778069470100</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fix appointment name">
+      <option name="closed" value="true" />
+      <created>1778070646344</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1778070646344</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -252,6 +277,8 @@
     <MESSAGE value="add name to servcie in app properties to label it in prometheus" />
     <MESSAGE value="config twilio account sid for appointment service" />
     <MESSAGE value="permit container front acces gateway permit *" />
-    <option name="LAST_COMMIT_MESSAGE" value="permit container front acces gateway permit *" />
+    <MESSAGE value="worspace idea" />
+    <MESSAGE value="fix appointment name" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix appointment name" />
   </component>
 </project>
