@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="worspace idea">
+    <list default="true" id="c165c888-2b1d-48ce-8a0b-8ee3a99beb00" name="Changes" comment="add jococo and sonarqube oroperties in each pom xml">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -291,7 +292,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778151486037</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add jococo and sonarqube oroperties in each pom xml">
+      <option name="closed" value="true" />
+      <created>1778152900877</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1778152900877</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,6 +323,7 @@
     <MESSAGE value="permit container front acces gateway permit *" />
     <MESSAGE value="fix appointment name" />
     <MESSAGE value="worspace idea" />
-    <option name="LAST_COMMIT_MESSAGE" value="worspace idea" />
+    <MESSAGE value="add jococo and sonarqube oroperties in each pom xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="add jococo and sonarqube oroperties in each pom xml" />
   </component>
 </project>
